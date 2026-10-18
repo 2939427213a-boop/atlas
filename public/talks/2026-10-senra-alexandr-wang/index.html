@@ -1,0 +1,1561 @@
+<!doctype html>
+<!--
+  Alexandr Wang on Muse · David Senra · 2026-10-11 — study notes (English edition).
+  Visual style inspired by and adapted from Nous Research's Hermes / LENS design language
+  (@nous-research/ui, MIT License). Not affiliated with Nous Research. See NOTICE.txt.
+  Fonts: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC (SIL OFL 1.1, via Google Fonts).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alexandr Wang on Muse · David Senra</title>
+<meta name="description" content="Study notes on David Senra's interview with Alexandr Wang: why Meta bet on personal agents, how Muse took seven months to become reliable and broke through with memes, and how Wang is rebuilding Meta's AI lab from scratch.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Atlas">
+<meta property="og:title" content="Alexandr Wang on Muse · Study notes">
+<meta property="og:description" content="Study notes on David Senra's interview with Alexandr Wang: why Meta bet on personal agents, how Muse took seven months to become reliable and broke through with memes, and how Wang is rebuilding Meta's AI lab from scratch.">
+<meta property="og:url" content="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/assets/cover.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="Interview frame: Alexandr Wang and David Senra seated facing each other">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@steamedbun1111">
+<link rel="canonical" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/">
+<link rel="alternate" hreflang="en" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/">
+<link rel="alternate" hreflang="zh-CN" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/zh">
+<link rel="alternate" hreflang="x-default" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ===== tokens (teal dark only) ===== */
+:root{
+  --background-base:#041c1c;--background:#041c1c;--midground-base:#ffe6cb;--midground:#ffe6cb;
+  --warm-glow:rgba(255,189,56,.35);--amber:#f2b544;--red:#ff7a6b;
+  --font-display:'Unbounded','Noto Sans SC',sans-serif;--font-sans:'Instrument Serif','Noto Sans SC',serif;
+  --font-zh:'Noto Sans SC',sans-serif;--font-mond:'JetBrains Mono','Noto Sans SC',monospace;--font-mono:'JetBrains Mono','Noto Sans SC',monospace;
+  --mg-80:color-mix(in srgb,var(--midground-base) 80%,transparent);--mg-65:color-mix(in srgb,var(--midground-base) 65%,transparent);
+  --mg-45:color-mix(in srgb,var(--midground-base) 45%,transparent);--line:color-mix(in srgb,var(--midground-base) 16%,transparent);
+  --line-2:color-mix(in srgb,var(--midground-base) 34%,transparent);--fill:color-mix(in srgb,var(--midground-base) 5%,transparent);
+  --panel:color-mix(in srgb,var(--background-base) 84%,transparent);--rail-top:max(56px,calc(50vh - 214px));
+}
+*{box-sizing:border-box}
+html{background:#000;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000;color:var(--midground);font-family:var(--font-zh);font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+b,strong{font-weight:700}
+code{font-family:var(--font-mono);font-size:.88em;padding:0 .3em;border:1px solid var(--line);background:var(--fill)}
+button{font:inherit;color:inherit}
+p{margin:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* backdrop stack */
+.hermes-bg>*{position:fixed;inset:0;pointer-events:none}
+.bg-l1{z-index:1;background:var(--background-base);mix-blend-mode:difference}
+.bg-l2{z-index:2;width:100%;height:150vh;object-fit:cover;object-position:top left;filter:invert(1);opacity:.033;mix-blend-mode:difference}
+.bg-l99{z-index:99;background:radial-gradient(120% 90% at 0% 0%,var(--warm-glow),transparent 60%);opacity:.22;mix-blend-mode:lighten}
+.bg-l201{z-index:201;opacity:.5;mix-blend-mode:color-dodge;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gradient-stroke{0%{background-position:15% 15%}100%{background-position:75% 75%}}
+@keyframes dash-flow{to{stroke-dashoffset:-12}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes flipin{from{transform:rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.arc-host{position:relative}
+.arc-border{--arc-c1:var(--midground);--arc-c2:var(--background);--arc-duration:2.23s;
+  --arc-gradient:linear-gradient(160deg,transparent 0%,transparent 15%,var(--arc-c1) 20%,var(--arc-c2) 25%,transparent 35%,transparent 55%,var(--arc-c1) 60%,var(--arc-c2) 65%,transparent 75%,transparent 95%,var(--arc-c1) 100%);
+  position:absolute;z-index:3;overflow:hidden;border-radius:inherit;inset:-2px;padding:1.25px;pointer-events:none;opacity:0;transition:opacity .2s;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.arc-border::before{content:'';position:absolute;inset:0;background:var(--arc-gradient);background-size:300% 300%;animation:gradient-stroke var(--arc-duration) linear infinite}
+.arc-host:hover>.arc-border,.arc-host:focus-visible>.arc-border,.arc-host.on>.arc-border{opacity:1}
+
+/* PiP marker */
+.pip{display:inline-block;margin-left:1px;font-size:.62em;line-height:1;vertical-align:super;color:var(--amber);cursor:help;outline-offset:2px}
+.toast{position:fixed;z-index:70;left:12px;right:12px;bottom:14px;max-width:460px;margin:0 auto;padding:10px 14px;border:1px solid var(--amber);background:var(--background-base);color:var(--midground);font-size:13px;line-height:1.5}
+.toast[hidden]{display:none}
+
+.credit .privacy-note{font-family:var(--font-mono);font-size:11px}
+/* ===== language switch ===== */
+.lang-switch{position:fixed;z-index:70;top:12px;right:12px;display:flex;border:1px solid var(--line-2);background:var(--panel);font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em}
+.lang-switch a{display:flex;align-items:center;justify-content:center;min-width:36px;height:28px;padding:0 10px;color:var(--midground);text-decoration:none}
+.lang-switch a[lang=zh-CN]{font-family:var(--font-zh);letter-spacing:0}
+.lang-switch a[aria-current]{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.lang-switch a:not([aria-current]):hover{background:var(--fill)}
+.lang-switch a:focus-visible{outline:1px solid var(--midground);outline-offset:2px}
+.top-row{display:flex;gap:8px;margin:0 0 14px}
+.home-link{display:flex;align-items:center;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.06em;white-space:nowrap}
+.home-link:hover{border-color:var(--midground)}
+.src-top{flex:1;min-width:0;display:flex;align-items:center;gap:10px;margin:0;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;letter-spacing:.03em}
+.src-top .k{font-weight:700;letter-spacing:.14em;color:var(--mg-65)}
+.src-top .go{margin-left:auto}
+.src-top:hover{border-color:var(--midground)}
+
+/* ===== right rail ===== */
+#toc-fab{position:fixed;z-index:60;right:12px;top:var(--rail-top);display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;text-decoration:none;font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em;
+  background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+#toc-fab:hover .fab-k{animation:blink 1s step-end infinite}
+#toc-fab:active{filter:invert(1)}
+.rail{position:fixed;z-index:59;right:12px;top:calc(var(--rail-top) + 38px);display:flex;flex-direction:column;align-items:flex-end;padding:4px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.rail{background:color-mix(in srgb,var(--background-base) 94%,transparent);border-color:var(--line)}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;height:24px;text-decoration:none;color:var(--mg-65);outline-offset:-2px}
+.rail .no{display:inline-grid;place-items:center;min-width:30px;height:20px;padding:0 4px;font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.rail .lb{max-width:9em;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--mg-80)}
+.rail a:hover .no{border-color:var(--line-2);color:var(--midground)}
+.rail a.on .no{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.rail a.on .lb{color:var(--midground)}
+.rail .sep{height:1px;width:30px;margin:4px 0;background:var(--line)}
+
+/* ===== layout ===== */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:40px clamp(92px,calc(775px - 50vw),190px) 120px 48px}
+.wrap>*+*{margin-top:56px}
+section[id],article[id],details[id],div[id]{scroll-margin-top:16px}
+.panel{position:relative;border:1px solid var(--line);background:var(--panel)}
+.bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--fill);font-family:var(--font-mono);font-size:11px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.bar .k{color:var(--midground);font-weight:700;font-family:var(--font-zh);letter-spacing:.04em;font-size:12.5px;text-transform:none}
+.bar .push{margin-left:auto}
+.eyebrow{font-family:var(--font-mond);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mg-65)}
+.en-line{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kv{display:grid;margin:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.kv>div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kv dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mg-45);margin-bottom:4px}
+.kv dd{margin:0;font-family:var(--font-sans);font-size:17px;line-height:1.35}
+.kv dd.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero-body{container-type:inline-size;padding:clamp(22px,3.4vw,44px) clamp(18px,3.4vw,44px) 26px}
+.h1{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:clamp(26px,6.9cqi,72px);line-height:.96;letter-spacing:.01em;margin:14px 0}
+.h1 .nw{white-space:nowrap}
+.h1-zh{margin:0 0 14px;font-size:clamp(17px,1.8vw,21px);font-weight:500;color:var(--mg-80)}
+.h1-zh::before{content:'// ';font-family:var(--font-mono);color:var(--mg-45)}
+.read{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:3px 10px;border:1px solid var(--line-2);font-size:13px}
+.read::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--midground);animation:blink 1.6s step-end infinite}
+.kv-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero-note{margin-top:14px;font-size:13px;line-height:1.65;color:var(--mg-65)}
+.thesis-body{padding:20px clamp(18px,3vw,32px) 22px;font-size:clamp(16px,1.5vw,18px);line-height:1.8}
+.thesis-body ul{margin:8px 0 12px;padding:0;list-style:none}
+.thesis-body li{position:relative;padding-left:1.4em}
+.thesis-body li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+.thesis-body .last{padding-top:12px;border-top:1px dashed var(--line)}
+.hl{background:var(--midground);color:var(--background-base);padding:0 .25em}
+
+/* panorama */
+.pano{container-type:inline-size}
+.pano-q{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;padding:18px clamp(14px,2.6vw,28px) 4px}
+.pano-q .q{font-weight:700;font-size:13px;padding:1px 8px;background:var(--midground);color:var(--background-base)}
+.pano-q p{font-size:clamp(16px,1.6vw,19px);line-height:1.7;font-weight:500}
+.pano-band{padding:16px clamp(14px,2.6vw,28px) 22px}
+.spectrum{display:flex;height:34px;border:1px solid var(--line-2);background:var(--background-base)}
+.spectrum a{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;text-decoration:none;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-80);border-left:1px solid var(--line);transition:background .15s,color .15s}
+.spectrum a:first-child{border-left:0}
+.spectrum a.act-start{border-left:1px solid var(--midground)}
+.spectrum a.odd{background:color-mix(in srgb,var(--midground-base) 9%,transparent)}
+.spectrum a.even{background:color-mix(in srgb,var(--midground-base) 18%,transparent)}
+.spectrum a:hover,.spectrum a:focus-visible,.spectrum a.on{background:var(--midground);color:var(--background-base)}
+.acts{display:grid;grid-template-columns:var(--act-cols);margin:0;padding:0;list-style:none;border-left:1px solid var(--line)}
+.act{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.act::before{content:'';position:absolute;left:-1px;top:0;width:1px;height:14px;background:var(--midground)}
+.act-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.act-no{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.6cqi,40px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--midground)}
+.act-time{font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45);white-space:nowrap}
+.act-name b{display:block;font-size:19px;font-weight:900;line-height:1.25}
+.act-name span{display:block;margin-top:3px;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mg-65);line-height:1.4}
+.act-line{font-size:13.5px;line-height:1.7;color:var(--mg-80)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 0;padding:4px 0 0;list-style:none}
+.chip{display:inline-flex;align-items:baseline;gap:6px;padding:2px 8px;border:1px solid var(--line-2);text-decoration:none;font-size:12px;line-height:1.6;white-space:nowrap}
+.chip i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+span.chip{white-space:normal}
+a.chip:hover,a.chip:focus-visible{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+a.chip:hover i,a.chip:focus-visible i{color:inherit}
+@container (max-width:860px){
+  .acts{grid-template-columns:minmax(0,1fr);border-left:0;margin-top:14px;border-top:1px solid var(--line)}
+  .act{display:grid;grid-template-columns:54px minmax(0,1fr);column-gap:12px;row-gap:6px;border-left:1px solid var(--line);padding:12px}
+  .act::before{height:100%;width:2px}
+  .act-top{display:contents}
+  .act-no{grid-row:1/span 4;font-size:30px}
+  .act-time,.act-name,.act-line,.act .chips{grid-column:2}
+}
+
+/* chapters */
+.ch>*+*{margin-top:16px}
+.ch-head-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,3vw,30px);align-items:end;padding:clamp(18px,2.6vw,28px) clamp(16px,2.6vw,28px) 20px}
+.ch-no{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,6vw,80px);line-height:.8;background:var(--midground);color:var(--background-base);padding:.08em .1em 0}
+.ch-no.zh{font-family:var(--font-zh);font-weight:900;line-height:1;padding:.06em .12em}
+.ch-head-body .en-line{margin-bottom:6px;font-size:clamp(11.5px,1.25vw,14px);color:var(--mg-80)}
+.ch-head-body h2{margin:0;font-size:clamp(22px,2.8vw,34px);line-height:1.22;font-weight:900}
+.ch-sub{margin-top:6px;font-size:15px;color:var(--mg-65)}
+.oneliner{display:grid;grid-template-columns:auto minmax(0,1fr)}
+.oneliner .lbl{writing-mode:vertical-rl;padding:12px 7px;border-right:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:var(--mg-45);text-transform:uppercase}
+.oneliner p{padding:16px clamp(16px,2.6vw,26px);font-size:clamp(16px,1.55vw,18.5px);line-height:1.75;font-weight:500}
+.grp{display:flex;align-items:center;gap:12px;margin-top:28px !important;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mg-45)}
+.grp::after{content:'';flex:1;height:1px;background:var(--line)}
+.grp .gt{font-family:var(--font-zh);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:none;color:var(--midground)}
+
+/* text blocks */
+.pts{padding:16px clamp(14px,2.4vw,24px)}
+.pts>*+*{margin-top:12px}
+.lst{margin:0;padding:0;list-style:none}
+.lst>li{position:relative;padding-left:1.4em;font-size:14.5px;line-height:1.75}
+.lst>li+li{margin-top:6px}
+.lst>li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+ol.lst{counter-reset:n}
+ol.lst>li{counter-increment:n;padding-left:2em}
+ol.lst>li::before{content:counter(n,decimal-leading-zero);font-size:11px;top:.3em}
+.lst .lst{margin-top:4px}
+.lst .lst>li{font-size:14px;color:var(--mg-80)}
+.lst .lst>li::before{content:'·'}
+.sub-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--mg-65)}
+.sub-h b{font-family:var(--font-zh);font-size:13.5px;letter-spacing:.02em;color:var(--midground);margin-right:6px}
+pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-2);background:var(--background-base);font-family:var(--font-mono);font-size:12px;line-height:1.6;color:var(--mg-80)}
+.note-line{font-size:12.5px;color:var(--mg-65)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.tbl.mid{min-width:560px}
+.tbl th{text-align:left;font-weight:500;font-size:12px;color:var(--mg-65);padding:9px 12px;border-bottom:1px solid var(--line-2);background:var(--fill);vertical-align:bottom}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td,.tbl tbody tr:last-child th{border-bottom:0}
+.tbl td+td,.tbl th+th,.tbl th+td{border-left:1px solid var(--line)}
+.tbl tbody th{font-weight:700;font-size:13.5px;color:var(--midground);background:transparent;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tbl tbody tr:hover>*{background:var(--fill)}
+
+/* speaker notes / analysis */
+.notes{padding:14px clamp(14px,2.4vw,24px)}
+.analysis{position:relative;border-left:2px solid color-mix(in srgb,var(--midground) 32%,transparent);background:transparent}
+.an-tag{display:block;padding:8px clamp(14px,2.4vw,24px) 0;color:var(--mg-65);font-family:var(--font-mono);font-size:11px;letter-spacing:.14em}
+.an-tag::before{content:'↳ '}
+.analysis .lst{padding:4px clamp(14px,2.4vw,24px) 10px}
+.analysis .lst>li{color:var(--mg-80)}
+.analysis .lst>li::before{color:var(--mg-65)}
+.analysis a{color:var(--midground)}
+
+/* ===== widgets: shared ===== */
+.viz{container-type:inline-size}
+.vz{padding:16px clamp(12px,2.2vw,22px) 18px}
+.vz>*+*{margin-top:14px}
+.cap{font-size:13px;line-height:1.65;color:var(--mg-65)}
+.cap b{color:var(--midground);font-weight:500}
+.h-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:0;padding:7px 12px;font-family:var(--font-zh);font-size:13px;line-height:1.3;background:transparent;color:var(--midground);
+  box-shadow:inset -1px -1px 0 0 #ffffff12,inset 1px 1px 0 0 #ffffff29,0 0 0 1px var(--line-2);transition:background .15s,color .15s}
+.h-btn:hover{background:var(--fill)}
+.h-btn:active{filter:invert(1)}
+.h-btn:disabled{opacity:.4;cursor:default}
+.h-btn[aria-checked="true"],.h-btn[aria-pressed="true"],.h-btn.solid{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.h-btn i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.mini{cursor:pointer;border:1px solid var(--line-2);background:transparent;padding:1px 8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--midground)}
+.mini:hover{background:var(--fill)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;flex-wrap:wrap}
+.seg .h-btn{box-shadow:0 0 0 1px var(--line-2)}
+.arr{display:grid;place-items:center;color:var(--mg-45);transition:color .2s}
+.arr svg{display:block;width:34px;height:12px;overflow:visible}
+.arr .ln{stroke-dasharray:3 3}
+.arr.lit{color:var(--midground)}
+.arr.lit .ln{animation:dash-flow 1s linear infinite}
+.box{border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.box small{display:block;font-size:12px;color:var(--mg-65)}
+.box.lit{border-color:var(--midground)}
+.box.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.box.hot small{color:inherit;opacity:.75}
+.box.dim{opacity:.35}
+.mono{font-family:var(--font-mono)}
+
+/* 00 · switcher */
+.flip-row{display:grid;grid-template-columns:76px minmax(0,1fr);border-top:1px solid var(--line)}
+.flip{border:1px solid var(--line);border-top:0}
+.flip-k{padding:9px 12px;font-size:13px;color:var(--mg-65)}
+.flip-v{padding:9px 12px;border-left:1px solid var(--line);font-size:14.5px;perspective:600px}
+.flip-v>span{display:block;animation:flipin .35s ease both}
+.flip-v .a,.is-a .flip-v .w{display:none}
+.is-a .flip-v .a{display:block}
+.is-a .flip-v{background:var(--fill)}
+
+/* 01 · stairs + duo tracks */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;gap:6px}
+.stair{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.stair .tx{padding:0 2px;font-size:13px;line-height:1.55;color:var(--mg-80)}
+.stair .tx b{display:block;color:var(--midground);font-size:14px}
+.stair .tx i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.stair .riser{height:calc(var(--lv) * 22px);border:1px solid var(--line-2);border-bottom:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 6px)}
+.stair:last-child .riser{background:var(--midground)}
+.stairs-axis{display:flex;justify-content:flex-end;gap:8px;font-size:12.5px;color:var(--mg-65);border-top:1px solid var(--line-2);padding-top:6px}
+@container (max-width:620px){
+  .stairs{grid-template-columns:minmax(0,1fr);gap:10px}
+  .stair{flex-direction:row-reverse;align-items:center;justify-content:flex-end}
+  .stair .riser{height:24px;width:calc(var(--lv) * 14px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .stairs-axis{justify-content:flex-start}
+}
+.trk{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:start}
+.trk+.trk{margin-top:12px}
+.trk-l{padding-top:4px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cell{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:26px;min-height:26px;padding:0 8px;border:1px solid var(--line-2);font-size:12px;transition:background .2s,color .2s}
+.cell.ap{border-style:dashed;font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.cell.on{background:var(--midground);color:var(--background-base)}
+.cell.wait{animation:blink .5s step-end infinite}
+.cell.in{border-color:var(--amber);color:var(--amber);font-size:11.5px}
+.cell.in.on{background:var(--amber);color:#1b1304}
+.cell .ok{margin-left:6px;font-family:var(--font-mono);font-size:10px;padding:0 4px;border:1px solid currentColor}
+.trk .cap{margin-top:6px}
+
+/* 02 · file tree */
+.ft{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;align-items:start}
+@container (max-width:620px){.ft{grid-template-columns:minmax(0,1fr)}}
+.ft-tree{border:1px solid var(--line);padding:10px 12px;font-family:var(--font-mono);font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto;color:var(--mg-45)}
+.ft-file{cursor:pointer;border:0;background:none;padding:0 5px;font-family:var(--font-mono);font-size:12.5px;color:var(--midground);border-bottom:1px dotted var(--mg-45)}
+.ft-file[aria-pressed="true"]{background:var(--midground);color:var(--background-base)}
+.ft-desc{border:1px solid var(--line-2);padding:12px 14px}
+.ft-desc code{display:inline-block;margin-bottom:6px}
+.ft-desc p{font-size:14.5px}
+.why{border-left:3px solid var(--line-2);padding:4px 0 4px 12px}
+
+/* 03 · simulator, router, system */
+.sim-lanes{border:1px solid var(--line)}
+.lane{display:grid;grid-template-columns:170px 120px minmax(0,1fr);align-items:center;border-top:1px solid var(--line)}
+.lane:first-child{border-top:0}
+.lane>*{padding:9px 12px;min-width:0}
+.lane>*+*{border-left:1px solid var(--line)}
+.ln-h b{display:block;font-size:14px}
+.ln-h small{display:block;font-size:11.5px;color:var(--mg-65);line-height:1.5}
+.lane.head{background:var(--fill)}
+.lane.head>*{padding:5px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--mg-45)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;font-size:12.5px;border:1px dashed var(--line-2);color:var(--mg-65);white-space:nowrap}
+.pill.on{border:1px solid var(--midground);background:var(--midground);color:var(--background-base);font-weight:700}
+.pill.keep{border:1px solid var(--midground);color:var(--midground)}
+.track{display:grid;grid-template-columns:repeat(var(--n,10),minmax(0,1fr));gap:3px;align-items:center}
+.track span{height:18px;border:1px solid transparent}
+.track .on{background:var(--midground)}
+.track .off{border-color:var(--line);background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 4px)}
+.track .keep{background:color-mix(in srgb,var(--midground-base) 55%,transparent)}
+.track .empty{border:1px dashed color-mix(in srgb,var(--midground-base) 10%,transparent)}
+.track.ev span{height:auto;border:0;font-family:var(--font-mono);font-size:9.5px;line-height:1.2;text-align:center;color:var(--mg-45);white-space:nowrap;overflow:hidden}
+.track.ev span.last{color:var(--midground)}
+.sim-log{margin:0;padding:8px 12px;border:1px solid var(--line);background:var(--background-base);font-size:13px;line-height:1.7;list-style:none;min-height:3.6em}
+.sim-log li{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:8px;color:var(--mg-45)}
+.sim-log li span:first-child{font-family:var(--font-mono);font-size:11px}
+.sim-log li:first-child{color:var(--midground)}
+@container (max-width:700px){
+  .lane{grid-template-columns:minmax(0,1fr) auto}
+  .lane>*+*{border-left:0}
+  .lane .track{grid-column:1/-1;padding-top:0}
+  .lane.head>*:not(.track){display:none}
+  .lane.head .track{padding-top:6px}
+}
+.rt-grid{display:grid;grid-template-columns:minmax(0,1.2fr) 38px minmax(0,1fr) 38px minmax(0,1fr) 38px minmax(0,1.1fr);align-items:center}
+.rt-src{display:flex;flex-direction:column;gap:5px}
+.rt-src .h-btn{justify-content:flex-start;text-align:left;width:100%;padding:5px 10px}
+.rt-node b{display:block;font-size:14.5px}
+.rt .rt-node,.rt .out{opacity:.5}
+.rt.has-sel .rt-node{opacity:1;border-color:var(--midground)}
+.rt-dec{display:flex;flex-direction:column;gap:8px}
+.out{padding:6px 10px;border:1px dashed var(--line-2);font-size:13px;color:var(--mg-65);transition:background .2s,opacity .2s}
+.rt.has-sel[data-worth="1"] .out.yes,.rt.has-sel[data-worth="0"] .out.no{opacity:1;background:var(--midground);color:var(--background-base);border:1px solid var(--midground)}
+.rt-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.rt-log{font-size:13px;color:var(--mg-65)}
+.rt-log b{color:var(--midground);font-weight:500}
+@container (max-width:680px){
+  .rt-grid{grid-template-columns:minmax(0,1fr);row-gap:4px}
+  .rt-grid .arr svg{transform:rotate(90deg);margin:8px 0}
+  .rt-src{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr) 48px minmax(0,1.5fr) 48px minmax(0,1fr);align-items:stretch}
+.s3-col{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);padding:10px;min-width:0;outline-offset:2px;transition:border-color .2s,opacity .2s}
+.s3-col>b{font-size:14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.s3-v{text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-65);line-height:1}
+.s3-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.3fr);gap:6px;align-items:stretch}
+.s3-row .bi{align-self:center;font-family:var(--font-mono);color:var(--mg-65)}
+.s3-gut{display:flex;flex-direction:column;justify-content:space-between;padding:44px 2px 16px}
+.s3-gut.g2{justify-content:center}
+.s3-gut .lnk{transition:opacity .2s}
+.s3-gut .back svg{transform:scaleX(-1)}
+.sys3[data-hl] .lnk{opacity:.2}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"],.sys3[data-hl="server"] .lnk[data-link~="server"],.sys3[data-hl="comp"] .lnk[data-link~="comp"]{opacity:1}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .arr,.sys3[data-hl="server"] .lnk[data-link~="server"] .arr,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .arr{color:var(--midground)}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .ln,.sys3[data-hl="server"] .lnk[data-link~="server"] .ln,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .ln{animation:dash-flow 1s linear infinite}
+.sys3[data-hl="apps"] [data-col="apps"],.sys3[data-hl="server"] [data-col="server"],.sys3[data-hl="comp"] [data-col="comp"]{border-color:var(--midground)}
+.sys3[data-hl="apps"] [data-col="comp"],.sys3[data-hl="comp"] [data-col="apps"]{opacity:.4}
+@container (max-width:700px){
+  .s3-grid{grid-template-columns:minmax(0,1fr)}
+  .s3-gut{flex-direction:row;justify-content:center;gap:40px;padding:6px 0}
+  .s3-gut .arr svg{transform:rotate(90deg);margin:6px auto}
+  .s3-gut .back svg{transform:rotate(-90deg)}
+}
+
+/* 04 · crash + queue */
+.cr-lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.cr-lane:first-of-type{border-top:0}
+.cr-lane .lb b{display:block;font-family:var(--font-mono);font-size:12.5px}
+.cr-lane .lb small{display:block;font-size:12px;color:var(--mg-65)}
+.stp{display:inline-grid;place-items:center;min-width:56px;padding:3px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;animation:pop .25s ease both}
+.stp.done{background:var(--fill)}
+.stp.x{border-color:var(--red);color:var(--red)}
+.stp.redo{border-style:dashed;color:var(--mg-45)}
+.stp.go{background:var(--midground);color:var(--background-base)}
+.ctr{font-size:13.5px}
+.ctr b{font-family:var(--font-mono);font-size:15px;padding:0 6px;border:1px solid var(--line-2)}
+@container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
+.q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.qbox{border:1px solid var(--line);padding:12px}
+.qbox>*+*{margin-top:10px}
+.qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
+.qc{display:inline-grid;place-items:center;height:26px;padding:0 9px;border:1px solid var(--line-2);font-size:12px;animation:pop .25s ease both}
+.qc.run{background:repeating-linear-gradient(135deg,var(--fill) 0 6px,transparent 6px 12px);border-color:var(--midground)}
+.qc.cut{border-color:var(--red);color:var(--red);text-decoration:line-through}
+.qc.jump{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.qc.merge{background:var(--midground);color:var(--background-base)}
+
+/* 05 · hub + UI controls */
+.hub{display:grid;grid-template-columns:minmax(0,1.5fr) 40px auto 40px minmax(0,.8fr);align-items:center}
+.hub-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.hub-tools,.hub-ch{display:flex;flex-wrap:wrap;gap:5px}
+.hub-ch{flex-direction:column}
+.tg{display:inline-block;padding:2px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap}
+.hub-mid{padding:14px 16px;background:var(--midground);color:var(--background-base);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em}
+@container (max-width:680px){
+  .hub{grid-template-columns:minmax(0,1fr)}
+  .hub .arr svg{transform:rotate(90deg);margin:8px auto}
+  .hub-mid{justify-self:center}
+  .hub-ch{flex-direction:row}
+}
+.uic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@container (max-width:600px){.uic{grid-template-columns:minmax(0,1fr)}}
+.uic-card{border:1px solid var(--line-2);background:var(--background-base);padding:12px}
+.uic-card>*+*{margin-top:8px}
+.uic-card h4{margin:0;font-size:14px}
+.fld{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.fld.filled{color:var(--midground);border-color:var(--midground)}
+.uic-card .state{font-family:var(--font-mono);font-size:11px;color:var(--midground)}
+.emo{display:flex;gap:6px}
+.emo button{cursor:pointer;width:36px;height:30px;border:1px solid var(--line-2);background:none;font-size:15px}
+.emo button[aria-pressed="true"]{border-color:var(--midground);background:var(--fill)}
+
+/* 06 · blocks, ladder, helpers */
+.blocks{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:460px}
+.blocks span{aspect-ratio:1;border:1px solid var(--line);transition:background .25s}
+.blocks span.t{background:var(--midground);border-color:var(--midground)}
+.blk-n{font-family:var(--font-mono);font-size:13px}
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;align-items:end}
+.rung{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.rung .bar2{height:calc(var(--lv) * 12px + 10px);border:1px solid var(--line-2);border-bottom:0;background:var(--fill);transition:background .2s,border-color .2s}
+.rung .t{font-size:12.5px;line-height:1.45;transition:color .2s,opacity .2s}
+.ladder.broken .r2 .t,.ladder.broken .r4 .t{text-decoration:line-through;color:var(--red)}
+.ladder.broken .r2 .bar2,.ladder.broken .r4 .bar2{border-color:var(--red)}
+.ladder.broken .r6 .bar2{background:var(--midground)}
+.ladder.broken .r6 .t{color:var(--midground);font-weight:700}
+.ladder.broken .r1,.ladder.broken .r3,.ladder.broken .r5{opacity:.35}
+.ladder-axis{display:flex;justify-content:flex-end;border-top:1px solid var(--line-2);padding-top:6px;font-size:12.5px;color:var(--mg-65)}
+.rule{padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px;transition:background .2s,color .2s}
+.rule.hot{background:var(--midground);color:var(--background-base)}
+@container (max-width:620px){
+  .ladder{grid-template-columns:minmax(0,1fr);gap:6px}
+  .rung{flex-direction:row-reverse;justify-content:flex-end;align-items:center;gap:10px}
+  .rung .bar2{height:22px;width:calc(var(--lv) * 12px + 10px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .ladder-axis{justify-content:flex-start}
+}
+.hp{display:grid;grid-template-columns:auto 38px auto 38px minmax(0,1fr) 38px auto;align-items:center}
+.hp-help{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+@container (max-width:720px){
+  .hp{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .hp .arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 07 · auto-review */
+.ar{display:grid;grid-template-columns:auto 34px auto 34px minmax(0,1fr);align-items:center;gap:0}
+.ar-br{display:flex;flex-direction:column;gap:10px}
+.ar-path{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.ar-path .arr svg{width:24px}
+.cd{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+@container (max-width:720px){
+  .ar{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .ar>.arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 08 · cache stack */
+.cs{border:1px solid var(--line)}
+.cs-row{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid var(--line)}
+.cs-row:first-child{border-top:0}
+.cs-l{padding:9px 10px;font-size:12.5px;color:var(--mg-65);border-right:1px solid var(--line)}
+.cs-cells{display:flex;flex-wrap:wrap;gap:5px;padding:8px}
+.cs-c{display:inline-grid;place-items:center;min-height:28px;padding:2px 9px;border:1px solid var(--line-2);font-size:12px;line-height:1.4;transition:background .2s,color .2s,border-color .2s}
+.cs-c.hit{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-c.miss{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red);color:var(--red)}
+.cs-c.new{border-style:dashed;border-color:var(--midground);animation:pop .25s ease both}
+.cs-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mg-65)}
+.cs-leg span::before{content:'';display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;border:1px solid}
+.cs-leg .h::before{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-leg .m::before{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red)}
+@container (max-width:520px){.cs-row{grid-template-columns:minmax(0,1fr)}.cs-l{border-right:0;border-bottom:1px dashed var(--line);padding:6px 10px}}
+
+/* 09 · timeline + memory */
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.tl .box{position:relative}
+.tl .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.tl .box.hot i{color:inherit}
+@container (max-width:620px){.tl{grid-template-columns:minmax(0,1fr)}}
+.mem{display:flex;flex-direction:column;gap:6px}
+.mem-l{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 12px;border:1px solid var(--line-2)}
+.mem-l b{font-family:var(--font-mono);font-size:13px}
+.mem-l span{font-size:13.5px}
+.mem-l.l1{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.mem-l.l2{background:color-mix(in srgb,var(--midground-base) 16%,transparent)}
+.mem-l.l3{background:linear-gradient(90deg,color-mix(in srgb,var(--midground-base) 10%,transparent),transparent)}
+.mem-l.l4{border-style:dashed;color:var(--mg-80)}
+
+/* 10 · double loop */
+.loops{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.loop{border:1px solid var(--line-2);border-radius:18px;padding:12px}
+.loop>b{display:block;margin-bottom:8px;font-size:14px}
+.loop ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.loop li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;padding:5px 8px;border:1px solid var(--line);font-size:13px;transition:background .2s,color .2s}
+.loop li i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.loop li.hot{background:var(--midground);color:var(--background-base)}
+.loop li.hot i{color:inherit}
+.loop .ret{margin-top:6px;text-align:right;font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--amber)}
+@container (max-width:700px){.loops{grid-template-columns:minmax(0,1fr)}.bridge{flex-direction:row}}
+
+/* 11 · building blocks */
+.bb{display:grid;grid-template-columns:minmax(0,.8fr) 40px minmax(0,1.6fr);gap:10px;align-items:start}
+.bb-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.bb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.bb-l .bb-grid{grid-template-columns:minmax(0,1fr)}
+.bb-b{display:block;width:100%;padding:8px 10px;border:1px solid var(--line-2);background:var(--background-base);text-align:left;font-size:13px;line-height:1.4}
+button.bb-b{cursor:pointer}
+button.bb-b:hover,button.bb-b[aria-pressed="true"]{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.bb-read{font-size:13px;color:var(--mg-65)}
+.bb-read .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:middle}
+@container (max-width:640px){.bb{grid-template-columns:minmax(0,1fr)}.bb .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 12 · checklist */
+.chk{margin:0;padding:0;list-style:none;border:1px solid var(--line)}
+.chk li{border-top:1px solid var(--line)}
+.chk li:first-child{border-top:0}
+.chk label{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 12px;cursor:pointer;font-size:14px}
+.chk input{width:16px;height:16px;margin:0;accent-color:#ffe6cb}
+.chk .n{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.chk li.done{background:var(--fill)}
+.chk li.done .t{text-decoration:line-through;color:var(--mg-65)}
+.prog{font-family:var(--font-mono);font-size:12px;color:var(--mg-65)}
+.prog b{color:var(--midground)}
+
+/* slides strip + transcript */
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.slide{flex:0 0 184px;display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--panel);scroll-snap-align:start}
+.slide-frame{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:#000}
+.slide-frame img{display:block;width:100%;height:100%;object-fit:cover}
+.slide-frame::before,.slide-frame::after{content:'';position:absolute;inset:0;background:var(--img) center/cover no-repeat;opacity:0;pointer-events:none}
+.slide-frame .scan{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.35) 2px 3px)}
+.slide:hover .slide-frame::before,.slide:focus-visible .slide-frame::before{opacity:1;filter:drop-shadow(3px 0 0 rgba(255,40,90,.8));animation:tear-a .46s steps(1,end) 2 forwards}
+.slide:hover .slide-frame::after,.slide:focus-visible .slide-frame::after{opacity:1;filter:drop-shadow(-3px 0 0 rgba(0,230,255,.8));animation:tear-b .46s steps(1,end) 2 forwards}
+.slide:hover .scan{opacity:.55;animation:scan-roll 1.4s linear infinite}
+@keyframes tear-a{0%{clip-path:inset(8% 0 80% 0);transform:translateX(-8px)}25%{clip-path:inset(44% 0 40% 0);transform:translateX(10px)}50%{clip-path:inset(70% 0 16% 0);transform:translateX(-5px)}75%{clip-path:inset(22% 0 68% 0);transform:translateX(7px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes tear-b{0%{clip-path:inset(60% 0 28% 0);transform:translateX(9px)}25%{clip-path:inset(14% 0 74% 0);transform:translateX(-7px)}50%{clip-path:inset(34% 0 52% 0);transform:translateX(6px)}75%{clip-path:inset(82% 0 6% 0);transform:translateX(-9px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes scan-roll{to{background-position:0 12px}}
+.slide-cap{display:flex;align-items:baseline;gap:8px;padding:6px 8px;font-family:var(--font-mono);font-size:11px;border-top:1px solid var(--line)}
+.slide-cap span{color:var(--mg-65)}
+.slide:hover{border-color:var(--line-2)}
+.transcript summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 14px;cursor:pointer;list-style:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary .k{color:var(--midground);font-weight:700}
+.transcript summary .tg2{margin-left:auto;padding:1px 8px;border:1px solid var(--line-2);color:var(--midground)}
+.transcript summary .tg2::after{content:'+'}
+.transcript[open] summary .tg2::after{content:'−'}
+.transcript[open] summary{border-bottom:1px solid var(--line)}
+.transcript summary:hover{background:var(--fill)}
+.tr-body{padding:4px 16px 14px}
+.tr-seg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-seg:last-child{border-bottom:0}
+.tr-meta{font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.tr-meta b{display:block;color:var(--midground);font-size:12.5px}
+.tr-seg p{max-width:80ch;font-family:var(--font-sans);font-size:16px;line-height:1.6;color:var(--mg-80)}
+.gloss .tbl{min-width:620px}
+.gloss .tbl td:first-child{font-family:var(--font-mono);font-size:13px;color:var(--midground);white-space:nowrap}
+
+.foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--mg-45)}
+.foot .legend{font-family:var(--font-zh);font-size:12px;letter-spacing:0;color:var(--mg-65)}
+.foot .legend .pipx{color:var(--amber);margin-right:4px}
+.foot div:nth-child(2){text-align:center}.foot div:nth-child(3){text-align:right}
+
+@media (max-width:1180px){.kv-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.wrap{padding:32px 190px 110px 28px}}
+@media (max-width:760px){
+  body{font-size:15px}
+  .wrap{padding:48px 34px 100px 12px}
+  .lang-switch{top:8px;right:4px}.lang-switch a{min-width:30px;height:26px;padding:0 7px}
+  .top-row{flex-wrap:wrap}.top-row .src-top{flex:1 1 100%}
+  .wrap>*+*{margin-top:44px}
+  .ch-head-body{grid-template-columns:minmax(0,1fr)}
+  .ch-no{justify-self:start}
+  .tr-seg{grid-template-columns:minmax(0,1fr);gap:4px}
+  .slide{flex-basis:150px}
+  .spectrum{height:18px}.spectrum a{font-size:0}
+  .foot{grid-template-columns:minmax(0,1fr)}.foot div:nth-child(2),.foot div:nth-child(3){text-align:left}
+  :root{--rail-top:max(44px,calc(50vh - 170px))}
+  #toc-fab{right:4px;height:24px;width:24px;padding:0;justify-content:center}
+  #toc-fab .fab-zh{display:none}
+  .rail{right:4px;top:calc(var(--rail-top) + 30px);padding:2px 0;border:0;background:none !important}
+  .rail a{width:24px;height:20px;justify-content:center}
+  .rail .lb{display:none}
+  .rail .no{min-width:0;width:24px;height:18px;padding:0;font-size:10px;border:0}
+  .rail a.on .no{background:var(--midground);color:var(--background-base)}
+  .rail .sep{width:10px;margin:2px auto}
+}
+@media (max-width:560px){.kv-4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .bg-l201{display:none}
+}
+
+/* 00 · before → after */
+.vs{display:grid;gap:6px}
+.vs-head,.vs-row{display:grid;grid-template-columns:5em minmax(0,1fr) 26px minmax(0,1.45fr);gap:8px;align-items:stretch}
+.vs-head span{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--mg-65);align-self:end}
+.vs-head small{display:block;margin-top:2px;font-family:var(--font-zh);font-size:12px;letter-spacing:0}
+.vs-head .vs-a{color:var(--midground)}
+.vs-k{align-self:center;font-weight:700;font-size:13px;color:var(--mg-80)}
+.vs-row .vs-w{padding:9px 12px;border:1px dashed var(--line-2);color:var(--mg-65);font-size:13px;line-height:1.5}
+.vs-row .vs-a{padding:9px 12px;border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);color:var(--midground);font-size:14px;line-height:1.5}
+.vs-arr{display:grid;place-items:center;font-family:var(--font-mono);color:var(--midground)}
+@media (max-width:760px){.vs-head{display:none}.vs-row{grid-template-columns:minmax(0,1fr) 20px minmax(0,1.35fr);gap:6px}.vs-k{grid-column:1/-1;margin-top:6px}}
+/* 02 · file tree, all visible */
+.ft2{display:grid;gap:6px}
+.ft2-row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:14px;align-items:baseline;padding:8px 12px;border-left:2px solid var(--midground);background:color-mix(in srgb,var(--midground) 6%,transparent);font-size:14px}
+.ft2-row code{font-family:var(--font-mono);font-size:12.5px;color:var(--midground);overflow-wrap:anywhere}
+@media (max-width:760px){.ft2-row{grid-template-columns:minmax(0,1fr);gap:2px}}
+/* 06 · context grids */
+.cg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.cg2 figure{margin:0}.cg2 figcaption{font-size:13px;margin-bottom:8px;color:var(--mg-80)}
+.cg{display:grid;grid-template-columns:repeat(25,minmax(0,1fr));gap:2px}
+.cg span,.cg-legend i{aspect-ratio:1;display:block}
+.cg .s,.cg-legend .s{background:repeating-linear-gradient(45deg,var(--mg-65) 0 2px,transparent 2px 4px)}
+.cg .d,.cg-legend .d{background:var(--midground)}
+.cg .n,.cg-legend .n{background:color-mix(in srgb,var(--midground) 45%,transparent)}
+.cg .c,.cg-legend .c{background:color-mix(in srgb,var(--midground) 16%,transparent)}
+.cg .f,.cg-legend .f{border:1px solid var(--line)}
+.cg-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.cg-legend span{display:inline-flex;align-items:center;gap:6px}.cg-legend i{width:10px}
+@media (max-width:760px){.cg2{grid-template-columns:minmax(0,1fr)}}
+/* 11 · chips on blocks */
+.bb-b .bb-ch{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.bb-b .bb-ch .chip{font-size:11px;padding:0 6px}
+/* in-page slide viewer */
+.slide{cursor:zoom-in}
+html.sv-open{overflow:hidden}
+.sv{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:56px 72px}
+.sv[hidden]{display:none}
+.sv:focus{outline:none}
+.sv-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88)}
+.sv-fig{position:relative;margin:0;display:grid;gap:10px;justify-items:center;max-width:min(100%,1600px)}
+.sv-fig img{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;border:1px solid var(--line-2);background:#000;cursor:pointer;user-select:none}
+.sv-cap{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-80)}
+.sv-cap b{color:var(--midground)}
+.sv-hint{color:var(--mg-65);font-family:var(--font-zh)}.sv-hint-touch{display:none}
+.sv-btn,.sv-close{position:fixed;z-index:101;display:grid;place-items:center;border:1px solid var(--line-2);background:color-mix(in srgb,var(--background-base) 85%,transparent);color:var(--midground);cursor:pointer;font:400 26px/1 var(--font-mono)}
+.sv-btn{top:50%;transform:translateY(-50%);width:46px;height:70px}
+.sv-prev{left:14px}.sv-next{right:14px}
+.sv-btn:disabled{opacity:.22;cursor:default}
+.sv-btn:not(:disabled):hover,.sv-close:hover{background:var(--midground);color:var(--background-base)}
+.sv-close{top:14px;right:14px;width:42px;height:42px;font-size:22px}
+@media (max-width:760px){.sv{padding:56px 10px 24px}.sv-btn{width:34px;height:54px;font-size:20px}.sv-prev{left:4px}.sv-next{right:4px}.sv-hint-key{display:none}.sv-hint-touch{display:inline}}
+
+/* footer credits */
+.foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.foot .credit{grid-column:1/-1;margin-top:6px;padding:14px 16px;border:1px solid var(--line);font-family:var(--font-zh);font-size:12.5px;line-height:1.7;letter-spacing:0;color:var(--mg-65);text-align:left}
+.foot .credit h3{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--mg-80)}
+.foot .credit p{margin:4px 0}.foot .credit b{color:var(--mg-80)}
+.foot .credit a{color:var(--midground)}
+.foot .credit p[lang=en]{font-family:var(--font-mono);font-size:11px}
+.foot div:nth-child(2){text-align:left}
+@media (max-width:760px){.foot{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== this page ===== */
+/* hero frame */
+.hero-fig{margin:0;border-top:1px solid var(--line)}
+.hero-fig img{display:block;width:100%;height:auto;aspect-ratio:12/5;object-fit:cover;object-position:50% 74%;filter:saturate(.85)}
+@media (max-width:760px){.hero-fig img{aspect-ratio:16/9;object-position:50% 60%}}
+.hero-fig figcaption{padding:6px 14px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45);border-top:1px solid var(--line)}
+.kv dd small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+
+/* panorama: sponsor gaps */
+.spectrum .ad{display:block;min-width:0;border-left:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.band-legend{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;font-size:11.5px;color:var(--mg-45)}
+.band-legend i{display:inline-block;width:18px;height:10px;align-self:center;border:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.ch-head-body .who{display:inline-block;margin-left:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.host{display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line-2);font-size:11.5px;line-height:1.6;color:var(--mg-65);font-family:var(--font-zh)}
+
+/* 00 · timeline */
+.tline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:2px solid var(--line-2);padding-top:0}
+.tl-n{position:relative;padding:14px 10px 0 0;min-width:0}
+.tl-n::before{content:'';position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--background-base);border:2px solid var(--midground)}
+.tl-n.hot::before{background:var(--midground)}
+.tl-n i{display:block;font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.tl-n b{display:block;font-size:14px;line-height:1.45}
+.tl-n span{display:block;font-size:12.5px;line-height:1.55;color:var(--mg-65)}
+.tl-br{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tl-br span{padding:4px 8px;border:1px dashed var(--line-2);border-top:0;font-size:12.5px;text-align:center;color:var(--mg-80)}
+@container (max-width:640px){
+  .tline{grid-template-columns:minmax(0,1fr);border-top:0;border-left:2px solid var(--line-2);margin-left:6px}
+  .tl-n{padding:0 0 12px 16px}
+  .tl-n::before{top:4px;left:-7px}
+  .tl-br{grid-template-columns:minmax(0,1fr)}
+}
+
+/* 02 · split bars */
+.split-row{display:grid;grid-template-columns:7em minmax(0,1fr);gap:10px;align-items:center}
+.split-row+.split-row{margin-top:10px}
+.split-row>b{font-size:13px;font-weight:700;color:var(--mg-80)}
+.split-bar{display:flex;height:34px;border:1px solid var(--line-2)}
+.split-bar span{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;white-space:nowrap;font-size:12.5px}
+.split-bar .have{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px);color:var(--mg-80)}
+.split-bar .want{background:var(--midground);color:var(--background-base);font-weight:700}
+
+/* 03 · fork */
+.fork{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.2fr);gap:8px;align-items:center}
+.fork-out{display:grid;gap:8px}
+.fork .box.good{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.fork .box.bad{border-style:dashed;border-color:var(--red);color:var(--red)}
+.fork .box i{font-style:normal;font-family:var(--font-mono);font-size:11px;margin-right:6px;opacity:.75}
+@container (max-width:560px){.fork{grid-template-columns:minmax(0,1fr)}.fork .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 04 · launch gate */
+.gate{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:10px;align-items:center}
+.gate-col>small{display:block;margin-bottom:6px;font-size:12.5px;color:var(--mg-80)}
+.gate-col>small b{color:var(--midground)}
+.gate-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;max-width:240px}
+.gate-grid span{aspect-ratio:1;display:block;background:var(--midground);transition:background .25s,border-color .25s}
+.gate-grid span.r{background:transparent;border:1px solid var(--red);background-image:repeating-linear-gradient(45deg,color-mix(in srgb,var(--red) 55%,transparent) 0 1px,transparent 1px 4px)}
+.gate-grid+p{margin-top:6px;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.gate-mid{display:grid;justify-items:center;gap:4px;text-align:center;font-size:11.5px;line-height:1.4;color:var(--mg-65)}
+.gate-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.gate-legend span{display:inline-flex;align-items:center;gap:6px}
+.gate-legend i{width:11px;height:11px;display:block;background:var(--midground)}
+.gate-legend i.r{background:transparent;border:1px solid var(--red)}
+.gate-exp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px}
+.gate-exp b{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+@container (max-width:560px){.gate{grid-template-columns:minmax(0,1fr)}.gate-mid{justify-items:start;text-align:left}.gate-mid .arr svg{transform:rotate(90deg)}}
+
+/* 05 · smoothie vs one author */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.duo-col{display:grid;gap:8px;align-content:start;padding:12px;border:1px solid var(--line)}
+.duo-col>small{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.pm-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.pm-row .box{padding:5px 4px;text-align:center;font-size:12px}
+.duo .down{display:grid;place-items:center;color:var(--mg-45);font-family:var(--font-mono)}
+.duo .box.mud{border-style:dashed;background:repeating-linear-gradient(135deg,var(--line) 0 3px,transparent 3px 7px);text-align:center;color:var(--mg-80)}
+.duo .box.one{border-color:var(--midground);text-align:center}
+.duo .box.whole{background:var(--midground);color:var(--background-base);border-color:var(--midground);text-align:center;font-weight:700}
+@container (max-width:560px){.duo{grid-template-columns:minmax(0,1fr)}}
+
+/* 08 · agency curve */
+.curve svg{display:block;width:100%;max-width:720px;height:auto;overflow:visible}
+.curve .ax{stroke:var(--line-2);stroke-width:1}
+.curve .grey{fill:none;stroke:var(--mg-45);stroke-width:2;stroke-dasharray:5 4}
+.curve .main{fill:none;stroke:var(--midground);stroke-width:2.5}
+.curve text{fill:var(--mg-65);font-family:var(--font-mono);font-size:11px}
+.curve text.lb{fill:var(--midground);font-family:var(--font-zh);font-size:13px;font-weight:700}
+.curve text.lg{fill:var(--mg-65);font-family:var(--font-zh);font-size:12.5px}
+.curve-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--mg-65)}
+.curve-key span{display:inline-flex;align-items:center;gap:6px}
+.curve-key i{display:block;width:22px;height:0;border-top:2.5px solid var(--midground)}
+.curve-key i.g{border-top:2px dashed var(--mg-45)}
+
+/* 09 · deal */
+.deal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:8px;align-items:center}
+.deal .box{text-align:center}
+.deal .box b{display:block;font-size:15px}
+.deal .lnk{display:grid;gap:2px;justify-items:center;text-align:center;font-size:12px;line-height:1.45;color:var(--mg-80)}
+.deal .lnk .arr{color:var(--midground)}
+.deal .lnk.back .arr svg{transform:scaleX(-1)}
+.deal-time{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px;color:var(--mg-65)}
+.deal-time i{display:block;height:0;border-top:1px dashed var(--line-2)}
+.deal-time b{font-family:var(--font-mono);color:var(--midground);font-weight:700}
+@container (max-width:600px){.deal{grid-template-columns:minmax(0,1fr)}.deal .lnk .arr svg{transform:rotate(90deg)}.deal .lnk.back .arr svg{transform:rotate(-90deg)}}
+
+/* 11 · payoff distributions */
+.dist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.dist-col{border:1px solid var(--line);padding:12px}
+.dist-col>b{display:block;font-size:15px}
+.dist-col>small{display:block;font-size:12.5px;color:var(--mg-65)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin:12px 0 6px;border-bottom:1px solid var(--line-2)}
+.bars span{flex:1 1 0;min-width:0;height:var(--h);background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.bars span.top{background:var(--midground);position:relative}
+.bars span.top::after{content:'↑';position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:12px;color:var(--midground)}
+.dist-tags{display:flex;flex-wrap:wrap;gap:5px}
+.dist-tags span{padding:0 7px;border:1px solid var(--line-2);font-size:12px}
+.dist-tags span.me{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+@container (max-width:560px){.dist{grid-template-columns:minmax(0,1fr)}}
+
+/* 12 · org charts */
+.org{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:14px}
+.org-col{display:grid;gap:6px;align-content:start;justify-items:center;padding:12px;border:1px solid var(--line)}
+.org-col>small{justify-self:start;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.org .box{text-align:center;min-width:8em}
+.org .box.lead{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+.org .v{width:1px;height:12px;background:var(--line-2)}
+.org .lvl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.org .lvl .box{min-width:0;padding:4px 8px;font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding-top:8px;border-top:1px solid var(--midground);width:100%}
+.dots span{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.dots .pod{display:flex;flex-wrap:wrap;gap:3px;padding:4px;border:1px dashed var(--midground);align-items:center;width:auto;height:auto;border-radius:0;background:none}
+.dots .pod em{font-style:normal;font-family:var(--font-mono);font-size:9.5px;padding:0 3px;background:var(--midground);color:var(--background-base)}
+.org-note{font-size:12.5px;color:var(--mg-65);text-align:center}
+@container (max-width:600px){.org{grid-template-columns:minmax(0,1fr)}}
+
+/* X posts and outside sources */
+.xpost{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0;margin:0}
+.xpost.wide{grid-template-columns:minmax(0,1fr)}
+.xzoom{display:grid;place-items:center;min-height:0;background:#000;border-right:1px solid var(--line);cursor:zoom-in}
+.xpost.wide .xzoom{border-right:0;border-bottom:1px solid var(--line)}
+.xzoom img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
+.xpost figcaption{display:flex;flex-direction:column;gap:8px;padding:12px clamp(12px,2vw,18px);font-size:13.5px;line-height:1.65;color:var(--mg-80)}
+.xpost .xmeta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.xpost .xmeta b{color:var(--midground);font-weight:700}
+.src-tag{display:inline-block;padding:0 6px;border:1px dashed var(--amber);color:var(--amber);font-family:var(--font-zh);font-size:11px;letter-spacing:0;line-height:1.6}
+.xpost q{quotes:none;font-family:var(--font-sans);font-size:16px;line-height:1.45;color:var(--midground)}
+.xpost .xgo{margin-top:auto;font-family:var(--font-mono);font-size:11.5px;color:var(--midground)}
+.ctx{padding:12px clamp(14px,2.4vw,24px);border:1px dashed var(--line-2);background:transparent}
+.ctx>.src-tag{margin-bottom:6px}
+.ctx .lst>li{font-size:14px}
+.gl{color:var(--mg-65);font-size:.92em}
+.fn{font-family:var(--font-mono);font-size:.7em;vertical-align:super;line-height:1;margin-left:1px;color:var(--amber);text-decoration:none}
+.foot .credit ol.srcs{margin:4px 0 0;padding-left:1.6em;font-family:var(--font-mono);font-size:11px}
+.foot .credit ol.srcs li{margin:2px 0}
+.wants{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0 12px}
+.wants>div{padding:10px 12px;border:1px solid var(--line-2)}
+.wants>div.want{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.wants b{display:block;font-size:15px}
+.wants small{display:block;margin-top:2px;font-size:13.5px;line-height:1.6;color:var(--mg-80)}
+.wants i{display:block;margin-top:6px;font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.sum-lst>li{font-size:15px}
+.sum-lst .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:baseline}
+@container (max-width:640px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:760px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}.wants{grid-template-columns:minmax(0,1fr)}}
+
+</style>
+<script src="/assets/atlas.js" defer data-page="talks/2026-10-senra-alexandr-wang" data-v="2026-10-11"></script>
+</head>
+<body>
+
+<nav class="lang-switch" id="lang-switch" aria-label="Language / 语言"><a href="./" hreflang="en" lang="en" aria-current="page">EN</a><a href="zh.html" hreflang="zh-CN" lang="zh-CN">中</a></nav>
+
+<div class="hermes-bg" aria-hidden="true"><div class="bg-l1"></div><img class="bg-l2" src="assets/hermes/filler-bg0.webp" alt=""><div class="bg-l99"></div><div class="bg-l201"></div></div>
+
+<a id="toc-fab" href="#contents" aria-label="Back to overview"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">Overview</span></a>
+<nav class="rail" id="rail" aria-label="Chapters">
+  <a href="#ch-00" aria-label="00 Origin"><span class="lb">Origin</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 7 months"><span class="lb">7 months</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 The bet"><span class="lb">The bet</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 Patience"><span class="lb">Patience</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 Launch"><span class="lb">Launch</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 One author"><span class="lb">One author</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 Memes"><span class="lb">Memes</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 Trust"><span class="lb">Trust</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Ambition"><span class="lb">Ambition</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 The deal"><span class="lb">The deal</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 Coach"><span class="lb">Coach</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 Diamonds"><span class="lb">Diamonds</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 Flat"><span class="lb">Flat</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="Summary"><span class="lb">Summary</span><span class="no">S</span></a>
+  <a href="#glossary" aria-label="Glossary"><span class="lb">Glossary</span><span class="no">G</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>Hard to hear in the audio; reconstructed from two transcripts</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas</a><a class="src-top" href="https://x.com/davidsenra/status/2109283692439105997" target="_blank" rel="noopener"><span class="k">SOURCE</span><span>▶ Original interview video, posted by David Senra on X</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>David Senra</span><span class="push">2026-10-11</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Meta Superintelligence Labs</div>
+      <h1 class="h1">Alexandr Wang <span class="nw">on Muse</span></h1>
+      <p class="h1-zh">Muse, personal agents, and rebuilding Meta's AI lab from scratch</p>
+      <p class="read">~15 min read</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Alexandr Wang</dd></div>
+        <div><dt>Host</dt><dd>David Senra</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-11</dd></div>
+        <div><dt>Runtime</dt><dd class="num">72:16</dd></div>
+      </dl>
+      <p class="hero-note">Wang founded Scale AI and is now Meta's chief AI officer (per the original post). Host David Senra's podcast Founders covers one founder biography per episode<a class="fn" href="#src-18" aria-label="Source 18">18</a>. Meta launched the personal agent app Muse on 8 September 2026<a class="fn" href="#src-9" aria-label="Source 9">9</a>. About 3.5 minutes of sponsor reads are left out.</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="Interview frame: Alexandr Wang (left) and David Senra (right) seated facing each other" width="1920" height="1080"><figcaption>Frame © David Senra · 46:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">Thesis</span></div>
+    <div class="thesis-body">
+      <p>While the industry chased coding agents, Meta bet on personal agents. Wang's reason splits life in two:</p>
+      <div class="wants">
+        <div><b>Have to do</b><small>What Wang's essay calls "a maze of forms and gatekeepers and schedules and obstacles".</small><i>→ AI takes this half over</i></div>
+        <div class="want"><b>Want to do</b><small>Interests, hobbies, friends and family: what people do on Instagram, WhatsApp and Facebook.</small><i>→ People's time flows here: Meta's ground</i></div>
+      </div>
+      <p>So stronger AI favors Meta, and a personal agent is what takes the "have to" off your hands. Two things made Muse:</p>
+      <ul><li><b>Product</b>: seven months sanding every model and product detail until reliable, then memes and user screenshots to break through;</li><li><b>Organization</b>: a small, flat lab with very high talent density; Wang went from "auteur" to "coach".</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="Overview">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">00:00–72:16</span></div>
+  <div class="pano-q"><span class="q">Question</span><p>After Llama 4, with Meta's AI looking like "damaged goods", how did it build Muse and rebuild its lab?</p></div>
+  <div class="pano-band" style="--act-cols:556fr 1000fr 767fr 520fr 1591fr">
+    <div class="spectrum" aria-label="13-chapter timeline">
+      <a href="#ch-00" class="act-start odd" style="flex:346 1 0" title="00 Origin · 00:00–05:46" aria-label="00 Origin">00</a>
+      <a href="#ch-01" class="odd" style="flex:210 1 0" title="01 7 months · 05:46–09:16" aria-label="01 7 months">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:318 1 0" title="02 The bet · 09:16–14:34" aria-label="02 The bet">02</a>
+      <span class="ad" style="flex:136 1 0" title="Sponsor · 14:34–16:50"></span>
+      <a href="#ch-03" class="even" style="flex:205 1 0" title="03 Patience · 16:50–20:15" aria-label="03 Patience">03</a>
+      <a href="#ch-04" class="even" style="flex:197 1 0" title="04 Launch · 20:15–23:32" aria-label="04 Launch">04</a>
+      <a href="#ch-05" class="even" style="flex:144 1 0" title="05 One author · 23:32–25:56" aria-label="05 One author">05</a>
+      <a href="#ch-06" class="act-start odd" style="flex:522 1 0" title="06 Memes · 25:56–34:38" aria-label="06 Memes">06</a>
+      <a href="#ch-07" class="odd" style="flex:77 1 0" title="07 Trust · 34:38–38:43" aria-label="07 Trust">07</a>
+      <span class="ad" style="flex:69 1 0" title="Sponsor · 35:55–37:04"></span>
+      <a href="#ch-07" class="odd" style="flex:99 1 0" title="07 Trust · 34:38–38:43" tabindex="-1" aria-hidden="true"></a>
+      <a href="#ch-08" class="act-start even" style="flex:399 1 0" title="08 Ambition · 38:43–45:22" aria-label="08 Ambition">08</a>
+      <a href="#ch-09" class="act-start odd" style="flex:597 1 0" title="09 The deal · 45:22–55:19" aria-label="09 The deal">09</a>
+      <a href="#ch-10" class="odd" style="flex:600 1 0" title="10 Coach · 55:19–65:19" aria-label="10 Coach">10</a>
+      <a href="#ch-11" class="odd" style="flex:242 1 0" title="11 Diamonds · 65:19–69:21" aria-label="11 Diamonds">11</a>
+      <a href="#ch-12" class="odd" style="flex:152 1 0" title="12 Flat · 69:21–71:53" aria-label="12 Flat">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>Hatched = sponsor reads, left out</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">00:00–09:16</span></div><div class="act-name"><b>Origin</b><span>Vision first</span></div><p class="act-line">A "personal superintelligence" vision, weeks hands-on with OpenClaw, a prototype in a week or two, then seven months of polish.</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Origin</a></li><li><a class="chip" href="#ch-01"><i>01</i>7 months</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">09:16–25:56</span></div><div class="act-name"><b>Polish</b><span>Seven months</span></div><p class="act-line">Personal, not coding; 100+ capabilities over the bar; a small team, one author, a patient boss.</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>The bet</a></li><li><a class="chip" href="#ch-03"><i>03</i>Patience</a></li><li><a class="chip" href="#ch-04"><i>04</i>Launch</a></li><li><a class="chip" href="#ch-05"><i>05</i>One author</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">25:56–38:43</span></div><div class="act-name"><b>Growth</b><span>Breaking through</span></div><p class="act-line">Distribution isn't attention: memes and a mascot surprise; a trust ladder and screenshots retain.</p><ul class="chips"><li><a class="chip" href="#ch-06"><i>06</i>Memes</a></li><li><a class="chip" href="#ch-07"><i>07</i>Trust</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">38:43–45:22</span></div><div class="act-name"><b>Ambition</b><span>Why it matters</span></div><p class="act-line">Personal agents give adults back the agency that life wore away.</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Ambition</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">45:22–71:53</span></div><div class="act-name"><b>The lab</b><span>Rebuilding MSL</span></div><p class="act-line">A "weird deal" and a lab rebuilt from zero: diamond-mining management, 200+ direct reports.</p><ul class="chips"><li><a class="chip" href="#ch-09"><i>09</i>The deal</a></li><li><a class="chip" href="#ch-10"><i>10</i>Coach</a></li><li><a class="chip" href="#ch-11"><i>11</i>Diamonds</a></li><li><a class="chip" href="#ch-12"><i>12</i>Flat</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>00:00–05:46</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">The vision behind Muse</p><h2>One memo, weeks of OpenClaw</h2><p class="ch-sub">Vision first, then the feel</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Mark's open letter in summer 2025 set the direction; weeks of hands-on OpenClaw use in early 2026 convinced the team.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Summer 2025</b>: Mark<span class="gl"> (Zuckerberg, Meta's CEO)</span> published the open letter "Personal Superintelligence", written with Wang, Nat Friedman<span class="gl"> (former GitHub CEO<a class="fn" href="#src-3" aria-label="Source 3">3</a>, now MSL's head of product<a class="fn" href="#src-4" aria-label="Source 4">4</a>)</span> and others. It came out on 30 July; Wang recalls June<a class="fn" href="#src-2" aria-label="Source 2">2</a>. Agents didn't really exist yet. MSL<span class="gl"> (Meta Superintelligence Labs, founded June 2025, led by Wang<a class="fn" href="#src-1" aria-label="Source 1">1</a>)</span> first built models, a months-long production line.</li>
+    <li><b>Early 2026</b>: Opus 4.5<span class="gl"> (Anthropic's model of November 2025<a class="fn" href="#src-7" aria-label="Source 7">7</a>)</span> showed many, them included, what agents could be; OpenClaw<span class="gl"> (an open-source personal agent on your own computer, given jobs via chat apps<a class="fn" href="#src-5" aria-label="Source 5">5</a>)</span> was taking off. Nat, Wang thinks, was the first in MSL to use it and went all in: "somewhere between terrifying and euphoric."</li>
+    <li><b>Why trust Nat</b>: an early Stripe customer who helped create GitHub Copilot; his "there really is something here" was the signal.</li>
+    <li><b>Two February calls</b>: Wang's memo argued the super agent might be the end point of consumer products. Nat wrote two, memorably titled: one transcribed as "The Clause, The Law"<sup class="pip" tabindex="0" title="Hard to hear in the audio; reconstructed from two transcripts" aria-label="Hard to hear in the audio; reconstructed from two transcripts">◐</sup>, the other "Trust is a Must", which set many core practices. All went to the board.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">Timeline</span><span>00:00–09:16</span></div>
+    <div class="vz">
+      <div class="tline">
+        <div class="tl-n"><i>Summer 2025</i><b>Open letter</b><span>"Personal Superintelligence"</span></div>
+        <div class="tl-n"><i>Early 2026</i><b>Hands-on</b><span>Opus 4.5, OpenClaw</span></div>
+        <div class="tl-n hot"><i>2026-02</i><b>Prototype</b><span>Two memos; prototype in 1–2 weeks, demoed to the board</span></div>
+        <div class="tl-n"><i>7 months</i><b>Polish</b><span>Model + product</span></div>
+        <div class="tl-n hot"><i>~7 months later</i><b>Muse launches</b><span>February + 7 months</span></div>
+      </div>
+      <div class="tl-br"><span>Vision → feel</span><span>Demo-able → dependable</span></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost wide">
+    <a class="xzoom" href="assets/x/x01_board_doc_2025-09.png" aria-label="@alexandr_wang · 2026-09-21"><img src="assets/x/x01_board_doc_2025-09.png" alt="Excerpt from Wang's September 2025 document for the Meta board, headed Superintelligent Personal Sidekick" loading="lazy" width="1200" height="552"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-21</span></span><p>From Wang's September 2025 document for Meta's board: a "Superintelligent Personal Sidekick" would learn your goals and work 24/7 toward them.</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102210971926437990" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>Nat Friedman</b> (2026-09-21): Muse was built from scratch but "heavily inspired as a product by openclaw"; after trying it in January, he bought the MSL team hundreds of Mac minis. <a class="xgo" href="https://x.com/natfriedman/status/2102103707936768130" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>"Three years of therapy"</b>: among Wang's first OpenClaw tasks was Nat's multi-turn psychological-probing prompt; reading his email and photos, the agent packed three years of therapy into one go.</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst">
+    <li>The green light came from weeks of heavy use by two leaders, not market research: confirm the magic, then commit seven months.</li></ul></aside>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>05:46–09:16</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Building Muse in 7 months</p><h2>A prototype in a week or two, then seven months</h2><p class="ch-sub">From demo-able to dependable</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>The prototype took 1–2 weeks. The hard part was seven more months: turning "sometimes magical, constantly breaking" into something fit for billions.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li>Many final decisions were already in the first prototype, such as the mascot Jollybot (later Jolly).</li>
+    <li>Mark felt the "euphoria slash terror" too: at home, with his kids, even reviewing his MMA training videos.</li>
+    <li>The OpenClaw craze "peaked and then disappeared": scattered magic moments, but overall it didn't work well. Muse's focus was reliability.</li>
+    <li>Why did Meta succeed where OpenClaw didn't? Wang calls its creator Peter Steinberger<span class="gl"> (joined OpenAI in February 2026<a class="fn" href="#src-6" aria-label="Source 6">6</a>)</span> "definitely a visionary", then names "the unglamorous part": sanding every detail of model plus product, over many model iterations.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">Prototype → product</span><span>05:46–08:25</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="The February prototype vs. Muse seven months later">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">PROTOTYPE<small>February 2026</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">MUSE<small>7 months later</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Time</span><span class="vs-w" role="cell">1–2 weeks</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">7 months, "very lengthy and quite painful"</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Behavior</span><span class="vs-w" role="cell">Sometimes magical; mostly broken</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">A highly reliable, crafted consumer product</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Audience</span><span class="vs-w" role="cell">The board</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Over time, billions of people</span></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_jolly_2026-09-21.jpg" aria-label="@alexandr_wang · 2026-09-21"><img src="assets/x/x02_jolly_2026-09-21.jpg" alt="Muse's mascot Jolly: a small cream-white plush creature" loading="lazy" width="1200" height="1340"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-21</span></span><p>Muse's mascot, Jolly<a class="fn" href="#src-20" aria-label="Source 20">20</a>; Muse launched on 8 September 2026<a class="fn" href="#src-9" aria-label="Source 9">9</a>.</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102179716014993721" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>09:16–14:34</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Why Meta bet on personal AI</p><h2>Why bet on personal AI</h2><p class="ch-sub">Not crowding into coding</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>AI will take over the "have to do"; people's time will go to the "want to do", where Meta's apps are. So while others chased coding agents, Meta bet on personal ones.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>The consensus then</b>: in February 2026, Anthropic's Opus and Claude were "way ahead in coding", later with Mythos<span class="gl"> (Anthropic's frontier model, not publicly released<a class="fn" href="#src-8" aria-label="Source 8">8</a>)</span>. The industry saw coding agents as the only form that mattered and piled in. Meta didn't.</li>
+    <li><b>Wang's early pitch to Mark</b> (before the Scale deal): the two halves above. AGI shrinks "have to" to almost nothing, and Meta's products hold "want to". "On a long arc, Meta is an incredible winner."</li>
+    <li><b>Two more reasons</b>: heritage (connecting people with friends, family and interests) and business (3.5 billion daily users). Meta's natural win is consumer AI. Host: "It's not work, it's not coding, it's personal." Wang: "Yeah, exactly."</li>
+    <li><b>Method</b>: personal agents were "one of the top focuses" of the model roadmap. A spreadsheet of 100+ behaviors and capabilities, each with an eval and training; reviews targeted the weakest rows.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">Want to / have to</span><span>10:29–11:31</span></div>
+    <div class="vz">
+      <div class="split-row"><b>Today</b><div class="split-bar"><span class="have" style="flex:55 1 0">Have to</span><span class="want" style="flex:45 1 0">Want to</span></div></div>
+      <div class="split-row"><b>After AGI</b><div class="split-bar"><span class="have" style="flex:5 1 0"></span><span class="want" style="flex:95 1 0">Almost all want-to</span></div></div>
+      <p class="cap">Proportions are illustrative, not the speaker's data.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li>On launch day Wang posted that some connectors are Muse-only: Instagram (incl. DMs), Threads, Facebook and Messenger. <a class="xgo" href="https://x.com/alexandr_wang/status/2097454575540445624" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>16:50–20:15</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Mark Zuckerberg's obsession with improving products</p><h2>A patient boss</h2><p class="ch-sub">Seven months in AI time</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Personal agents sit on a knife's edge: reliably magical, it could be one of the greatest consumer products ever; unreliable, users think it's trash. Worth polishing slowly despite the doubt.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li>"Seven months in AI time" may be "like a decade in non-AI time." Wang credits Mark: it took patience, restraint and "a lot of trust in the process."</li>
+    <li>February to September, Mark hinted at personal agents on earnings calls. Yet doubt ran high; a dominant Wall Street story: Meta was "just burning all this money"; could it pull anything off in AI? The host adds the refrain: "Zuck cannot win AI."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">Knife's edge</span><span>19:46</span></div>
+    <div class="vz">
+      <div class="fork">
+        <div class="box"><b>Personal agent</b><small>Non-deterministic models; agents can break</small></div>
+        <span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>
+        <div class="fork-out">
+          <div class="box good"><i>Reliably magical</i>"the potential to be one of the greatest consumer products ever"</div>
+          <div class="box bad"><i>Unreliable</i>"they think it's trash"</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">Host</span>Cites Colossus<span class="gl"> (a long-form business magazine)</span> editor Jeremy Stern's Zuckerberg profile "Mark" (September 2026, about 15,000 words<a class="fn" href="#src-13" aria-label="Source 13">13</a>): Zuckerberg calls his skill set "very unsexy": building teams, slowly improving products for years. He can't lose control and needn't raise money, so he can keep at it.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>20:15–23:32</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">How Meta knew Muse was ready to launch</p><h2>How they knew it was ready</h2><p class="ch-sub">A numbers gate + a feel gate</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Launch took two gates: numbers, with all 100+ capabilities over the bar; and feel, hands-on use that was clearly better.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Why fear unreliability</b>: early-2026 agent products were unreliable, and "almost everyone churned out."</li>
+    <li><b>User testing</b>: rounds of newcomers starting from scratch. The premise: "it is not a chatbot, it is an agent"; most people need careful onboarding for that "graduation."</li>
+    <li><b>A/B tests</b>: the experience is "very, very sensitive to model quality": doing tasks reliably, reporting back, asking when it should.</li>
+    <li><b>Size</b>: under 200 people across model and product. Likely one of Meta's most important products this year, yet kept small.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">Launch gate</span><span>21:49–22:31</span><span class="push"><button class="mini" type="button" data-play>▶ play</button></span></div>
+    <div class="vz">
+      <p class="cap">Each row (one capability) has two bars: below <b>"launch-blocking"</b>, no launch; above <b>"good"</b>, good. 100 cells, one per row (illustrative; really 100-plus).</p>
+      <div class="gate">
+        <div class="gate-col"><small><b>Many checkpoints</b></small><div class="gate-grid" data-red="20" aria-label="80 cells pass, 20 fail"></div><p>80 green / 20 red → not enough</p></div>
+        <div class="gate-mid"><span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>Keep training</div>
+        <div class="gate-col"><small><b>Muse Spark 1.3 (specially trained)</b></small><div class="gate-grid" data-red="0" data-final aria-label="All 100 cells pass"></div><p>First all-green → numbers gate passed</p></div>
+      </div>
+      <div class="gate-legend"><span><i aria-hidden="true"></i>Pass</span><span><i class="r" aria-hidden="true"></i>Fail</span></div>
+      <div class="gate-exp"><b>Feel gate</b><span>Hands-on, clearly better than every earlier version.</span></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x03_muse_spark_1-3_2026-09-02.png" aria-label="@alexandr_wang · 2026-09-02"><img src="assets/x/x03_muse_spark_1-3_2026-09-02.png" alt="Benchmark table comparing Muse Spark 1.3 with other frontier models" loading="lazy" width="1080" height="970"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-02</span></span><p>Muse Spark is MSL's own model family (first out April 2026<a class="fn" href="#src-10" aria-label="Source 10">10</a>). Version 1.3 went public six days before Muse; its chart lists it beside OpenAI and Anthropic models.</p><a class="xgo" href="https://x.com/alexandr_wang/status/2095232916276260884" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>23:32–25:56</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Why great products need a single point of view</p><h2>One work, one author</h2><p class="ch-sub">No PM patchwork</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Muse was built as "a single work of art": one clear point of view, one cohesive experience. Nat Friedman's taste shaped what it became.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li>Products from large organizations become a "Frankenstein": every PM jams in their own thing until it blends into a smoothie, and users feel it. This is "starting to plague a lot of the AI labs."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">Patchwork vs. one author</span><span>23:23–24:25</span></div>
+    <div class="vz">
+      <div class="duo">
+        <div class="duo-col"><small>Common in big orgs</small>
+          <div class="pm-row"><span class="box">PM A</span><span class="box">PM B</span><span class="box">PM C</span><span class="box">PM D</span></div>
+          <span class="down" aria-hidden="true">↓ ↓ ↓ ↓</span>
+          <div class="box mud">Blended into a smoothie</div>
+        </div>
+        <div class="duo-col"><small>Muse</small>
+          <div class="box one">One clear point of view</div>
+          <span class="down" aria-hidden="true">↓</span>
+          <div class="box whole">One cohesive experience</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_app_store_1_2026-09-18.jpg" aria-label="@alexandr_wang · 2026-09-18"><img src="assets/x/x04_app_store_1_2026-09-18.jpg" alt="App Store Top Free chart: Muse from Meta at No. 1, ChatGPT at No. 2" loading="lazy" width="1200" height="902"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-18</span></span><p>"a week after launch, muse is now the #1 app in the App Store!" In the interview Wang only says "millions" of users.</p><a class="xgo" href="https://x.com/alexandr_wang/status/2100829303563067587" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>25:56–34:38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Making Meta cool again with memes</p><h2>Breaking through with memes</h2><p class="ch-sub">Distribution is not attention</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>AI launches arrive in a torrent; Meta's distribution alone couldn't make Muse break through. Wang posted surprising memes himself, also to make Meta cool again.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Problem</b>: a nonstop barrage of AI launches. Meta can make everyone aware of Muse, but "that's not enough" for a cultural moment.</li>
+    <li><b>Approach</b>: he writes every tweet himself; ideas distracted him even in meetings. It felt like "an engineer solving bugs again."</li>
+    <li><b>Finding</b>: throwaway tweets did best; "the internet rewards risk and it rewards surprise." He thinks it "genuinely made an impact on growth" but isn't sure they have the tracking: "hard to tell."</li>
+    <li><b>Mascot</b>: driving to work, he generated the little guy holding a briefcase (below) and saw it fits endless situations. Racy memes to sell a product: possibly a first, he says.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">What ads should say</span><span>31:40–33:43</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="Ads about yourself vs. ads about what users get">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">About you</span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">What users get</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Focus</span><span class="vs-w" role="cell">Company, brand, model, research</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">What real users got done with it</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Form</span><span class="vs-w" role="cell">"Hey, I have this thing, buy"</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Retweeting users' screenshots and wow moments</span></div>
+      </div>
+      <p class="cap">The team kept asking: <b>why would someone care?</b> People only care what it does for them. Host: Anthropic's and OpenAI's ads are "all about them."</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x05_mfw_monday_2026-09-21.jpg" aria-label="@alexandr_wang · 2026-09-21 · ~180K views"><img src="assets/x/x05_mfw_monday_2026-09-21.jpg" alt="Jolly carrying a brown briefcase" loading="lazy" width="1200" height="1340"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-21 · ~180K views</span></span><p>The one from the interview: "mfw i go into work on monday".</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102058372375994581" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <figure class="panel xpost wide">
+    <a class="xzoom" href="assets/x/x06_coatue_downloads_2026-10-10.jpg" aria-label="@UnstructuredCap · 2026-10-10 · reposted by Wang"><img src="assets/x/x06_coatue_downloads_2026-10-10.jpg" alt="Coatue chart of US cumulative downloads since launch; Muse's curve is the steepest" loading="lazy" width="975" height="552"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@UnstructuredCap</b><span>2026-10-10 · reposted by Wang</span></span><p>Coatue's chart of US cumulative downloads: Muse ~7 million in about a month; ChatGPT ~16 million by day 180.</p><a class="xgo" href="https://x.com/alexandr_wang/status/2109092758833221883" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">Context · growth data</span><ul class="lst"><li>Per Sensor Tower, Muse passed 5 million US and Canada downloads in about 22 days; ChatGPT took 56 days, Claude 492<a class="fn" href="#src-11" aria-label="Source 11">11</a>.</li><li>But Meta also advertised heavily, and downloads are not sustained use<a class="fn" href="#src-11" aria-label="Source 11">11</a>.</li><li>Since launch Wang has posted 300-plus times on X, many of them Jolly memes<a class="fn" href="#src-12" aria-label="Source 12">12</a>.</li><li>No public data shows how much the memes contributed.</li></ul></div>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>Nat, in several meetings that week: they expected to learn about Muse users, but "we're just learning a lot about Alex's mind."</li>
+  </ul></div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>34:38–38:43</span><span>sponsor 35:55–37:04 left out</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Building trust with AI agents</p><h2>The trust ladder</h2><p class="ch-sub">Hand over a little more each step</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Retention runs on a trust ladder: a small task done, then a bigger one; every step must succeed. Screenshots are the best marketing.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>The loop</b>: a small task gets done, "oh, wow"; then a bigger one. It's "this trust fall almost." Successful users are the ones brought up this ladder.</li>
+    <li><b>Screenshots</b>: a modern consumer product "has to work on the screenshot" and spread in group chats and online. Jolly in the shot says "Muse" at a glance, though that "wasn't intentional."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">Trust ladder</span><span>34:46–35:55</span></div>
+    <div class="vz">
+      <div class="stairs">
+        <div class="stair" style="--lv:1"><p class="tx"><i>Step 1</i><b>A small thing</b>Curious, try it. It works.</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:2"><p class="tx"><i>Step 2</i><b>Something bigger</b>"Oh, wow, it can do that?" It works.</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:3"><p class="tx"><i>Step 3</i><b>Bigger still</b>It works again.</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:4"><p class="tx"><i>Step 4</i><b>Full handoff</b>Give it the whole job.</p><span class="riser"></span></div>
+      </div>
+      <p class="stairs-axis">Every step must succeed for trust to climb.<span aria-hidden="true">→</span></p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">Host</span>Example: a friend left his ID on a private jet and told Muse, "I don't want to be involved in this process at all." A courier brought it to his office. Those screenshots were the best ad.</li>
+  </ul></div>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_muse_inhood_2026-09-24.jpg" aria-label="@alexandr_wang · 2026-09-24"><img src="assets/x/x07_muse_inhood_2026-09-24.jpg" alt="Jolly dressed as Robin Hood, drawing a bow" loading="lazy" width="1200" height="718"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-24</span></span><p>Muse found a user's therapist invoices in their email and filed them with the insurer; Wang reposted it with this "Robin Hood Jolly".</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102972630425067845" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_app_store_review_2026-09-10.jpg" aria-label="@alexandr_wang · 2026-09-10"><img src="assets/x/x08_app_store_review_2026-09-10.jpg" alt="Screenshot of a five-star App Store review" loading="lazy" width="1200" height="1058"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-10</span></span><p>An App Store review Wang shared: "For the first time in a long time I think they've made an excellent product."</p><a class="xgo" href="https://x.com/alexandr_wang/status/2098152822886039780" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>38:43–45:22</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">The future of human ambition</p><h2>Human ambition</h2><p class="ch-sub">An escalator of agency</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Wang sees personal agents as the long-term form: they give adults back the agency life wore away, so people keep dreaming, achieving, dreaming bigger.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>His own use</b>: many workflows; he treats it "like a second brain."</li>
+    <li><b>Humans and AI</b>: the fear case is AI above us, humans following. He believes otherwise: a personal agent is the bridge to people's wants and dreams.</li>
+    <li><b>"The adulthood they dreamed of in childhood"</b>: kids dream of being astronauts or saving the planet; school and work drain it away. "We're all zombies": we lost our agency and ambition.</li>
+    <li>He imagines a world with everyone's agency switched on: diverse, and "crazy in a very good way."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">Agency curve</span><span>Illustrative</span></div>
+    <div class="vz curve">
+      <svg viewBox="0 0 640 230" role="img" aria-label="Illustrative agency curve: the grey line starts high in childhood and falls in adulthood; the solid line climbs step by step">
+        <line class="ax" x1="40" y1="200" x2="620" y2="200"/><line class="ax" x1="40" y1="20" x2="40" y2="200"/>
+        <text x="44" y="218">Childhood</text><text x="230" y="218">School · work</text><text x="560" y="218">Lifetime</text>
+        <text x="0" y="16" transform="rotate(0)">Agency</text>
+        <path class="grey" d="M40 70 C 140 70, 200 80, 260 150 S 420 175, 620 178"/>
+        <path class="main" d="M40 70 H 150 V 58 H 260 V 46 H 370 V 34 H 480 V 22 H 620"/>
+        <text class="lg" x="420" y="168">Zombie years</text>
+        <text class="lb" x="430" y="18">Agency escalator</text>
+      </svg>
+      <div class="curve-key"><span><i aria-hidden="true"></i>With a personal agent: dream → achieve → dream bigger</span><span><i class="g" aria-hidden="true"></i>Common today: dreams worn away</span></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost wide">
+    <a class="xzoom" href="assets/x/x09_why_muse_cover_2026-09-25.jpg" aria-label="@alexandr_wang · 2026-09-25 · ~5.61M views"><img src="assets/x/x09_why_muse_cover_2026-09-25.jpg" alt="Cover art of the essay Why We’re Building Muse: people and a dog running across a grassy hillside" loading="lazy" width="1200" height="480"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2026-09-25 · ~5.61M views</span></span><p>The essay the host quotes: imagine everyone with "a second mind beyond their own"; the world has been shaped by "the small number of fanatics".</p><a class="xgo" href="https://x.com/alexandr_wang/status/2103551714536439951" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>45:22–55:19</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">The call from Mark Zuckerberg · Leaving Scale AI</p><h2>The call, and a weird deal</h2><p class="ch-sub">Leaving Scale, joining Meta</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>After Llama 4 disappointed, Zuckerberg first asked for advice. Five to six weeks later, a weird deal: Meta owns 49% of Scale, Scale continues, Wang and a few people join Meta.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>How they met</b>: Meta executive Alex Schultz<span class="gl"> (now Meta's chief data officer<a class="fn" href="#src-16" aria-label="Source 16">16</a>)</span> introduced them around 2021–22; the first meeting took a year to set up, then they talked every six months or so.</li>
+    <li><b>Trigger</b>: Llama 4<span class="gl"> (Meta's open model of April 2025<a class="fn" href="#src-14" aria-label="Source 14">14</a>)</span> "was not on the trajectory that Meta wanted", while AI grew critical to Meta. The first calls just asked, "What do you think we should be doing?"</li>
+    <li><b>At first a tie-up made no sense</b>: buying Instagram and WhatsApp had product logic; Scale sells to enterprises and governments. Only when they talked numbers was it clear Mark wanted talent.</li>
+    <li><b>Why yes</b>: Scale was his life's work for nine years; he wrestled for weeks. What won him over: a deal good for all, and Meta's AI "looked like damaged goods", so he could set principles and culture from scratch (host: "a refounding of the lab").</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">Deal structure</span><span>52:13–52:56</span></div>
+    <div class="vz">
+      <div class="deal">
+        <div class="box"><b>Meta</b><small>MSL</small></div>
+        <div style="display:grid;gap:10px">
+          <div class="lnk"><span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>Invests, owns 49%</div>
+          <div class="lnk back"><span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>Wang and a few people join</div>
+        </div>
+        <div class="box"><b>Scale AI</b><small>Continues</small></div>
+      </div>
+      <div class="deal-time"><span>First call</span><i aria-hidden="true"></i><span>Deal announced · <b>5–6 weeks</b></span></div>
+      <p class="cap">Wang calls it a win for every party, Scale's shareholders included. Meta reportedly paid about $14.3 billion for a 49% non-voting stake<a class="fn" href="#src-15" aria-label="Source 15">15</a>.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x10_scale_note_2025-06-13.png" aria-label="@alexandr_wang · 2025-06-12"><img src="assets/x/x10_scale_note_2025-06-13.png" alt="Screenshot of Wang's full letter to Scale staff, titled Gratitude" loading="lazy" width="1094" height="990"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2025-06-12</span></span><p>His letter to Scale staff on deal day: he would join Meta with a few colleagues and stay on Scale's board.</p><a class="xgo" href="https://x.com/alexandr_wang/status/1933328165306577316" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>55:19–65:19</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Rebuilding Meta's AI lab · From founder to coach</p><h2>From auteur to coach</h2><p class="ch-sub">Rebuilding the lab</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>At Scale he was "the auteur", deciding everything. At MSL he is "almost like a coach": set direction, find talent, build the environment, let top people do their best work.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Team principles</b>: small, very flat, highly technical, very high talent density, which Elon has proven, he says. It became a "tent pole" of MSL's strategy.</li>
+    <li><b>Mark's view of risk</b>: failure doesn't matter; what matters is "when you win, how big you win." Otherwise Meta could become slow and bureaucratic, more like Google.</li>
+    <li><b>Why talent came</b>: a lab from scratch, a clear direction, Meta's compute and distribution. The pay looked insane, but with OpenAI and Anthropic stock up, for many it was "kind of net neutral."</li>
+    <li><b>Research needs room</b>: no one knows the models' limits; research is trial and error, not an operations process. The few winners pay for everything.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">Auteur → coach</span><span>58:13–63:47</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="How Wang managed at Scale vs. at MSL">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">SCALE<small>auteur</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">MSL<small>coach</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Creed</span><span class="vs-w" role="cell">A good founder can do every job</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Job one: hire the best people in every field</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">His role</span><span class="vs-w" role="cell">His point of view in everything</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Set the North Star, spot talent, provide environment and resources</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Cost / reason</span><span class="vs-w" role="cell">Cost: he became the bottleneck</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Reason: so little time; he is not an AI researcher or a product designer</span></div>
+      </div>
+      <p class="cap">For a first-time founder, Wang still recommends the left column.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_msl_hires_2025-07-01.jpg" aria-label="@alexandr_wang · 2025-06-30"><img src="assets/x/x11_msl_hires_2025-07-01.jpg" alt="List of researchers joining MSL on 2025-07-01, with their backgrounds" loading="lazy" width="1200" height="1732"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@alexandr_wang</b><span>2025-06-30</span></span><p>On day one as chief AI officer, Wang listed researchers joining with him, several from OpenAI, Google DeepMind and Anthropic.</p><a class="xgo" href="https://x.com/alexandr_wang/status/1939867404252979291" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>65:19–69:21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Diamond mining vs. building skyscrapers</p><h2>Mining diamonds or building skyscrapers</h2><p class="ch-sub">First, look at the payoff</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Management follows the payoff distribution. Power law: "diamond mining", let people try things. Linear: "building skyscrapers", squeeze every ounce of efficiency. Scale was skyscrapers; MSL is diamonds.</p></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">Two payoff distributions</span><span>Illustrative</span></div>
+    <div class="vz">
+      <div class="dist">
+        <div class="dist-col"><b>Diamond mining</b><small>Most attempts are useless; a few are worth a million times more than everything else</small>
+          <div class="bars" aria-hidden="true"><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:4%"></span><span style="--h:2%"></span><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:5%"></span><span style="--h:2%"></span><span class="top" style="--h:100%"></span><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:4%"></span><span style="--h:2%"></span><span style="--h:3%"></span><span style="--h:6%"></span><span style="--h:2%"></span><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:4%"></span><span style="--h:2%"></span></div>
+          <p class="cap">Approach: let everyone try their crazy ideas; nurture the promising ones.</p>
+          <div class="dist-tags"><span class="me">MSL</span><span>VC</span></div></div>
+        <div class="dist-col"><b>Building skyscrapers</b><small>The payoff is linear</small>
+          <div class="bars" aria-hidden="true"><span style="--h:46%"></span><span style="--h:48%"></span><span style="--h:47%"></span><span style="--h:50%"></span><span style="--h:49%"></span><span style="--h:51%"></span><span style="--h:50%"></span><span style="--h:52%"></span><span style="--h:51%"></span><span style="--h:53%"></span><span style="--h:52%"></span><span style="--h:54%"></span><span style="--h:53%"></span><span style="--h:55%"></span><span style="--h:54%"></span><span style="--h:56%"></span><span style="--h:55%"></span><span style="--h:57%"></span><span style="--h:56%"></span><span style="--h:58%"></span></div>
+          <p class="cap">Approach: process; 2% better here, 1% there, half a percent more.</p>
+          <div class="dist-tags"><span class="me">Scale</span><span>Data annotation</span><span>Amazon Prime delivery</span></div></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>19th birthday</b>: January of his MIT freshman year, on a winter internship at quant trading firm Hudson River Trading (HRT)<a class="fn" href="#src-19" aria-label="Source 19">19</a>. At the table, 10–12 people, mostly Harvard and MIT students and competition friends: Jeffrey Yan later founded Hyperliquid (an on-chain exchange), Scott Wu Cognition (maker of AI engineer Devin), Jesse Zhang Decagon (enterprise AI customer service), and Vicky Yee<sup class="pip" tabindex="0" title="Hard to hear in the audio; reconstructed from two transcripts" aria-label="Hard to hear in the audio; reconstructed from two transcripts">◐</sup> became an Anthropic researcher.</li>
+    <li>He says HRT has under 1,000 people and about $11 billion revenue in Q2 2026. His advice to its founder: "All the interns get seed checks."</li>
+  </ul></div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>69:21–71:53</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Why Alexandr has more than 200 direct reports</p><h2>200+ direct reports</h2><p class="ch-sub">Anti-bureaucracy</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>200+ direct reports is an "anti-bureaucracy" statement: pod tech leads make technical calls, and there are no people-management layers.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>TBD</b><span class="gl"> (the MSL group building frontier models<a class="fn" href="#src-17" aria-label="Source 17">17</a>)</span>: its researchers all report directly to him. "TBD is like literally anti-bureaucracy": you've proven yourselves; no micromanaging needed.</li>
+    <li><b>Technical leadership remains</b>: pods, whose tech leads break ties on technical decisions.</li>
+    <li><b>Many group decisions</b>: they hear every view and agree on a path together.</li>
+    <li>He admits he isn't the best manager to 200-plus people. But they don't need managers; they need a great environment and "the room to cook."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">Two org charts</span><span>70:30–71:42</span></div>
+    <div class="vz">
+      <div class="org">
+        <div class="org-col"><small>Typical hierarchy</small>
+          <span class="box lead">Lead</span><span class="v" aria-hidden="true"></span>
+          <div class="lvl"><span class="box">Manager</span><span class="box">Manager</span></div><span class="v" aria-hidden="true"></span>
+          <div class="lvl"><span class="box">Manager</span><span class="box">Manager</span><span class="box">Manager</span></div><span class="v" aria-hidden="true"></span>
+          <div class="lvl"><span class="box">Researchers ×N</span></div>
+        </div>
+        <div class="org-col"><small>TBD</small>
+          <span class="box lead">Wang</span><span class="v" aria-hidden="true"></span>
+          <div class="dots" data-n="200" data-pods="5,13;40,7;90,9;130,6;170,8" aria-label="200+ researchers in one flat layer, some grouped into pods"></div>
+          <p class="org-note">200+ researchers report directly; dashed box = pod; TL = tech lead, who makes technical calls but doesn't manage people.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">Host</span>Closing summary: "so maybe not a coach," more like "the steward of a great environment." Wang: "Yeah, exactly."</li>
+  </ul></div>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">S</div><div><p class="en-line">Summary</p><h2>Summary</h2></div></div></header>
+  <p class="sub-h"><b>4 takeaways from the conversation</b>our synthesis</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>The bet</b>: others crowded into coding agents; Meta bet on personal ones: AI takes the "have to", and time flows to the "want to", where Meta lives.<span class="chips"><a class="chip" href="#ch-02"><i>02</i>The bet</a></span></li>
+    <li><b>Polish</b>: a prototype in a week or two, then seven months to make it reliable; launch only when all 100+ capabilities cleared the bar; under 200 people, Nat Friedman's taste setting the tone.<span class="chips"><a class="chip" href="#ch-01"><i>01</i>7 months</a><a class="chip" href="#ch-04"><i>04</i>Launch</a><a class="chip" href="#ch-05"><i>05</i>One author</a></span></li>
+    <li><b>Breakthrough</b>: Wang posted memes himself and reposted user screenshots; users climbed a "trust ladder", handing Muse ever bigger jobs.<span class="chips"><a class="chip" href="#ch-06"><i>06</i>Memes</a><a class="chip" href="#ch-07"><i>07</i>Trust</a></span></li>
+    <li><b>Organization</b>: Scale was skyscrapers, MSL is diamond mining: small and flat, 200+ direct reports, and Wang went from "auteur" to "steward of a great environment".<span class="chips"><a class="chip" href="#ch-10"><i>10</i>Coach</a><a class="chip" href="#ch-11"><i>11</i>Diamonds</a><a class="chip" href="#ch-12"><i>12</i>Flat</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Wang's close</b>: they don't need managers; they need a great environment. They're all brilliant; "they just need the room to cook."</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">G</div><div><p class="en-line">Glossary</p><h2>Glossary</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>15 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th><th scope="col">Where</th></tr></thead>
+      <tbody>
+        <tr><td>MSL</td><td>Meta Superintelligence Labs; founded June 2025, led by Wang, with Nat Friedman heading product</td><td>00</td></tr>
+        <tr><td>Personal superintelligence</td><td>Powerful AI that makes everyone's life better; title of Mark's open letter of 30 July 2025</td><td>00</td></tr>
+        <tr><td>Muse</td><td>MSL's personal agent product; an agent, not a chatbot</td><td>01 04</td></tr>
+        <tr><td>OpenClaw</td><td>An open-source personal agent that runs on your own computer and takes jobs via chat apps; created by Peter Steinberger, it took off in late January 2026, and the craze later faded</td><td>00 01</td></tr>
+        <tr><td>Personal agent</td><td>An agent that handles everyday tasks for you; it can read your email and photos and look things up on its own</td><td>00</td></tr>
+        <tr><td>Eval</td><td>A test for one capability; Muse has an eval for each of its 100+ capabilities</td><td>02 04</td></tr>
+        <tr><td>Checkpoint</td><td>A saved version of the model during training</td><td>04</td></tr>
+        <tr><td>Launch-blocking</td><td>The bar below which a model can't ship</td><td>04</td></tr>
+        <tr><td>Muse Spark 1.3</td><td>A version of Muse Spark, MSL's own model family (public 2026-09-02); a specially trained version was the first checkpoint green on every row</td><td>04</td></tr>
+        <tr><td>Jolly / Jollybot</td><td>Muse's mascot, star of the memes</td><td>06 07</td></tr>
+        <tr><td>Trust fall</td><td>Here: handing over bigger and bigger tasks, step by step</td><td>07</td></tr>
+        <tr><td>TBD</td><td>TBD Lab, the MSL research group building frontier models; its members report directly to Wang</td><td>12</td></tr>
+        <tr><td>Pod</td><td>A small group within TBD; its tech lead makes the technical calls</td><td>12</td></tr>
+        <tr><td>Power law</td><td>A few outcomes produce almost all of the payoff</td><td>11</td></tr>
+        <tr><td>HRT</td><td>Hudson River Trading, a quantitative proprietary trading firm where Wang interned as a freshman</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">&#9680;</span>= Hard to hear in the audio; reconstructed from two transcripts</div>
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>Further thinking = interpretation and extension based on the conversation, for reference</div>
+  <section class="credit" id="credits" aria-label="Credits">
+    <h3>Credits</h3>
+    <p><b>Interview</b>: guest Alexandr Wang (<a href="https://x.com/alexandr_wang" rel="noopener">@alexandr_wang</a>), host David Senra (<a href="https://x.com/davidsenra" rel="noopener">@davidsenra</a>), <a href="https://x.com/davidsenra/status/2109283692439105997" rel="noopener">posted by the host on X</a> on 2026-10-11. Personal study notes, no transcript, sponsor reads left out; items tagged Host are David Senra's words; video frame © its owners.</p>
+    <p><b>Visual design</b>: visual style inspired by, borrowing from, and partly adapting the Hermes / LENS design language of <a href="https://nousresearch.com" rel="noopener">Nous Research</a>, from its open-source component library <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a> (MIT License), adapting its colours, arc-border animation, scan-line effect, and background texture. Licence details: <a href="NOTICE.txt">NOTICE.txt</a>.</p>
+    <p lang="en">This page is not an official Nous Research work. It is not affiliated with or endorsed by Nous Research.</p>
+    <p><b>Fonts</b>: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC; open-source (SIL Open Font License 1.1), via Google Fonts.</p>
+    <p>The guest, host or rights holders who want anything on this page changed or removed: contact <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a> on X.</p>
+    <p><b>Context</b>: cards and boxes tagged Context, and the notes in parentheses on people and terms, come from the public sources and X posts below, not from the interview. X post screenshots © their authors.</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://www.cnbc.com/2025/06/30/mark-zuckerberg-creating-meta-superintelligence-labs-read-the-memo.html" rel="noopener">CNBC · Zuckerberg's internal memo creating MSL · 2025-06-30</a></li>
+      <li id="src-2"><a href="https://siliconangle.com/2025/07/30/zuckerberg-outlines-metas-vision-ai-superintelligence/" rel="noopener">SiliconANGLE · Open letter Personal Superintelligence · 2025-07-30</a></li>
+      <li id="src-3"><a href="https://www.cnbc.com/2021/11/03/microsoft-github-ceo-nat-friedman-replaced-by-thomas-dohmke.html" rel="noopener">CNBC · Nat Friedman steps down as GitHub CEO · 2021-11-03</a></li>
+      <li id="src-4"><a href="https://techcrunch.com/2026/09/22/meta-admits-muses-likeness-to-openclaw-isnt-a-coincidence/" rel="noopener">TechCrunch · Muse and OpenClaw; Friedman as MSL head of product · 2026-09-22</a></li>
+      <li id="src-5"><a href="https://openclaw.ai/blog/introducing-openclaw" rel="noopener">OpenClaw blog · Introducing OpenClaw · 2026-01-29</a></li>
+      <li id="src-6"><a href="https://steipete.me/about" rel="noopener">Peter Steinberger's website</a> · <a href="https://steipete.me/posts/2026/openclaw" rel="noopener">Note on joining OpenAI · 2026-02</a></li>
+      <li id="src-7"><a href="https://www.anthropic.com/news/claude-opus-4-5" rel="noopener">Anthropic · Claude Opus 4.5 · 2025-11-24</a></li>
+      <li id="src-8"><a href="https://www.anthropic.com/glasswing" rel="noopener">Anthropic · Project Glasswing (Mythos Preview) · 2026-04-07</a></li>
+      <li id="src-9"><a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/" rel="noopener">Meta press release · Introducing Muse · 2026-09-08</a></li>
+      <li id="src-10"><a href="https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/" rel="noopener">Meta press release · Introducing Muse Spark · 2026-04-08</a></li>
+      <li id="src-11"><a href="https://finance.yahoo.com/technology/article/metas-muse-tops-5-million-downloads-faster-than-chatgpt-claude-161145561.html" rel="noopener">Yahoo Finance · Sensor Tower: Muse passes 5 million downloads · 2026-09-30</a></li>
+      <li id="src-12"><a href="https://e.vnexpress.net/news/tech/personalities/how-mit-dropout-turned-billionaire-alexandr-wang-turned-meta-s-muse-into-an-app-store-hit-5128683.html" rel="noopener">VnExpress International · Wang's posting blitz for Muse · 2026-10-06</a></li>
+      <li id="src-13"><a href="https://colossus.com/article/mark-zuckerberg-profile/" rel="noopener">Colossus · Jeremy Stern, "Mark" · 2026-09</a></li>
+      <li id="src-14"><a href="https://ai.meta.com/blog/llama-4-multimodal-intelligence/" rel="noopener">Meta AI · Llama 4 release · 2025-04-05</a> · <a href="https://techcrunch.com/2025/04/06/metas-benchmarks-for-its-new-ai-models-are-a-bit-misleading/" rel="noopener">TechCrunch · Benchmark controversy · 2025-04-06</a></li>
+      <li id="src-15"><a href="https://fortune.com/2025/06/13/why-meta-hired-scale-ai-ceo-alexandr-wang/" rel="noopener">Fortune · Meta invests in Scale AI · 2025-06-13</a></li>
+      <li id="src-16"><a href="https://www.adweek.com/brand-marketing/meta-names-denise-moreno-cmo-as-alex-schultz-becomes-first-chief-data-officer/" rel="noopener">Adweek · Alex Schultz becomes chief data officer · 2026-07-01</a></li>
+      <li id="src-17"><a href="https://techcrunch.com/2025/08/19/meta-is-shaking-up-its-ai-org-again/" rel="noopener">TechCrunch · MSL reorganization and TBD Lab · 2025-08-19</a></li>
+      <li id="src-18"><a href="https://www.davidsenra.com/" rel="noopener">David Senra's website</a></li>
+      <li id="src-19"><a href="https://www.hudsonrivertrading.com/about/" rel="noopener">Hudson River Trading · About</a></li>
+      <li id="src-20"><a href="https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse/" rel="noopener">TechCrunch · New Muse features and the mascot Jolly at Connect · 2026-09-23</a></li>
+    </ol>
+    <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
+  </section>
+</footer>
+</main>
+
+<div class="sv" id="sv" hidden role="dialog" aria-modal="true" aria-label="Image viewer" tabindex="-1">
+  <div class="sv-backdrop"></div>
+  <figure class="sv-fig"><img alt=""><figcaption class="sv-cap"><b class="sv-id"></b><span class="sv-time"></span><span class="sv-n"></span><span class="sv-hint sv-hint-key">← → to switch · click left / right half · Esc to close</span><span class="sv-hint sv-hint-touch">Swipe to switch · tap backdrop to close</span></figcaption></figure>
+  <button class="sv-btn sv-prev" type="button" aria-label="Previous">‹</button>
+  <button class="sv-btn sv-next" type="button" aria-label="Next">›</button>
+  <button class="sv-close" type="button" aria-label="Close">×</button>
+</div>
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* back to panorama */
+$('#toc-fab').addEventListener('click',function(e){e.preventDefault();$('#contents').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});try{history.replaceState(null,'','#contents')}catch(_){}});
+
+/* rail scroll spy */
+(function(){
+  var links={};$$('#rail a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var secs=Object.keys(links).map(function(id){return document.getElementById(id)}).filter(Boolean),tick=false;
+  function upd(){tick=false;var line=innerHeight*.3,cur=null;
+    secs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s.id});
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)for(var j=secs.length-1;j>=0;j--){if(secs[j].getBoundingClientRect().top<innerHeight){cur=secs[j].id;break}}
+    Object.keys(links).forEach(function(k){links[k].classList.toggle('on',k===cur);if(k===cur)links[k].setAttribute('aria-current','true');else links[k].removeAttribute('aria-current')});}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener('resize',upd);upd();
+})();
+
+/* uncertain-hearing marker: tap shows a fixed toast (title covers mouse hover) */
+(function(){var t=$('#pip-toast'),h;
+  $$('.pip').forEach(function(p){p.addEventListener('click',function(){t.hidden=false;clearTimeout(h);h=setTimeout(function(){t.hidden=true},2600)})});})();
+
+/* 04 · launch gate: grids drawn from data, play turns the 20 red rows green one by one */
+(function(){var r=$('#v04');if(!r)return;var tm=[];
+  function fill(g){var n=+g.getAttribute('data-red');g.innerHTML='';for(var i=0;i<100;i++){var s=document.createElement('span');if(i>=100-n)s.className='r';g.appendChild(s)}}
+  $$('[data-red]',r).forEach(fill);
+  $('[data-play]',r).addEventListener('click',function(){tm.forEach(clearTimeout);tm=[];var g=$('[data-final]',r);g.setAttribute('data-red','20');fill(g);
+    var reds=$$('span.r',g);reds.forEach(function(s,i){tm.push(setTimeout(function(){s.className=''},reduce?0:250+i*90))});
+    tm.push(setTimeout(function(){g.setAttribute('data-red','0')},reduce?0:300+reds.length*90))});
+})();
+
+/* 12 · org chart dots: n researchers, some grouped into pods ("start,size;...") */
+$$('.dots[data-n]').forEach(function(d){var n=+d.getAttribute('data-n'),pods={};
+  d.getAttribute('data-pods').split(';').forEach(function(p){var a=p.split(',');pods[+a[0]]=+a[1]});
+  for(var i=0;i<n;){if(pods[i]){var g=document.createElement('span');g.className='pod';g.innerHTML='<em>TL</em>';for(var k=0;k<pods[i];k++)g.appendChild(document.createElement('span'));d.appendChild(g);i+=pods[i]}
+    else{d.appendChild(document.createElement('span'));i++}}});
+
+/* in-page image viewer for X images: all a.xzoom on the page, arrow keys / swipe / Esc */
+(function(){var sv=$('#sv');if(!sv)return;
+  var img=sv.querySelector('img'),idE=sv.querySelector('.sv-id'),tmE=sv.querySelector('.sv-time'),nE=sv.querySelector('.sv-n'),
+      prev=sv.querySelector('.sv-prev'),next=sv.querySelector('.sv-next'),list=$$('a.xzoom'),i=0,opener=null,x0=null;
+  function render(){var a=list[i],lab=(a.getAttribute('aria-label')||'').split(' · ');
+    img.src=a.getAttribute('href');img.alt=a.querySelector('img').alt||'';idE.textContent=lab[0]||'';tmE.textContent=lab.slice(1).join(' · ');
+    nE.textContent=(i+1)+' / '+list.length;prev.disabled=i===0;next.disabled=i===list.length-1}
+  function open(k,a){i=k;opener=a;render();sv.hidden=false;document.documentElement.classList.add('sv-open');sv.focus()}
+  function close(){sv.hidden=true;document.documentElement.classList.remove('sv-open');img.removeAttribute('src');if(opener)opener.focus()}
+  function go(d){var k=i+d;if(k<0||k>=list.length)return;i=k;render()}
+  list.forEach(function(a,k){a.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();open(k,a)})});
+  prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});
+  sv.querySelector('.sv-close').addEventListener('click',close);sv.querySelector('.sv-backdrop').addEventListener('click',close);
+  img.addEventListener('click',function(e){var r=img.getBoundingClientRect();go(e.clientX<r.left+r.width/2?-1:1)});
+  document.addEventListener('keydown',function(e){if(sv.hidden)return;var k=e.key;
+    if(k==='Escape'){e.preventDefault();close()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();go(-1)}
+    else if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();go(1)}
+    else if(k==='Tab'){var f=$$('button:not([disabled])',sv),fi=f.indexOf(document.activeElement);
+      if(e.shiftKey&&fi<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(fi<0||fi===f.length-1)){e.preventDefault();f[0].focus()}}});
+  sv.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  sv.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(dx<0?1:-1);x0=null});
+})();
+
+/* language switch keeps the current section */
+$$('#lang-switch a:not([aria-current])').forEach(function(a){
+  a.addEventListener('click',function(e){if(location.hash){e.preventDefault();location.href=a.getAttribute('href')+location.hash}});
+});
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Atlas</title>
+<meta name="description" content="What atlas.haoli-agi.com records about visits, and what it does not. 本站记录什么、不记录什么。">
+<link rel="canonical" href="https://atlas.haoli-agi.com/privacy">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#041c1c;--fg:#ffe6cb;--mute:color-mix(in srgb,#ffe6cb 64%,transparent);--line:color-mix(in srgb,#ffe6cb 18%,transparent)}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.7 'Noto Sans SC',system-ui,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:56px 16px 72px}
+a{color:var(--fg)}
+.top{font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.16em}
+.top a{text-decoration:none}
+h1{margin:20px 0 6px;font:700 clamp(28px,6vw,40px)/1.15 'Unbounded',sans-serif}
+h2{margin:28px 0 6px;font:700 12px/1.4 'JetBrains Mono',monospace;letter-spacing:.12em;color:var(--mute)}
+section+section{margin-top:56px;padding-top:32px;border-top:1px solid var(--line)}
+ul{padding-left:1.2em;margin:6px 0}
+li{margin:4px 0}
+.date{font:12px/1.5 'JetBrains Mono',monospace;color:var(--mute)}
+</style>
+<script src="/assets/atlas.js" defer data-page="privacy" data-v="2026-10-09"></script>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><a href="/">← ATLAS</a> · <a href="#zh">中文</a></div>
+
+  <section id="en" lang="en">
+    <h1>Privacy note</h1>
+    <p class="date">Last updated 2026-10-09</p>
+    <p>atlas.haoli-agi.com is a personal, non-commercial collection of study notes. To learn which notes help and which parts people actually read, the site keeps its own reading statistics. There is no cookie banner because the site sets no cookies.</p>
+    <h2>WHAT IS RECORDED</h2>
+    <ul>
+      <li>Each page visit: time, page address (without its query string), language version, the address you came from (without its query string), and campaign tags in the link.</li>
+      <li>Approximate location and network, derived by Cloudflare from each request: country, region, city, approximate city-level coordinates, time zone, network operator, connection round-trip time, and the Cloudflare data centre and HTTP version that served the request. The IP address itself is not stored.</li>
+      <li>Device and browser: the browser identification string (user agent) and the browser and system type derived from it, screen and window size, pixel density, touch or mouse pointer, device memory and processor count as reported by the browser, connection type and data-saver setting, language and time-zone settings, colour-scheme and motion preferences, and page-load performance.</li>
+      <li>Reading on the page: which sections and figures are on screen and for how long, how far you scroll, each click (the element, its text and its position on the page), the first 120 characters and the length of text you copy, use of the slide viewer, language switch and glossary, navigation keys you press (key names only), jumps within the page, when the tab is hidden, left idle, resized or printed, and script errors.</li>
+    </ul>
+    <h2>WHAT IS NOT RECORDED</h2>
+    <ul>
+      <li>No cookies, no advertising or third-party trackers, no session recording, and nothing you type.</li>
+      <li>No IP addresses. To count daily visitors, the server combines the IP address and browser string with a random value that is deleted after one day, and keeps only the one-way hash.</li>
+    </ul>
+    <h2>RETURN VISITS</h2>
+    <p>To recognise return visits, the site keeps one random ID in your browser's local storage. It contains nothing about you. It is not stored for visitors from the EU/EEA, the UK or Switzerland, or when your browser sends Global Privacy Control or Do Not Track. Clearing this site's data removes it.</p>
+    <h2>STORAGE</h2>
+    <p>The data is stored in Cloudflare D1. Cloudflare also hosts the site and processes requests under its own policies. Raw events are deleted after 24 months. The data is not sold or shared.</p>
+    <h2>CONTACT</h2>
+    <p>On X: <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a></p>
+  </section>
+
+  <section id="zh" lang="zh-CN">
+    <h1>隐私说明</h1>
+    <p class="date">更新于 2026-10-09</p>
+    <p>atlas.haoli-agi.com 是一个个人、非商业的学习笔记合集。为了知道哪些笔记有用、读者实际读了哪些部分，本站自建了阅读统计。本站不使用 cookie，所以没有 cookie 弹窗。</p>
+    <h2>记录的内容</h2>
+    <ul>
+      <li>每次访问：时间、页面地址（不含查询参数）、语言版本、来源地址（不含查询参数），以及链接里的推广标记。</li>
+      <li>大致位置和网络：由 Cloudflare 根据请求得出的国家、地区、城市、城市级大致坐标、时区、网络运营商、网络往返时间，以及处理请求的 Cloudflare 数据中心和 HTTP 版本。IP 地址本身不保存。</li>
+      <li>设备和浏览器：浏览器标识字符串（User-Agent）以及由此得出的浏览器和系统类型、屏幕和窗口尺寸、像素密度、触屏或鼠标、浏览器报告的设备内存和处理器核数、网络连接类型和省流量设置、语言和时区设置、深浅色和减少动效偏好、页面加载性能。</li>
+      <li>页面上的阅读行为：哪些章节和图表出现在屏幕上、停留多久，滚动到哪里，每次点击（点了什么、上面的文字、在页面上的位置），复制文字的前 120 个字符和长度，幻灯片查看器、语言切换和术语表的使用，按下的导航键（只记键名），页内跳转，标签页切走、闲置、窗口缩放或打印，以及脚本错误。</li>
+    </ul>
+    <h2>不记录的内容</h2>
+    <ul>
+      <li>不用 cookie，不用广告或第三方追踪，不录屏，不记录你输入的任何内容。</li>
+      <li>不保存 IP 地址。统计每日访客时，服务器把 IP 地址和浏览器标识与一个随机值合并，只保留单向哈希结果；这个随机值一天后删除。</li>
+    </ul>
+    <h2>回访识别</h2>
+    <p>为了识别回访，本站在浏览器本地存储里保存一个随机 ID，其中不含任何个人信息。来自欧盟/欧洲经济区、英国、瑞士的访客，以及浏览器发送“全球隐私控制（GPC）”或“请勿追踪（DNT）”信号的访客，不保存这个 ID。清除本站的网站数据即可删除它。</p>
+    <h2>存储</h2>
+    <p>数据存放在 Cloudflare D1。网站也由 Cloudflare 托管，Cloudflare 按其自身政策处理请求。原始事件 24 个月后删除。数据不出售、不分享。</p>
+    <h2>联系</h2>
+    <p>X：<a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a></p>
+  </section>
+</main>
+</body>
+</html>

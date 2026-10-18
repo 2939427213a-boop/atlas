@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "atlas",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-05-22",
+  "account_id": "6eea0c0db7f7abff29599f723cf4c6c0",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": true, "logs": { "invocation_logs": false } },
+  "routes": [{ "pattern": "atlas.haoli-agi.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/admin", "/admin/*"],
+    "not_found_handling": "404-page"
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "atlas", "database_id": "886baac0-6078-49fb-931c-8293b83810aa", "migrations_dir": "migrations" }
+  ],
+  "triggers": { "crons": ["17 9 * * *"] },
+  "vars": {
+    "ACCESS_ISSUER": "https://orange-smoke-772b.cloudflareaccess.com",
+    "ACCESS_AUD": "7393f5520870396487084a387ce8f0250312a4aefe199e5141c452a9ae517d4d",
+    "DAILY_BEACON_CAP": "10000",
+    "DAILY_BYTE_CAP": "30000000",
+    "RETENTION_DAYS": "730"
+  }
+}

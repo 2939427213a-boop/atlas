@@ -1,0 +1,1606 @@
+<!doctype html>
+<!--
+  Alex Zhang on Recursive Language Models · Latent Space · 2026-10-02 — Chinese study notes.
+  Visual style inspired by and adapted from Nous Research's Hermes / LENS design language
+  (@nous-research/ui, MIT License). Not affiliated with Nous Research. See NOTICE.txt.
+  Fonts: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC (SIL OFL 1.1, via Google Fonts).
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex Zhang on Recursive Language Models · Latent Space</title>
+<meta name="description" content="Latent Space 访谈 Alex Zhang 的学习笔记：主流 harness 为什么大同小异，Recursive Language Models 怎样把上下文放进代码环境、换来组合泛化，agent swarm 的浪费和收敛，以及学术界该押什么样的怪注。">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Atlas">
+<meta property="og:title" content="Alex Zhang：模型够聪明了，缺的是更好的 harness · 学习笔记">
+<meta property="og:description" content="Latent Space 访谈 Alex Zhang 的学习笔记：主流 harness 为什么大同小异，Recursive Language Models 怎样把上下文放进代码环境、换来组合泛化，agent swarm 的浪费和收敛，以及学术界该押什么样的怪注。">
+<meta property="og:url" content="https://atlas.haoli-agi.com/talks/2026-10-latent-space-alex-zhang/zh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://atlas.haoli-agi.com/talks/2026-10-latent-space-alex-zhang/assets/cover.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="访谈画面：Alex Zhang 坐在麦克风前">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@steamedbun1111">
+<link rel="canonical" href="https://atlas.haoli-agi.com/talks/2026-10-latent-space-alex-zhang/zh">
+<link rel="alternate" hreflang="en" href="https://atlas.haoli-agi.com/talks/2026-10-latent-space-alex-zhang/">
+<link rel="alternate" hreflang="zh-CN" href="https://atlas.haoli-agi.com/talks/2026-10-latent-space-alex-zhang/zh">
+<link rel="alternate" hreflang="x-default" href="https://atlas.haoli-agi.com/talks/2026-10-latent-space-alex-zhang/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ===== tokens (teal dark only) ===== */
+:root{
+  --background-base:#041c1c;--background:#041c1c;--midground-base:#ffe6cb;--midground:#ffe6cb;
+  --warm-glow:rgba(255,189,56,.35);--amber:#f2b544;--red:#ff7a6b;
+  --font-display:'Unbounded','Noto Sans SC',sans-serif;--font-sans:'Instrument Serif','Noto Sans SC',serif;
+  --font-zh:'Noto Sans SC',sans-serif;--font-mond:'JetBrains Mono','Noto Sans SC',monospace;--font-mono:'JetBrains Mono','Noto Sans SC',monospace;
+  --mg-80:color-mix(in srgb,var(--midground-base) 80%,transparent);--mg-65:color-mix(in srgb,var(--midground-base) 65%,transparent);
+  --mg-45:color-mix(in srgb,var(--midground-base) 45%,transparent);--line:color-mix(in srgb,var(--midground-base) 16%,transparent);
+  --line-2:color-mix(in srgb,var(--midground-base) 34%,transparent);--fill:color-mix(in srgb,var(--midground-base) 5%,transparent);
+  --panel:color-mix(in srgb,var(--background-base) 84%,transparent);--rail-top:max(56px,calc(50vh - 214px));
+}
+*{box-sizing:border-box}
+html{background:#000;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000;color:var(--midground);font-family:var(--font-zh);font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+b,strong{font-weight:700}
+code{font-family:var(--font-mono);font-size:.88em;padding:0 .3em;border:1px solid var(--line);background:var(--fill)}
+button{font:inherit;color:inherit}
+p{margin:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* backdrop stack */
+.hermes-bg>*{position:fixed;inset:0;pointer-events:none}
+.bg-l1{z-index:1;background:var(--background-base);mix-blend-mode:difference}
+.bg-l2{z-index:2;width:100%;height:150vh;object-fit:cover;object-position:top left;filter:invert(1);opacity:.033;mix-blend-mode:difference}
+.bg-l99{z-index:99;background:radial-gradient(120% 90% at 0% 0%,var(--warm-glow),transparent 60%);opacity:.22;mix-blend-mode:lighten}
+.bg-l201{z-index:201;opacity:.5;mix-blend-mode:color-dodge;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gradient-stroke{0%{background-position:15% 15%}100%{background-position:75% 75%}}
+@keyframes dash-flow{to{stroke-dashoffset:-12}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes flipin{from{transform:rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.arc-host{position:relative}
+.arc-border{--arc-c1:var(--midground);--arc-c2:var(--background);--arc-duration:2.23s;
+  --arc-gradient:linear-gradient(160deg,transparent 0%,transparent 15%,var(--arc-c1) 20%,var(--arc-c2) 25%,transparent 35%,transparent 55%,var(--arc-c1) 60%,var(--arc-c2) 65%,transparent 75%,transparent 95%,var(--arc-c1) 100%);
+  position:absolute;z-index:3;overflow:hidden;border-radius:inherit;inset:-2px;padding:1.25px;pointer-events:none;opacity:0;transition:opacity .2s;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.arc-border::before{content:'';position:absolute;inset:0;background:var(--arc-gradient);background-size:300% 300%;animation:gradient-stroke var(--arc-duration) linear infinite}
+.arc-host:hover>.arc-border,.arc-host:focus-visible>.arc-border,.arc-host.on>.arc-border{opacity:1}
+
+/* PiP marker */
+.pip{display:inline-block;margin-left:1px;font-size:.62em;line-height:1;vertical-align:super;color:var(--amber);cursor:help;outline-offset:2px}
+.toast{position:fixed;z-index:70;left:12px;right:12px;bottom:14px;max-width:460px;margin:0 auto;padding:10px 14px;border:1px solid var(--amber);background:var(--background-base);color:var(--midground);font-size:13px;line-height:1.5}
+.toast[hidden]{display:none}
+
+.credit .privacy-note{font-family:var(--font-mono);font-size:11px}
+/* ===== language switch ===== */
+.lang-switch{position:fixed;z-index:70;top:12px;right:12px;display:flex;border:1px solid var(--line-2);background:var(--panel);font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em}
+.lang-switch a{display:flex;align-items:center;justify-content:center;min-width:36px;height:28px;padding:0 10px;color:var(--midground);text-decoration:none}
+.lang-switch a[lang=zh-CN]{font-family:var(--font-zh);letter-spacing:0}
+.lang-switch a[aria-current]{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.lang-switch a:not([aria-current]):hover{background:var(--fill)}
+.lang-switch a:focus-visible{outline:1px solid var(--midground);outline-offset:2px}
+.top-row{display:flex;gap:8px;margin:0 0 14px}
+.home-link{display:flex;align-items:center;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.06em;white-space:nowrap}
+.home-link:hover{border-color:var(--midground)}
+.src-top{flex:1;min-width:0;display:flex;align-items:center;gap:10px;margin:0;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;letter-spacing:.03em}
+.src-top .k{font-weight:700;letter-spacing:.14em;color:var(--mg-65)}
+.src-top .go{margin-left:auto}
+.src-top:hover{border-color:var(--midground)}
+
+/* ===== right rail ===== */
+#toc-fab{position:fixed;z-index:60;right:12px;top:var(--rail-top);display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;text-decoration:none;font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em;
+  background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+#toc-fab:hover .fab-k{animation:blink 1s step-end infinite}
+#toc-fab:active{filter:invert(1)}
+.rail{position:fixed;z-index:59;right:12px;top:calc(var(--rail-top) + 38px);display:flex;flex-direction:column;align-items:flex-end;padding:4px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.rail{background:color-mix(in srgb,var(--background-base) 94%,transparent);border-color:var(--line)}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;height:24px;text-decoration:none;color:var(--mg-65);outline-offset:-2px}
+.rail .no{display:inline-grid;place-items:center;min-width:30px;height:20px;padding:0 4px;font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.rail .lb{max-width:9em;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--mg-80)}
+.rail a:hover .no{border-color:var(--line-2);color:var(--midground)}
+.rail a.on .no{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.rail a.on .lb{color:var(--midground)}
+.rail .sep{height:1px;width:30px;margin:4px 0;background:var(--line)}
+
+/* ===== layout ===== */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:40px clamp(92px,calc(775px - 50vw),190px) 120px 48px}
+.wrap>*+*{margin-top:56px}
+section[id],article[id],details[id],div[id]{scroll-margin-top:16px}
+.panel{position:relative;border:1px solid var(--line);background:var(--panel)}
+.bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--fill);font-family:var(--font-mono);font-size:11px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.bar .k{color:var(--midground);font-weight:700;font-family:var(--font-zh);letter-spacing:.04em;font-size:12.5px;text-transform:none}
+.bar .push{margin-left:auto}
+.eyebrow{font-family:var(--font-mond);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mg-65)}
+.en-line{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kv{display:grid;margin:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.kv>div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kv dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mg-45);margin-bottom:4px}
+.kv dd{margin:0;font-family:var(--font-sans);font-size:17px;line-height:1.35}
+.kv dd.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero-body{container-type:inline-size;padding:clamp(22px,3.4vw,44px) clamp(18px,3.4vw,44px) 26px}
+.h1{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:clamp(26px,6.9cqi,72px);line-height:.96;letter-spacing:.01em;margin:14px 0}
+.h1 .nw{white-space:nowrap}
+.h1-zh{margin:0 0 14px;font-size:clamp(17px,1.8vw,21px);font-weight:500;color:var(--mg-80)}
+.h1-zh::before{content:'// ';font-family:var(--font-mono);color:var(--mg-45)}
+.read{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:3px 10px;border:1px solid var(--line-2);font-size:13px}
+.read::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--midground);animation:blink 1.6s step-end infinite}
+.kv-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero-note{margin-top:14px;font-size:13px;line-height:1.65;color:var(--mg-65)}
+.thesis-body{padding:20px clamp(18px,3vw,32px) 22px;font-size:clamp(16px,1.5vw,18px);line-height:1.8}
+.thesis-body ul{margin:8px 0 12px;padding:0;list-style:none}
+.thesis-body li{position:relative;padding-left:1.4em}
+.thesis-body li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+.thesis-body .last{padding-top:12px;border-top:1px dashed var(--line)}
+.hl{background:var(--midground);color:var(--background-base);padding:0 .25em}
+
+/* panorama */
+.pano{container-type:inline-size}
+.pano-q{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;padding:18px clamp(14px,2.6vw,28px) 4px}
+.pano-q .q{font-weight:700;font-size:13px;padding:1px 8px;background:var(--midground);color:var(--background-base)}
+.pano-q p{font-size:clamp(16px,1.6vw,19px);line-height:1.7;font-weight:500}
+.pano-band{padding:16px clamp(14px,2.6vw,28px) 22px}
+.spectrum{display:flex;height:34px;border:1px solid var(--line-2);background:var(--background-base)}
+.spectrum a{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;text-decoration:none;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-80);border-left:1px solid var(--line);transition:background .15s,color .15s}
+.spectrum a:first-child{border-left:0}
+.spectrum a.act-start{border-left:1px solid var(--midground)}
+.spectrum a.odd{background:color-mix(in srgb,var(--midground-base) 9%,transparent)}
+.spectrum a.even{background:color-mix(in srgb,var(--midground-base) 18%,transparent)}
+.spectrum a:hover,.spectrum a:focus-visible,.spectrum a.on{background:var(--midground);color:var(--background-base)}
+.acts{display:grid;grid-template-columns:var(--act-cols);margin:0;padding:0;list-style:none;border-left:1px solid var(--line)}
+.act{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.act::before{content:'';position:absolute;left:-1px;top:0;width:1px;height:14px;background:var(--midground)}
+.act-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.act-no{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.6cqi,40px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--midground)}
+.act-time{font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45);white-space:nowrap}
+.act-name b{display:block;font-size:19px;font-weight:900;line-height:1.25}
+.act-name span{display:block;margin-top:3px;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mg-65);line-height:1.4}
+.act-line{font-size:13.5px;line-height:1.7;color:var(--mg-80)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 0;padding:4px 0 0;list-style:none}
+.chip{display:inline-flex;align-items:baseline;gap:6px;padding:2px 8px;border:1px solid var(--line-2);text-decoration:none;font-size:12px;line-height:1.6;white-space:nowrap}
+.chip i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+span.chip{white-space:normal}
+a.chip:hover,a.chip:focus-visible{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+a.chip:hover i,a.chip:focus-visible i{color:inherit}
+@container (max-width:860px){
+  .acts{grid-template-columns:minmax(0,1fr);border-left:0;margin-top:14px;border-top:1px solid var(--line)}
+  .act{display:grid;grid-template-columns:54px minmax(0,1fr);column-gap:12px;row-gap:6px;border-left:1px solid var(--line);padding:12px}
+  .act::before{height:100%;width:2px}
+  .act-top{display:contents}
+  .act-no{grid-row:1/span 4;font-size:30px}
+  .act-time,.act-name,.act-line,.act .chips{grid-column:2}
+}
+
+/* chapters */
+.ch>*+*{margin-top:16px}
+.ch-head-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,3vw,30px);align-items:end;padding:clamp(18px,2.6vw,28px) clamp(16px,2.6vw,28px) 20px}
+.ch-no{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,6vw,80px);line-height:.8;background:var(--midground);color:var(--background-base);padding:.08em .1em 0}
+.ch-no.zh{font-family:var(--font-zh);font-weight:900;line-height:1;padding:.06em .12em}
+.ch-head-body .en-line{margin-bottom:6px;font-size:clamp(11.5px,1.25vw,14px);color:var(--mg-80)}
+.ch-head-body h2{margin:0;font-size:clamp(22px,2.8vw,34px);line-height:1.22;font-weight:900}
+.ch-sub{margin-top:6px;font-size:15px;color:var(--mg-65)}
+.oneliner{display:grid;grid-template-columns:auto minmax(0,1fr)}
+.oneliner .lbl{writing-mode:vertical-rl;padding:12px 7px;border-right:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:var(--mg-45);text-transform:uppercase}
+.oneliner p{padding:16px clamp(16px,2.6vw,26px);font-size:clamp(16px,1.55vw,18.5px);line-height:1.75;font-weight:500}
+.grp{display:flex;align-items:center;gap:12px;margin-top:28px !important;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mg-45)}
+.grp::after{content:'';flex:1;height:1px;background:var(--line)}
+.grp .gt{font-family:var(--font-zh);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:none;color:var(--midground)}
+
+/* text blocks */
+.pts{padding:16px clamp(14px,2.4vw,24px)}
+.pts>*+*{margin-top:12px}
+.lst{margin:0;padding:0;list-style:none}
+.lst>li{position:relative;padding-left:1.4em;font-size:14.5px;line-height:1.75}
+.lst>li+li{margin-top:6px}
+.lst>li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+ol.lst{counter-reset:n}
+ol.lst>li{counter-increment:n;padding-left:2em}
+ol.lst>li::before{content:counter(n,decimal-leading-zero);font-size:11px;top:.3em}
+.lst .lst{margin-top:4px}
+.lst .lst>li{font-size:14px;color:var(--mg-80)}
+.lst .lst>li::before{content:'·'}
+.sub-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--mg-65)}
+.sub-h b{font-family:var(--font-zh);font-size:13.5px;letter-spacing:.02em;color:var(--midground);margin-right:6px}
+pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-2);background:var(--background-base);font-family:var(--font-mono);font-size:12px;line-height:1.6;color:var(--mg-80)}
+.note-line{font-size:12.5px;color:var(--mg-65)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.tbl.mid{min-width:560px}
+.tbl th{text-align:left;font-weight:500;font-size:12px;color:var(--mg-65);padding:9px 12px;border-bottom:1px solid var(--line-2);background:var(--fill);vertical-align:bottom}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td,.tbl tbody tr:last-child th{border-bottom:0}
+.tbl td+td,.tbl th+th,.tbl th+td{border-left:1px solid var(--line)}
+.tbl tbody th{font-weight:700;font-size:13.5px;color:var(--midground);background:transparent;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tbl tbody tr:hover>*{background:var(--fill)}
+
+/* speaker notes / analysis */
+.notes{padding:14px clamp(14px,2.4vw,24px)}
+.analysis{position:relative;border-left:2px solid color-mix(in srgb,var(--midground) 32%,transparent);background:transparent}
+.an-tag{display:block;padding:8px clamp(14px,2.4vw,24px) 0;color:var(--mg-65);font-family:var(--font-mono);font-size:11px;letter-spacing:.14em}
+.an-tag::before{content:'↳ '}
+.analysis .lst{padding:4px clamp(14px,2.4vw,24px) 10px}
+.analysis .lst>li{color:var(--mg-80)}
+.analysis .lst>li::before{color:var(--mg-65)}
+.analysis a{color:var(--midground)}
+
+/* ===== widgets: shared ===== */
+.viz{container-type:inline-size}
+.vz{padding:16px clamp(12px,2.2vw,22px) 18px}
+.vz>*+*{margin-top:14px}
+.cap{font-size:13px;line-height:1.65;color:var(--mg-65)}
+.cap b{color:var(--midground);font-weight:500}
+.h-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:0;padding:7px 12px;font-family:var(--font-zh);font-size:13px;line-height:1.3;background:transparent;color:var(--midground);
+  box-shadow:inset -1px -1px 0 0 #ffffff12,inset 1px 1px 0 0 #ffffff29,0 0 0 1px var(--line-2);transition:background .15s,color .15s}
+.h-btn:hover{background:var(--fill)}
+.h-btn:active{filter:invert(1)}
+.h-btn:disabled{opacity:.4;cursor:default}
+.h-btn[aria-checked="true"],.h-btn[aria-pressed="true"],.h-btn.solid{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.h-btn i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.mini{cursor:pointer;border:1px solid var(--line-2);background:transparent;padding:1px 8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--midground)}
+.mini:hover{background:var(--fill)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;flex-wrap:wrap}
+.seg .h-btn{box-shadow:0 0 0 1px var(--line-2)}
+.arr{display:grid;place-items:center;color:var(--mg-45);transition:color .2s}
+.arr svg{display:block;width:34px;height:12px;overflow:visible}
+.arr .ln{stroke-dasharray:3 3}
+.arr.lit{color:var(--midground)}
+.arr.lit .ln{animation:dash-flow 1s linear infinite}
+.box{border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.box small{display:block;font-size:12px;color:var(--mg-65)}
+.box.lit{border-color:var(--midground)}
+.box.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.box.hot small{color:inherit;opacity:.75}
+.box.dim{opacity:.35}
+.mono{font-family:var(--font-mono)}
+
+/* 00 · switcher */
+.flip-row{display:grid;grid-template-columns:76px minmax(0,1fr);border-top:1px solid var(--line)}
+.flip{border:1px solid var(--line);border-top:0}
+.flip-k{padding:9px 12px;font-size:13px;color:var(--mg-65)}
+.flip-v{padding:9px 12px;border-left:1px solid var(--line);font-size:14.5px;perspective:600px}
+.flip-v>span{display:block;animation:flipin .35s ease both}
+.flip-v .a,.is-a .flip-v .w{display:none}
+.is-a .flip-v .a{display:block}
+.is-a .flip-v{background:var(--fill)}
+
+/* 01 · stairs + duo tracks */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;gap:6px}
+.stair{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.stair .tx{padding:0 2px;font-size:13px;line-height:1.55;color:var(--mg-80)}
+.stair .tx b{display:block;color:var(--midground);font-size:14px}
+.stair .tx i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.stair .riser{height:calc(var(--lv) * 22px);border:1px solid var(--line-2);border-bottom:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 6px)}
+.stair:last-child .riser{background:var(--midground)}
+.stairs-axis{display:flex;justify-content:flex-end;gap:8px;font-size:12.5px;color:var(--mg-65);border-top:1px solid var(--line-2);padding-top:6px}
+@container (max-width:620px){
+  .stairs{grid-template-columns:minmax(0,1fr);gap:10px}
+  .stair{flex-direction:row-reverse;align-items:center;justify-content:flex-end}
+  .stair .riser{height:24px;width:calc(var(--lv) * 14px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .stairs-axis{justify-content:flex-start}
+}
+.trk{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:start}
+.trk+.trk{margin-top:12px}
+.trk-l{padding-top:4px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cell{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:26px;min-height:26px;padding:0 8px;border:1px solid var(--line-2);font-size:12px;transition:background .2s,color .2s}
+.cell.ap{border-style:dashed;font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.cell.on{background:var(--midground);color:var(--background-base)}
+.cell.wait{animation:blink .5s step-end infinite}
+.cell.in{border-color:var(--amber);color:var(--amber);font-size:11.5px}
+.cell.in.on{background:var(--amber);color:#1b1304}
+.cell .ok{margin-left:6px;font-family:var(--font-mono);font-size:10px;padding:0 4px;border:1px solid currentColor}
+.trk .cap{margin-top:6px}
+
+/* 02 · file tree */
+.ft{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;align-items:start}
+@container (max-width:620px){.ft{grid-template-columns:minmax(0,1fr)}}
+.ft-tree{border:1px solid var(--line);padding:10px 12px;font-family:var(--font-mono);font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto;color:var(--mg-45)}
+.ft-file{cursor:pointer;border:0;background:none;padding:0 5px;font-family:var(--font-mono);font-size:12.5px;color:var(--midground);border-bottom:1px dotted var(--mg-45)}
+.ft-file[aria-pressed="true"]{background:var(--midground);color:var(--background-base)}
+.ft-desc{border:1px solid var(--line-2);padding:12px 14px}
+.ft-desc code{display:inline-block;margin-bottom:6px}
+.ft-desc p{font-size:14.5px}
+.why{border-left:3px solid var(--line-2);padding:4px 0 4px 12px}
+
+/* 03 · simulator, router, system */
+.sim-lanes{border:1px solid var(--line)}
+.lane{display:grid;grid-template-columns:170px 120px minmax(0,1fr);align-items:center;border-top:1px solid var(--line)}
+.lane:first-child{border-top:0}
+.lane>*{padding:9px 12px;min-width:0}
+.lane>*+*{border-left:1px solid var(--line)}
+.ln-h b{display:block;font-size:14px}
+.ln-h small{display:block;font-size:11.5px;color:var(--mg-65);line-height:1.5}
+.lane.head{background:var(--fill)}
+.lane.head>*{padding:5px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--mg-45)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;font-size:12.5px;border:1px dashed var(--line-2);color:var(--mg-65);white-space:nowrap}
+.pill.on{border:1px solid var(--midground);background:var(--midground);color:var(--background-base);font-weight:700}
+.pill.keep{border:1px solid var(--midground);color:var(--midground)}
+.track{display:grid;grid-template-columns:repeat(var(--n,10),minmax(0,1fr));gap:3px;align-items:center}
+.track span{height:18px;border:1px solid transparent}
+.track .on{background:var(--midground)}
+.track .off{border-color:var(--line);background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 4px)}
+.track .keep{background:color-mix(in srgb,var(--midground-base) 55%,transparent)}
+.track .empty{border:1px dashed color-mix(in srgb,var(--midground-base) 10%,transparent)}
+.track.ev span{height:auto;border:0;font-family:var(--font-mono);font-size:9.5px;line-height:1.2;text-align:center;color:var(--mg-45);white-space:nowrap;overflow:hidden}
+.track.ev span.last{color:var(--midground)}
+.sim-log{margin:0;padding:8px 12px;border:1px solid var(--line);background:var(--background-base);font-size:13px;line-height:1.7;list-style:none;min-height:3.6em}
+.sim-log li{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:8px;color:var(--mg-45)}
+.sim-log li span:first-child{font-family:var(--font-mono);font-size:11px}
+.sim-log li:first-child{color:var(--midground)}
+@container (max-width:700px){
+  .lane{grid-template-columns:minmax(0,1fr) auto}
+  .lane>*+*{border-left:0}
+  .lane .track{grid-column:1/-1;padding-top:0}
+  .lane.head>*:not(.track){display:none}
+  .lane.head .track{padding-top:6px}
+}
+.rt-grid{display:grid;grid-template-columns:minmax(0,1.2fr) 38px minmax(0,1fr) 38px minmax(0,1fr) 38px minmax(0,1.1fr);align-items:center}
+.rt-src{display:flex;flex-direction:column;gap:5px}
+.rt-src .h-btn{justify-content:flex-start;text-align:left;width:100%;padding:5px 10px}
+.rt-node b{display:block;font-size:14.5px}
+.rt .rt-node,.rt .out{opacity:.5}
+.rt.has-sel .rt-node{opacity:1;border-color:var(--midground)}
+.rt-dec{display:flex;flex-direction:column;gap:8px}
+.out{padding:6px 10px;border:1px dashed var(--line-2);font-size:13px;color:var(--mg-65);transition:background .2s,opacity .2s}
+.rt.has-sel[data-worth="1"] .out.yes,.rt.has-sel[data-worth="0"] .out.no{opacity:1;background:var(--midground);color:var(--background-base);border:1px solid var(--midground)}
+.rt-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.rt-log{font-size:13px;color:var(--mg-65)}
+.rt-log b{color:var(--midground);font-weight:500}
+@container (max-width:680px){
+  .rt-grid{grid-template-columns:minmax(0,1fr);row-gap:4px}
+  .rt-grid .arr svg{transform:rotate(90deg);margin:8px 0}
+  .rt-src{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr) 48px minmax(0,1.5fr) 48px minmax(0,1fr);align-items:stretch}
+.s3-col{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);padding:10px;min-width:0;outline-offset:2px;transition:border-color .2s,opacity .2s}
+.s3-col>b{font-size:14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.s3-v{text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-65);line-height:1}
+.s3-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.3fr);gap:6px;align-items:stretch}
+.s3-row .bi{align-self:center;font-family:var(--font-mono);color:var(--mg-65)}
+.s3-gut{display:flex;flex-direction:column;justify-content:space-between;padding:44px 2px 16px}
+.s3-gut.g2{justify-content:center}
+.s3-gut .lnk{transition:opacity .2s}
+.s3-gut .back svg{transform:scaleX(-1)}
+.sys3[data-hl] .lnk{opacity:.2}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"],.sys3[data-hl="server"] .lnk[data-link~="server"],.sys3[data-hl="comp"] .lnk[data-link~="comp"]{opacity:1}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .arr,.sys3[data-hl="server"] .lnk[data-link~="server"] .arr,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .arr{color:var(--midground)}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .ln,.sys3[data-hl="server"] .lnk[data-link~="server"] .ln,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .ln{animation:dash-flow 1s linear infinite}
+.sys3[data-hl="apps"] [data-col="apps"],.sys3[data-hl="server"] [data-col="server"],.sys3[data-hl="comp"] [data-col="comp"]{border-color:var(--midground)}
+.sys3[data-hl="apps"] [data-col="comp"],.sys3[data-hl="comp"] [data-col="apps"]{opacity:.4}
+@container (max-width:700px){
+  .s3-grid{grid-template-columns:minmax(0,1fr)}
+  .s3-gut{flex-direction:row;justify-content:center;gap:40px;padding:6px 0}
+  .s3-gut .arr svg{transform:rotate(90deg);margin:6px auto}
+  .s3-gut .back svg{transform:rotate(-90deg)}
+}
+
+/* 04 · crash + queue */
+.cr-lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.cr-lane:first-of-type{border-top:0}
+.cr-lane .lb b{display:block;font-family:var(--font-mono);font-size:12.5px}
+.cr-lane .lb small{display:block;font-size:12px;color:var(--mg-65)}
+.stp{display:inline-grid;place-items:center;min-width:56px;padding:3px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;animation:pop .25s ease both}
+.stp.done{background:var(--fill)}
+.stp.x{border-color:var(--red);color:var(--red)}
+.stp.redo{border-style:dashed;color:var(--mg-45)}
+.stp.go{background:var(--midground);color:var(--background-base)}
+.ctr{font-size:13.5px}
+.ctr b{font-family:var(--font-mono);font-size:15px;padding:0 6px;border:1px solid var(--line-2)}
+@container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
+.q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.qbox{border:1px solid var(--line);padding:12px}
+.qbox>*+*{margin-top:10px}
+.qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
+.qc{display:inline-grid;place-items:center;height:26px;padding:0 9px;border:1px solid var(--line-2);font-size:12px;animation:pop .25s ease both}
+.qc.run{background:repeating-linear-gradient(135deg,var(--fill) 0 6px,transparent 6px 12px);border-color:var(--midground)}
+.qc.cut{border-color:var(--red);color:var(--red);text-decoration:line-through}
+.qc.jump{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.qc.merge{background:var(--midground);color:var(--background-base)}
+
+/* 05 · hub + UI controls */
+.hub{display:grid;grid-template-columns:minmax(0,1.5fr) 40px auto 40px minmax(0,.8fr);align-items:center}
+.hub-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.hub-tools,.hub-ch{display:flex;flex-wrap:wrap;gap:5px}
+.hub-ch{flex-direction:column}
+.tg{display:inline-block;padding:2px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap}
+.hub-mid{padding:14px 16px;background:var(--midground);color:var(--background-base);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em}
+@container (max-width:680px){
+  .hub{grid-template-columns:minmax(0,1fr)}
+  .hub .arr svg{transform:rotate(90deg);margin:8px auto}
+  .hub-mid{justify-self:center}
+  .hub-ch{flex-direction:row}
+}
+.uic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@container (max-width:600px){.uic{grid-template-columns:minmax(0,1fr)}}
+.uic-card{border:1px solid var(--line-2);background:var(--background-base);padding:12px}
+.uic-card>*+*{margin-top:8px}
+.uic-card h4{margin:0;font-size:14px}
+.fld{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.fld.filled{color:var(--midground);border-color:var(--midground)}
+.uic-card .state{font-family:var(--font-mono);font-size:11px;color:var(--midground)}
+.emo{display:flex;gap:6px}
+.emo button{cursor:pointer;width:36px;height:30px;border:1px solid var(--line-2);background:none;font-size:15px}
+.emo button[aria-pressed="true"]{border-color:var(--midground);background:var(--fill)}
+
+/* 06 · blocks, ladder, helpers */
+.blocks{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:460px}
+.blocks span{aspect-ratio:1;border:1px solid var(--line);transition:background .25s}
+.blocks span.t{background:var(--midground);border-color:var(--midground)}
+.blk-n{font-family:var(--font-mono);font-size:13px}
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;align-items:end}
+.rung{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.rung .bar2{height:calc(var(--lv) * 12px + 10px);border:1px solid var(--line-2);border-bottom:0;background:var(--fill);transition:background .2s,border-color .2s}
+.rung .t{font-size:12.5px;line-height:1.45;transition:color .2s,opacity .2s}
+.ladder.broken .r2 .t,.ladder.broken .r4 .t{text-decoration:line-through;color:var(--red)}
+.ladder.broken .r2 .bar2,.ladder.broken .r4 .bar2{border-color:var(--red)}
+.ladder.broken .r6 .bar2{background:var(--midground)}
+.ladder.broken .r6 .t{color:var(--midground);font-weight:700}
+.ladder.broken .r1,.ladder.broken .r3,.ladder.broken .r5{opacity:.35}
+.ladder-axis{display:flex;justify-content:flex-end;border-top:1px solid var(--line-2);padding-top:6px;font-size:12.5px;color:var(--mg-65)}
+.rule{padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px;transition:background .2s,color .2s}
+.rule.hot{background:var(--midground);color:var(--background-base)}
+@container (max-width:620px){
+  .ladder{grid-template-columns:minmax(0,1fr);gap:6px}
+  .rung{flex-direction:row-reverse;justify-content:flex-end;align-items:center;gap:10px}
+  .rung .bar2{height:22px;width:calc(var(--lv) * 12px + 10px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .ladder-axis{justify-content:flex-start}
+}
+.hp{display:grid;grid-template-columns:auto 38px auto 38px minmax(0,1fr) 38px auto;align-items:center}
+.hp-help{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+@container (max-width:720px){
+  .hp{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .hp .arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 07 · auto-review */
+.ar{display:grid;grid-template-columns:auto 34px auto 34px minmax(0,1fr);align-items:center;gap:0}
+.ar-br{display:flex;flex-direction:column;gap:10px}
+.ar-path{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.ar-path .arr svg{width:24px}
+.cd{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+@container (max-width:720px){
+  .ar{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .ar>.arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 08 · cache stack */
+.cs{border:1px solid var(--line)}
+.cs-row{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid var(--line)}
+.cs-row:first-child{border-top:0}
+.cs-l{padding:9px 10px;font-size:12.5px;color:var(--mg-65);border-right:1px solid var(--line)}
+.cs-cells{display:flex;flex-wrap:wrap;gap:5px;padding:8px}
+.cs-c{display:inline-grid;place-items:center;min-height:28px;padding:2px 9px;border:1px solid var(--line-2);font-size:12px;line-height:1.4;transition:background .2s,color .2s,border-color .2s}
+.cs-c.hit{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-c.miss{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red);color:var(--red)}
+.cs-c.new{border-style:dashed;border-color:var(--midground);animation:pop .25s ease both}
+.cs-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mg-65)}
+.cs-leg span::before{content:'';display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;border:1px solid}
+.cs-leg .h::before{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-leg .m::before{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red)}
+@container (max-width:520px){.cs-row{grid-template-columns:minmax(0,1fr)}.cs-l{border-right:0;border-bottom:1px dashed var(--line);padding:6px 10px}}
+
+/* 09 · timeline + memory */
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.tl .box{position:relative}
+.tl .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.tl .box.hot i{color:inherit}
+@container (max-width:620px){.tl{grid-template-columns:minmax(0,1fr)}}
+.mem{display:flex;flex-direction:column;gap:6px}
+.mem-l{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 12px;border:1px solid var(--line-2)}
+.mem-l b{font-family:var(--font-mono);font-size:13px}
+.mem-l span{font-size:13.5px}
+.mem-l.l1{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.mem-l.l2{background:color-mix(in srgb,var(--midground-base) 16%,transparent)}
+.mem-l.l3{background:linear-gradient(90deg,color-mix(in srgb,var(--midground-base) 10%,transparent),transparent)}
+.mem-l.l4{border-style:dashed;color:var(--mg-80)}
+
+/* 10 · double loop */
+.loops{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.loop{border:1px solid var(--line-2);border-radius:18px;padding:12px}
+.loop>b{display:block;margin-bottom:8px;font-size:14px}
+.loop ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.loop li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;padding:5px 8px;border:1px solid var(--line);font-size:13px;transition:background .2s,color .2s}
+.loop li i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.loop li.hot{background:var(--midground);color:var(--background-base)}
+.loop li.hot i{color:inherit}
+.loop .ret{margin-top:6px;text-align:right;font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--amber)}
+@container (max-width:700px){.loops{grid-template-columns:minmax(0,1fr)}.bridge{flex-direction:row}}
+
+/* 11 · building blocks */
+.bb{display:grid;grid-template-columns:minmax(0,.8fr) 40px minmax(0,1.6fr);gap:10px;align-items:start}
+.bb-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.bb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.bb-l .bb-grid{grid-template-columns:minmax(0,1fr)}
+.bb-b{display:block;width:100%;padding:8px 10px;border:1px solid var(--line-2);background:var(--background-base);text-align:left;font-size:13px;line-height:1.4}
+button.bb-b{cursor:pointer}
+button.bb-b:hover,button.bb-b[aria-pressed="true"]{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.bb-read{font-size:13px;color:var(--mg-65)}
+.bb-read .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:middle}
+@container (max-width:640px){.bb{grid-template-columns:minmax(0,1fr)}.bb .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 12 · checklist */
+.chk{margin:0;padding:0;list-style:none;border:1px solid var(--line)}
+.chk li{border-top:1px solid var(--line)}
+.chk li:first-child{border-top:0}
+.chk label{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 12px;cursor:pointer;font-size:14px}
+.chk input{width:16px;height:16px;margin:0;accent-color:#ffe6cb}
+.chk .n{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.chk li.done{background:var(--fill)}
+.chk li.done .t{text-decoration:line-through;color:var(--mg-65)}
+.prog{font-family:var(--font-mono);font-size:12px;color:var(--mg-65)}
+.prog b{color:var(--midground)}
+
+/* slides strip + transcript */
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.slide{flex:0 0 184px;display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--panel);scroll-snap-align:start}
+.slide-frame{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:#000}
+.slide-frame img{display:block;width:100%;height:100%;object-fit:cover}
+.slide-frame::before,.slide-frame::after{content:'';position:absolute;inset:0;background:var(--img) center/cover no-repeat;opacity:0;pointer-events:none}
+.slide-frame .scan{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.35) 2px 3px)}
+.slide:hover .slide-frame::before,.slide:focus-visible .slide-frame::before{opacity:1;filter:drop-shadow(3px 0 0 rgba(255,40,90,.8));animation:tear-a .46s steps(1,end) 2 forwards}
+.slide:hover .slide-frame::after,.slide:focus-visible .slide-frame::after{opacity:1;filter:drop-shadow(-3px 0 0 rgba(0,230,255,.8));animation:tear-b .46s steps(1,end) 2 forwards}
+.slide:hover .scan{opacity:.55;animation:scan-roll 1.4s linear infinite}
+@keyframes tear-a{0%{clip-path:inset(8% 0 80% 0);transform:translateX(-8px)}25%{clip-path:inset(44% 0 40% 0);transform:translateX(10px)}50%{clip-path:inset(70% 0 16% 0);transform:translateX(-5px)}75%{clip-path:inset(22% 0 68% 0);transform:translateX(7px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes tear-b{0%{clip-path:inset(60% 0 28% 0);transform:translateX(9px)}25%{clip-path:inset(14% 0 74% 0);transform:translateX(-7px)}50%{clip-path:inset(34% 0 52% 0);transform:translateX(6px)}75%{clip-path:inset(82% 0 6% 0);transform:translateX(-9px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes scan-roll{to{background-position:0 12px}}
+.slide-cap{display:flex;align-items:baseline;gap:8px;padding:6px 8px;font-family:var(--font-mono);font-size:11px;border-top:1px solid var(--line)}
+.slide-cap span{color:var(--mg-65)}
+.slide:hover{border-color:var(--line-2)}
+.transcript summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 14px;cursor:pointer;list-style:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary .k{color:var(--midground);font-weight:700}
+.transcript summary .tg2{margin-left:auto;padding:1px 8px;border:1px solid var(--line-2);color:var(--midground)}
+.transcript summary .tg2::after{content:'+'}
+.transcript[open] summary .tg2::after{content:'−'}
+.transcript[open] summary{border-bottom:1px solid var(--line)}
+.transcript summary:hover{background:var(--fill)}
+.tr-body{padding:4px 16px 14px}
+.tr-seg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-seg:last-child{border-bottom:0}
+.tr-meta{font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.tr-meta b{display:block;color:var(--midground);font-size:12.5px}
+.tr-seg p{max-width:80ch;font-family:var(--font-sans);font-size:16px;line-height:1.6;color:var(--mg-80)}
+.gloss .tbl{min-width:620px}
+.gloss .tbl td:first-child{font-family:var(--font-mono);font-size:13px;color:var(--midground);white-space:nowrap}
+
+.foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--mg-45)}
+.foot .legend{font-family:var(--font-zh);font-size:12px;letter-spacing:0;color:var(--mg-65)}
+.foot .legend .pipx{color:var(--amber);margin-right:4px}
+.foot div:nth-child(2){text-align:center}.foot div:nth-child(3){text-align:right}
+
+@media (max-width:1180px){.kv-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.wrap{padding:32px 190px 110px 28px}}
+@media (max-width:760px){
+  body{font-size:15px}
+  .wrap{padding:48px 34px 100px 12px}
+  .lang-switch{top:8px;right:4px}.lang-switch a{min-width:30px;height:26px;padding:0 7px}
+  .top-row{flex-wrap:wrap}.top-row .src-top{flex:1 1 100%}
+  .wrap>*+*{margin-top:44px}
+  .ch-head-body{grid-template-columns:minmax(0,1fr)}
+  .ch-no{justify-self:start}
+  .tr-seg{grid-template-columns:minmax(0,1fr);gap:4px}
+  .slide{flex-basis:150px}
+  .spectrum{height:18px}.spectrum a{font-size:0}
+  .foot{grid-template-columns:minmax(0,1fr)}.foot div:nth-child(2),.foot div:nth-child(3){text-align:left}
+  :root{--rail-top:max(44px,calc(50vh - 170px))}
+  #toc-fab{right:4px;height:24px;width:24px;padding:0;justify-content:center}
+  #toc-fab .fab-zh{display:none}
+  .rail{right:4px;top:calc(var(--rail-top) + 30px);padding:2px 0;border:0;background:none !important}
+  .rail a{width:24px;height:20px;justify-content:center}
+  .rail .lb{display:none}
+  .rail .no{min-width:0;width:24px;height:18px;padding:0;font-size:10px;border:0}
+  .rail a.on .no{background:var(--midground);color:var(--background-base)}
+  .rail .sep{width:10px;margin:2px auto}
+}
+@media (max-width:560px){.kv-4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .bg-l201{display:none}
+}
+
+/* 00 · before → after */
+.vs{display:grid;gap:6px}
+.vs-head,.vs-row{display:grid;grid-template-columns:5em minmax(0,1fr) 26px minmax(0,1.45fr);gap:8px;align-items:stretch}
+.vs-head span{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--mg-65);align-self:end}
+.vs-head small{display:block;margin-top:2px;font-family:var(--font-zh);font-size:12px;letter-spacing:0}
+.vs-head .vs-a{color:var(--midground)}
+.vs-k{align-self:center;font-weight:700;font-size:13px;color:var(--mg-80)}
+.vs-row .vs-w{padding:9px 12px;border:1px dashed var(--line-2);color:var(--mg-65);font-size:13px;line-height:1.5}
+.vs-row .vs-a{padding:9px 12px;border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);color:var(--midground);font-size:14px;line-height:1.5}
+.vs-arr{display:grid;place-items:center;font-family:var(--font-mono);color:var(--midground)}
+@media (max-width:760px){.vs-head{display:none}.vs-row{grid-template-columns:minmax(0,1fr) 20px minmax(0,1.35fr);gap:6px}.vs-k{grid-column:1/-1;margin-top:6px}}
+/* 02 · file tree, all visible */
+.ft2{display:grid;gap:6px}
+.ft2-row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:14px;align-items:baseline;padding:8px 12px;border-left:2px solid var(--midground);background:color-mix(in srgb,var(--midground) 6%,transparent);font-size:14px}
+.ft2-row code{font-family:var(--font-mono);font-size:12.5px;color:var(--midground);overflow-wrap:anywhere}
+@media (max-width:760px){.ft2-row{grid-template-columns:minmax(0,1fr);gap:2px}}
+/* 06 · context grids */
+.cg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.cg2 figure{margin:0}.cg2 figcaption{font-size:13px;margin-bottom:8px;color:var(--mg-80)}
+.cg{display:grid;grid-template-columns:repeat(25,minmax(0,1fr));gap:2px}
+.cg span,.cg-legend i{aspect-ratio:1;display:block}
+.cg .s,.cg-legend .s{background:repeating-linear-gradient(45deg,var(--mg-65) 0 2px,transparent 2px 4px)}
+.cg .d,.cg-legend .d{background:var(--midground)}
+.cg .n,.cg-legend .n{background:color-mix(in srgb,var(--midground) 45%,transparent)}
+.cg .c,.cg-legend .c{background:color-mix(in srgb,var(--midground) 16%,transparent)}
+.cg .f,.cg-legend .f{border:1px solid var(--line)}
+.cg-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.cg-legend span{display:inline-flex;align-items:center;gap:6px}.cg-legend i{width:10px}
+@media (max-width:760px){.cg2{grid-template-columns:minmax(0,1fr)}}
+/* 11 · chips on blocks */
+.bb-b .bb-ch{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.bb-b .bb-ch .chip{font-size:11px;padding:0 6px}
+/* in-page slide viewer */
+.slide{cursor:zoom-in}
+html.sv-open{overflow:hidden}
+.sv{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:56px 72px}
+.sv[hidden]{display:none}
+.sv:focus{outline:none}
+.sv-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88)}
+.sv-fig{position:relative;margin:0;display:grid;gap:10px;justify-items:center;max-width:min(100%,1600px)}
+.sv-fig img{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;border:1px solid var(--line-2);background:#000;cursor:pointer;user-select:none}
+.sv-cap{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-80)}
+.sv-cap b{color:var(--midground)}
+.sv-hint{color:var(--mg-65);font-family:var(--font-zh)}.sv-hint-touch{display:none}
+.sv-btn,.sv-close{position:fixed;z-index:101;display:grid;place-items:center;border:1px solid var(--line-2);background:color-mix(in srgb,var(--background-base) 85%,transparent);color:var(--midground);cursor:pointer;font:400 26px/1 var(--font-mono)}
+.sv-btn{top:50%;transform:translateY(-50%);width:46px;height:70px}
+.sv-prev{left:14px}.sv-next{right:14px}
+.sv-btn:disabled{opacity:.22;cursor:default}
+.sv-btn:not(:disabled):hover,.sv-close:hover{background:var(--midground);color:var(--background-base)}
+.sv-close{top:14px;right:14px;width:42px;height:42px;font-size:22px}
+@media (max-width:760px){.sv{padding:56px 10px 24px}.sv-btn{width:34px;height:54px;font-size:20px}.sv-prev{left:4px}.sv-next{right:4px}.sv-hint-key{display:none}.sv-hint-touch{display:inline}}
+
+/* footer credits */
+.foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.foot .credit{grid-column:1/-1;margin-top:6px;padding:14px 16px;border:1px solid var(--line);font-family:var(--font-zh);font-size:12.5px;line-height:1.7;letter-spacing:0;color:var(--mg-65);text-align:left}
+.foot .credit h3{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--mg-80)}
+.foot .credit p{margin:4px 0}.foot .credit b{color:var(--mg-80)}
+.foot .credit a{color:var(--midground)}
+.foot .credit p[lang=en]{font-family:var(--font-mono);font-size:11px}
+.foot div:nth-child(2){text-align:left}
+@media (max-width:760px){.foot{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== this page ===== */
+/* hero frame */
+.hero-fig{margin:0;border-top:1px solid var(--line)}
+.hero-fig img{display:block;width:100%;height:auto;aspect-ratio:12/5;object-fit:cover;object-position:50% 74%;filter:saturate(.85)}
+@media (max-width:760px){.hero-fig img{aspect-ratio:16/9;object-position:50% 60%}}
+.hero-fig figcaption{padding:6px 14px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45);border-top:1px solid var(--line)}
+.kv dd small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+
+/* panorama: sponsor gaps */
+.spectrum .ad{display:block;min-width:0;border-left:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.band-legend{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;font-size:11.5px;color:var(--mg-45)}
+.band-legend i{display:inline-block;width:18px;height:10px;align-self:center;border:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.ch-head-body .who{display:inline-block;margin-left:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.host{display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line-2);font-size:11.5px;line-height:1.6;color:var(--mg-65);font-family:var(--font-zh)}
+
+/* 00 · timeline */
+.tline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:2px solid var(--line-2);padding-top:0}
+.tl-n{position:relative;padding:14px 10px 0 0;min-width:0}
+.tl-n::before{content:'';position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--background-base);border:2px solid var(--midground)}
+.tl-n.hot::before{background:var(--midground)}
+.tl-n i{display:block;font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.tl-n b{display:block;font-size:14px;line-height:1.45}
+.tl-n span{display:block;font-size:12.5px;line-height:1.55;color:var(--mg-65)}
+.tl-br{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tl-br span{padding:4px 8px;border:1px dashed var(--line-2);border-top:0;font-size:12.5px;text-align:center;color:var(--mg-80)}
+@container (max-width:640px){
+  .tline{grid-template-columns:minmax(0,1fr);border-top:0;border-left:2px solid var(--line-2);margin-left:6px}
+  .tl-n{padding:0 0 12px 16px}
+  .tl-n::before{top:4px;left:-7px}
+  .tl-br{grid-template-columns:minmax(0,1fr)}
+}
+
+/* 02 · split bars */
+.split-row{display:grid;grid-template-columns:7em minmax(0,1fr);gap:10px;align-items:center}
+.split-row+.split-row{margin-top:10px}
+.split-row>b{font-size:13px;font-weight:700;color:var(--mg-80)}
+.split-bar{display:flex;height:34px;border:1px solid var(--line-2)}
+.split-bar span{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;white-space:nowrap;font-size:12.5px}
+.split-bar .have{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px);color:var(--mg-80)}
+.split-bar .want{background:var(--midground);color:var(--background-base);font-weight:700}
+
+/* 03 · fork */
+.fork{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.2fr);gap:8px;align-items:center}
+.fork-out{display:grid;gap:8px}
+.fork .box.good{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.fork .box.bad{border-style:dashed;border-color:var(--red);color:var(--red)}
+.fork .box i{font-style:normal;font-family:var(--font-mono);font-size:11px;margin-right:6px;opacity:.75}
+@container (max-width:560px){.fork{grid-template-columns:minmax(0,1fr)}.fork .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 04 · launch gate */
+.gate{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:10px;align-items:center}
+.gate-col>small{display:block;margin-bottom:6px;font-size:12.5px;color:var(--mg-80)}
+.gate-col>small b{color:var(--midground)}
+.gate-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;max-width:240px}
+.gate-grid span{aspect-ratio:1;display:block;background:var(--midground);transition:background .25s,border-color .25s}
+.gate-grid span.r{background:transparent;border:1px solid var(--red);background-image:repeating-linear-gradient(45deg,color-mix(in srgb,var(--red) 55%,transparent) 0 1px,transparent 1px 4px)}
+.gate-grid+p{margin-top:6px;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.gate-mid{display:grid;justify-items:center;gap:4px;text-align:center;font-size:11.5px;line-height:1.4;color:var(--mg-65)}
+.gate-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.gate-legend span{display:inline-flex;align-items:center;gap:6px}
+.gate-legend i{width:11px;height:11px;display:block;background:var(--midground)}
+.gate-legend i.r{background:transparent;border:1px solid var(--red)}
+.gate-exp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px}
+.gate-exp b{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+@container (max-width:560px){.gate{grid-template-columns:minmax(0,1fr)}.gate-mid{justify-items:start;text-align:left}.gate-mid .arr svg{transform:rotate(90deg)}}
+
+/* 05 · smoothie vs one author */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.duo-col{display:grid;gap:8px;align-content:start;padding:12px;border:1px solid var(--line)}
+.duo-col>small{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.pm-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.pm-row .box{padding:5px 4px;text-align:center;font-size:12px}
+.duo .down{display:grid;place-items:center;color:var(--mg-45);font-family:var(--font-mono)}
+.duo .box.mud{border-style:dashed;background:repeating-linear-gradient(135deg,var(--line) 0 3px,transparent 3px 7px);text-align:center;color:var(--mg-80)}
+.duo .box.one{border-color:var(--midground);text-align:center}
+.duo .box.whole{background:var(--midground);color:var(--background-base);border-color:var(--midground);text-align:center;font-weight:700}
+@container (max-width:560px){.duo{grid-template-columns:minmax(0,1fr)}}
+
+/* 08 · agency curve */
+.curve svg{display:block;width:100%;max-width:720px;height:auto;overflow:visible}
+.curve .ax{stroke:var(--line-2);stroke-width:1}
+.curve .grey{fill:none;stroke:var(--mg-45);stroke-width:2;stroke-dasharray:5 4}
+.curve .main{fill:none;stroke:var(--midground);stroke-width:2.5}
+.curve text{fill:var(--mg-65);font-family:var(--font-mono);font-size:11px}
+.curve text.lb{fill:var(--midground);font-family:var(--font-zh);font-size:13px;font-weight:700}
+.curve text.lg{fill:var(--mg-65);font-family:var(--font-zh);font-size:12.5px}
+.curve-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--mg-65)}
+.curve-key span{display:inline-flex;align-items:center;gap:6px}
+.curve-key i{display:block;width:22px;height:0;border-top:2.5px solid var(--midground)}
+.curve-key i.g{border-top:2px dashed var(--mg-45)}
+
+/* 09 · deal */
+.deal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:8px;align-items:center}
+.deal .box{text-align:center}
+.deal .box b{display:block;font-size:15px}
+.deal .lnk{display:grid;gap:2px;justify-items:center;text-align:center;font-size:12px;line-height:1.45;color:var(--mg-80)}
+.deal .lnk .arr{color:var(--midground)}
+.deal .lnk.back .arr svg{transform:scaleX(-1)}
+.deal-time{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px;color:var(--mg-65)}
+.deal-time i{display:block;height:0;border-top:1px dashed var(--line-2)}
+.deal-time b{font-family:var(--font-mono);color:var(--midground);font-weight:700}
+@container (max-width:600px){.deal{grid-template-columns:minmax(0,1fr)}.deal .lnk .arr svg{transform:rotate(90deg)}.deal .lnk.back .arr svg{transform:rotate(-90deg)}}
+
+/* 11 · payoff distributions */
+.dist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.dist-col{border:1px solid var(--line);padding:12px}
+.dist-col>b{display:block;font-size:15px}
+.dist-col>small{display:block;font-size:12.5px;color:var(--mg-65)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin:12px 0 6px;border-bottom:1px solid var(--line-2)}
+.bars span{flex:1 1 0;min-width:0;height:var(--h);background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.bars span.top{background:var(--midground);position:relative}
+.bars span.top::after{content:'↑';position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:12px;color:var(--midground)}
+.dist-tags{display:flex;flex-wrap:wrap;gap:5px}
+.dist-tags span{padding:0 7px;border:1px solid var(--line-2);font-size:12px}
+.dist-tags span.me{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+@container (max-width:560px){.dist{grid-template-columns:minmax(0,1fr)}}
+
+/* 12 · org charts */
+.org{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:14px}
+.org-col{display:grid;gap:6px;align-content:start;justify-items:center;padding:12px;border:1px solid var(--line)}
+.org-col>small{justify-self:start;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.org .box{text-align:center;min-width:8em}
+.org .box.lead{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+.org .v{width:1px;height:12px;background:var(--line-2)}
+.org .lvl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.org .lvl .box{min-width:0;padding:4px 8px;font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding-top:8px;border-top:1px solid var(--midground);width:100%}
+.dots span{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.dots .pod{display:flex;flex-wrap:wrap;gap:3px;padding:4px;border:1px dashed var(--midground);align-items:center;width:auto;height:auto;border-radius:0;background:none}
+.dots .pod em{font-style:normal;font-family:var(--font-mono);font-size:9.5px;padding:0 3px;background:var(--midground);color:var(--background-base)}
+.org-note{font-size:12.5px;color:var(--mg-65);text-align:center}
+@container (max-width:600px){.org{grid-template-columns:minmax(0,1fr)}}
+
+/* X posts and outside sources */
+.xpost{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0;margin:0}
+.xpost.wide{grid-template-columns:minmax(0,1fr)}
+.xzoom{display:grid;place-items:center;min-height:0;background:#000;border-right:1px solid var(--line);cursor:zoom-in}
+.xpost.wide .xzoom{border-right:0;border-bottom:1px solid var(--line)}
+.xzoom img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
+.xpost figcaption{display:flex;flex-direction:column;gap:8px;padding:12px clamp(12px,2vw,18px);font-size:13.5px;line-height:1.65;color:var(--mg-80)}
+.xpost .xmeta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.xpost .xmeta b{color:var(--midground);font-weight:700}
+.src-tag{display:inline-block;padding:0 6px;border:1px dashed var(--amber);color:var(--amber);font-family:var(--font-zh);font-size:11px;letter-spacing:0;line-height:1.6}
+.xpost q{quotes:none;font-family:var(--font-sans);font-size:16px;line-height:1.45;color:var(--midground)}
+.xpost .xgo{margin-top:auto;font-family:var(--font-mono);font-size:11.5px;color:var(--midground)}
+.ctx{padding:12px clamp(14px,2.4vw,24px);border:1px dashed var(--line-2);background:transparent}
+.ctx>.src-tag{margin-bottom:6px}
+.ctx .lst>li{font-size:14px}
+.gl{color:var(--mg-65);font-size:.92em}
+.fn{font-family:var(--font-mono);font-size:.7em;vertical-align:super;line-height:1;margin-left:1px;color:var(--amber);text-decoration:none}
+.foot .credit ol.srcs{margin:4px 0 0;padding-left:1.6em;font-family:var(--font-mono);font-size:11px}
+.foot .credit ol.srcs li{margin:2px 0}
+.wants{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0 12px}
+.wants>div{padding:10px 12px;border:1px solid var(--line-2)}
+.wants>div.want{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.wants b{display:block;font-size:15px}
+.wants small{display:block;margin-top:2px;font-size:13.5px;line-height:1.6;color:var(--mg-80)}
+.wants i{display:block;margin-top:6px;font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.sum-lst>li{font-size:15px}
+.sum-lst .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:baseline}
+@container (max-width:640px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:760px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}.wants{grid-template-columns:minmax(0,1fr)}}
+
+
+/* ===== interview page additions (shared with the a16z page) ===== */
+.rcp{display:grid;gap:8px;justify-items:center;text-align:center}
+.rcp-in{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.rcp-in .box{min-width:6.5em;font-weight:700}
+.rcp-org{font-size:13.5px;color:var(--mg-80)}
+.rcp-out{border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);padding:8px 14px;font-size:13.5px;text-align:center}
+.tiers{display:grid;gap:8px}
+.tier{display:grid;grid-template-columns:5.5em minmax(0,11em) minmax(0,1fr);gap:4px 12px;align-items:baseline;border:1px solid var(--line-2);background:var(--background-base);padding:10px 12px;font-size:13.5px;line-height:1.5}
+.tier i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.tier span{font-size:12.5px;color:var(--mg-65)}
+.tier.t1{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+@container (max-width:560px){.tier{grid-template-columns:minmax(0,1fr)}}
+.stat{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 22px;align-items:center}
+.stat .big{font-family:var(--font-display);font-size:clamp(44px,9cqi,80px);line-height:1;color:var(--midground)}
+.stat b{display:block;font-size:15px}
+.stat small{display:block;font-size:12.5px;color:var(--mg-65);line-height:1.5}
+.stat q{display:block;margin-top:8px;font-size:13.5px;color:var(--mg-80)}
+@container (max-width:480px){.stat{grid-template-columns:minmax(0,1fr)}}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;counter-reset:st}
+.steps li{counter-increment:st;border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45}
+.steps li::before{content:counter(st);display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.steps li b{display:block}
+.steps li small{display:block;font-size:12px;color:var(--mg-65)}
+.steps li.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.steps li.hot::before,.steps li.hot small{color:inherit;opacity:.75}
+@container (max-width:640px){.steps{grid-template-columns:minmax(0,1fr)}}
+.g6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.g6 .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+@container (max-width:600px){.g6{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@container (max-width:380px){.g6{grid-template-columns:minmax(0,1fr)}}
+.box.hot2{border-color:var(--red)}
+.box.hot2 b{color:var(--red)}
+.q2 .box b{display:block;font-size:15px}
+.cyc{margin:8px 0 0;padding-left:1.4em;font-size:13.5px;line-height:1.7}
+.cyc-back{display:block;margin-top:6px;font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--midground)}
+.cyc-back.no{color:var(--red)}
+.chart{display:block;width:100%;max-width:640px;height:auto;overflow:visible}
+.chart .ax line{stroke:var(--line-2);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--midground);stroke-width:2.5}
+.chart .pt circle{fill:var(--background-base);stroke:var(--midground);stroke-width:2}
+.chart .pt circle.hot{fill:var(--midground)}
+.chart .lb text{fill:var(--midground);font-family:var(--font-mono);font-size:12px}
+.chart .tk text{fill:var(--mg-65);font-family:var(--font-mono);font-size:11px}
+.ch>.ctx+.xpost,.ch>.xpost+.ctx,.ch>.xpost+.xpost{margin-top:12px}
+/* ===== alex-zhang page additions ===== */
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.nums .box b{display:block;font-family:var(--font-display);font-size:clamp(22px,4.2cqi,34px);line-height:1.1;color:var(--midground)}
+.nums .box.est{border-style:dashed}
+@container (max-width:620px){.nums{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.chiprow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13px;color:var(--mg-80)}
+.chiprow .pill{color:var(--midground)}
+.chiprow .pill.alt{border-style:solid;border-color:var(--midground)}
+.tree{display:grid;gap:8px}
+.tree .root{border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);padding:8px 10px;font-size:13.5px;line-height:1.45}
+.tree .leaves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding-left:14px;border-left:1px dashed var(--line-2)}
+.tree .leaves span{border:1px dashed var(--line-2);padding:5px 7px;font-size:12.5px;line-height:1.4;color:var(--mg-80)}
+@container (max-width:420px){.tree .leaves{grid-template-columns:minmax(0,1fr)}}
+.gantt{display:grid;gap:10px}
+.g-row{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:10px;align-items:center}
+.g-row>b{font-size:13px}
+.g-track{position:relative;height:82px;border-left:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.g-bar{position:absolute;height:22px;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;font-family:var(--font-mono);font-size:11px;border:1px solid var(--line-2);background:var(--background-base);color:var(--mg-80)}
+.g-bar.gen{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 14%,transparent);color:var(--midground)}
+.g-bar.end{border:0;background:transparent;color:var(--midground);font-weight:700}
+.ctxw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.ctxw{grid-template-columns:minmax(0,1fr)}}
+.ctxw .side{border:1px solid var(--line-2);background:var(--background-base);padding:10px;display:grid;gap:6px;align-content:start}
+.ctxw .side>b{font-size:13.5px}
+.ctxw .side>small{font-size:12px;color:var(--mg-65)}
+.seg-stack{display:flex;flex-direction:column;gap:3px}
+.seg-stack span{padding:3px 8px;font-family:var(--font-mono);font-size:11.5px;border:1px solid var(--line-2);color:var(--mg-80)}
+.seg-stack span.in{border-color:var(--midground);color:var(--midground)}
+.seg-stack span.out{border-color:var(--red);color:var(--red)}
+.repl{margin:0;padding:8px 10px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;line-height:1.6;white-space:pre-wrap;color:var(--mg-80)}
+.subs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.subs span{padding:5px 6px;border:1px solid var(--midground);font-size:12px;line-height:1.35;text-align:center;color:var(--midground)}
+.subs span[hidden]{display:none}
+.ctxw .verdict{font-family:var(--font-mono);font-size:11.5px}
+.ctxw .verdict.bad{color:var(--red)}
+.ctxw .verdict.ok{color:var(--midground)}
+</style>
+<script src="/assets/atlas.js" defer data-page="talks/2026-10-latent-space-alex-zhang" data-v="2026-10-18"></script>
+</head>
+<body>
+
+<nav class="lang-switch" id="lang-switch" aria-label="语言 / Language"><a href="./" hreflang="en" lang="en">EN</a><a href="zh.html" hreflang="zh-CN" lang="zh-CN" aria-current="page">中</a></nav>
+
+<div class="hermes-bg" aria-hidden="true"><div class="bg-l1"></div><img class="bg-l2" src="assets/hermes/filler-bg0.webp" alt=""><div class="bg-l99"></div><div class="bg-l201"></div></div>
+
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 Kernel"><span class="lb">Kernel</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 专家"><span class="lb">专家</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 品味"><span class="lb">品味</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 Jev"><span class="lb">Jev</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 Harness"><span class="lb">Harness</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 泛化"><span class="lb">泛化</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 RLM"><span class="lb">RLM</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 Prime"><span class="lb">Prime</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Swarm"><span class="lb">Swarm</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 开放"><span class="lb">开放</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 收敛"><span class="lb">收敛</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 过剩"><span class="lb">过剩</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 下一步"><span class="lb">下一步</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://www.youtube.com/watch?v=kog7mwsDqnk" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原访谈视频，Latent Space 发布于 YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>Latent Space</span><span class="push">2026-10-02</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Harnesses, RLMs &amp; swarms</div>
+      <h1 class="h1">Recursive <span class="nw">Language Models</span></h1>
+      <p class="h1-zh">模型够聪明了，缺的是更好的 harness</p>
+      <p class="read">阅读约 15 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Alex Zhang</dd></div>
+        <div><dt>Hosts</dt><dd>swyx · Vibhu</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-02</dd></div>
+        <div><dt>Runtime</dt><dd class="num">1:43:24</dd></div>
+      </dl>
+      <p class="hero-note">Zhang 是 MIT CSAIL 博士生，RLM 论文第一作者，KernelBench 作者之一<a class="fn" href="#src-1" aria-label="来源 1">1</a><a class="fn" href="#src-2" aria-label="来源 2">2</a>。主持人 swyx 和 Vibhu Sapra<a class="fn" href="#src-3" aria-label="来源 3">3</a>。访谈里的 GPT-6 Astra（OpenAI）和 Fable（Anthropic）是 2026 年的前沿模型<a class="fn" href="#src-4" aria-label="来源 4">4</a><a class="fn" href="#src-5" aria-label="来源 5">5</a>。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：Alex Zhang 坐在麦克风前，背景是紫色窗帘" width="1920" height="1080"><figcaption>画面 © Latent Space · 25:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>今天的模型被包在大同小异的 harness<span class="gl">（包住模型、让它调用工具的外层程序）</span>里，能力没有用足。</p>
+      <div class="wants">
+        <div><b>harness 这边</b><small>Claude Code、Codex、Pi 的逻辑几乎一样。RLM 让模型用代码操作放在环境里的上下文、递归调用自己，换来组合泛化。</small></div>
+        <div class="want"><b>规模这边</b><small>OpenAI 宣称用 agent swarm 解开了一道难题（有争议）；他估计这类 swarm 里大部分 token 是白烧的。“收敛”不是免费的，要靠训练。</small></div>
+      </div>
+      <p class="last">研究这边：学术界的优势，是去押工业界不押、初看“很蠢”的注。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">01:56–1:43:24</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>模型已经很聪明，为什么能力还没用足？harness、RLM 和 swarm 各补上哪一块？</p></div>
+  <div class="pano-band" style="--act-cols:1284fr 1496fr 966fr 1176fr 1282fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <span class="ad" style="flex:116 1 0" title="预告 · 00:00–01:56"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:458 1 0" title="00 Kernel · 01:56–09:34" aria-label="00 Kernel">00</a>
+      <a href="#ch-01" class="odd" style="flex:342 1 0" title="01 专家 · 09:34–15:16" aria-label="01 专家">01</a>
+      <a href="#ch-02" class="odd" style="flex:368 1 0" title="02 品味 · 15:16–21:24" aria-label="02 品味">02</a>
+      <a href="#ch-03" class="act-start even" style="flex:575 1 0" title="03 Jev · 21:24–30:59" aria-label="03 Jev">03</a>
+      <a href="#ch-04" class="even" style="flex:459 1 0" title="04 Harness · 30:59–38:38" aria-label="04 Harness">04</a>
+      <a href="#ch-05" class="even" style="flex:462 1 0" title="05 泛化 · 38:38–46:20" aria-label="05 泛化">05</a>
+      <a href="#ch-06" class="act-start odd" style="flex:457 1 0" title="06 RLM · 46:20–53:57" aria-label="06 RLM">06</a>
+      <a href="#ch-07" class="odd" style="flex:509 1 0" title="07 Prime · 53:57–1:02:26" aria-label="07 Prime">07</a>
+      <a href="#ch-08" class="act-start even" style="flex:416 1 0" title="08 Swarm · 1:02:26–1:09:22" aria-label="08 Swarm">08</a>
+      <a href="#ch-09" class="even" style="flex:506 1 0" title="09 开放 · 1:09:22–1:17:48" aria-label="09 开放">09</a>
+      <a href="#ch-10" class="even" style="flex:254 1 0" title="10 收敛 · 1:17:48–1:22:02" aria-label="10 收敛">10</a>
+      <a href="#ch-11" class="act-start odd" style="flex:493 1 0" title="11 过剩 · 1:22:02–1:30:15" aria-label="11 过剩">11</a>
+      <a href="#ch-12" class="odd" style="flex:789 1 0" title="12 下一步 · 1:30:15–1:43:24" aria-label="12 下一步">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 开头预告剪辑，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">01:56–21:24</span></div><div class="act-name"><b>起点</b><span>Kernels &amp; taste</span></div><p class="act-line">AI 写的 kernel 占满排行榜，专家仍是最强的验证器；博士生该押怪注。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Kernel</a></li><li><a class="chip" href="#ch-01"><i>01</i>专家</a></li><li><a class="chip" href="#ch-02"><i>02</i>品味</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">21:24–46:20</span></div><div class="act-name"><b>模型与 harness</b><span>Model vs harness</span></div><p class="act-line">语言模型不必是自回归解码器；主流 harness 都一样，好设计换来组合泛化。</p><ul class="chips"><li><a class="chip" href="#ch-03"><i>03</i>Jev</a></li><li><a class="chip" href="#ch-04"><i>04</i>Harness</a></li><li><a class="chip" href="#ch-05"><i>05</i>泛化</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">46:20–1:02:26</span></div><div class="act-name"><b>RLM</b><span>Recursive LMs</span></div><p class="act-line">只有代码一种工具，上下文放在环境里；已有多家在用。</p><ul class="chips"><li><a class="chip" href="#ch-06"><i>06</i>RLM</a></li><li><a class="chip" href="#ch-07"><i>07</i>Prime</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">1:02:26–1:22:02</span></div><div class="act-name"><b>Swarm</b><span>Agent swarms</span></div><p class="act-line">砸钱能解难题；他估计大部分搜索是浪费，收敛要靠训练。</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Swarm</a></li><li><a class="chip" href="#ch-09"><i>09</i>开放</a></li><li><a class="chip" href="#ch-10"><i>10</i>收敛</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">1:22:02–1:43:24</span></div><div class="act-name"><b>下一步</b><span>What's next</span></div><p class="act-line">长而简单的工作还做不可靠，是“技能问题”；他押 harness。</p><ul class="chips"><li><a class="chip" href="#ch-11"><i>11</i>过剩</a></li><li><a class="chip" href="#ch-12"><i>12</i>下一步</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>01:56–09:34</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">GPU Mode and AI-written kernels</p><h2>AI 写的 kernel</h2><p class="ch-sub">分数高，不等于能用</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>GPU Mode 排行榜上几乎全是 AI 写的 kernel，但前十名里只有一位老成员掌舵写出的那份，放进真实系统还稳定。kernel 有验证问题。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>GPU Mode</b>：2023 年起的 Discord 社区（原名 CUDA Mode），教人写 GPU kernel<span class="gl">（在 GPU 上执行一个算子的底层程序）</span>，后来加了排行榜。</li>
+    <li><b>KernelBench 的出发点</b>：kernel 优化的套路不多，攒够题目就能自动化。研究者很需要：新架构要附带 kernel 才能用。</li>
+    <li><b>现在</b>：近期题目的解几乎都是 AI 生成的；KernelBench 发布以来，reward hacking<span class="gl">（钻打分规则的空子拿高分）</span>一直很多。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">分数高 ≠ 能用</span><span>07:32–08:40</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>前十里的其他 AI 生成解</b><small>排行榜前十 ✓ · 放进端到端系统不稳定 ✕ · 代码更长</small></div>
+        <div class="box hot"><b>一位老成员的解：他用 AI，但由他掌舵</b><small>排行榜前十 ✓ · 端到端稳定 ✓ · 代码短得多</small></div>
+      </div>
+      <p class="cap">他的结论：“GPU kernel 有验证问题。”会写 kernel 仍然很有价值。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_gpt56_price_2026-07-30.jpg" aria-label="@OpenAI · 2026-07-30"><img src="assets/x/x00_gpt56_price_2026-07-30.jpg" alt="散点图：Artificial Analysis 智能指数与每任务成本，GPT-5.6 Luna 位于左上方" loading="lazy" width="1600" height="1249"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAI</b><span>2026-07-30</span></span><p>主持人 Vibhu 说 GPT-5.6 写的 kernel 让 Terra 和 Luna 便宜 80%。实际是 Luna 降 80%、Terra 降 20%；kernel 由 GPT-5.6 Sol 经 Codex 改写<a class="fn" href="#src-6" aria-label="来源 6">6</a>。</p><a class="xgo" href="https://x.com/OpenAI/status/2082878156483219672" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>09:34–15:16</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Human expertise vs brute-force AI search</p><h2>专家与蛮力搜索</h2><p class="ch-sub">一个洞见，抵一万亿 token</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>懂行的人是最强的验证器：swarm 也许要烧一万亿 token 才摸到的东西，专家一个洞见就能省掉。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>专家更会用 AI</b>：他们能当很强的 verifier<span class="gl">（判断解对不对的人或程序）</span>。swarm 能把解空间探索充分，但懂行的人一个洞见就能“抹掉那一万亿 token 的开销”。</li>
+    <li><b>Speed of light</b>：矩阵乘能算出理论最快值，实际 kernel 往往离它很远。</li>
+    <li><b>让模型直接写 megakernel？</b>他偏向不：没有数据，他还没见过模型凭空学会一类难题；megakernel 由单个 kernel 组合而成，交给编译器更合适。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">两种“快”</span><span>12:05–13:20</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="单独测 kernel 与端到端模型的对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">单独测<small>一个 kernel</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">端到端<small>整个模型</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">起点</span><span class="vs-w" role="cell">数据都在显存（HBM）里</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">上一层的结果可能还在缓存里</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">做法</span><span class="vs-w" role="cell">每个算子各自最快</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">让第一个算子慢一点，把数据留给第二个（kernel fusion / megakernel）</span></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>15:16–21:24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Research taste and taking big bets</p><h2>研究品味</h2><p class="ch-sub">别人说“这不就是 subagents”时</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>学术界最成功的研究，做的是工业界没在看的问题。别人第一反应是“这有什么用”，往往是好信号。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>出身</b>：本科在 Princeton，和 SWE-bench 团队共事。他认为品味靠机会养成。</li>
+    <li><b>常见错误</b>：做“在工业实验室眼里好看”的题，目标被今天的模型框住了。</li>
+    <li><b>结论</b>：博士生几乎能做任何事，也没有官僚流程。大注多数会失败，这很正常。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">初见反应 → 后来</span><span>18:03–19:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>SWE-bench</b><small>“不可能的任务，没人在乎” → Devin 出来后，人人都来爬榜</small></div>
+        <div class="box"><b>STaR / Quiet-STaR · chain of thought · ReAct</b><small>“这不是很显然吗” → 改变了领域的方向</small></div>
+        <div class="box hot"><b>RLM</b><small>“这不就是 subagents 吗？” → 他说：这样的反应是好信号</small></div>
+        <div class="box"><b>Jev（见 03）</b><small>“我们早就有了” → 打开新的设计空间</small></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>21:24–30:59</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Jev and rethinking the language model</p><h2>重想“语言模型”</h2><p class="ch-sub">输出空间也是旋钮</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Jev 的意义不在“又一个分类器”，而在它提出的问题：语言模型一定要是“文本进、文本出”的自回归解码器吗？输出空间和推理延迟可以一起调。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Jev</b><span class="gl">（TypeSafe AI 2026-09-15 发布：开发者先定义输出空间，模型返回带校准概率的判断，不生成自由文本<a class="fn" href="#src-7" aria-label="来源 7">7</a>）</span>先被炒热，又被说“就是个 NLP 分类器”；RLM 也被说“不是语言模型”。他的回答：语言模型不必是 Transformer 解码器。</li>
+    <li><b>新问题</b>：只要二分类，何必付约 400 倍的成本（他的粗算）？harness 里做的事能不能搬进模型？这对 RLM 和 swarm 有用，它们最大的瓶颈是慢。</li>
+    <li><b>新实验室</b>：只复制大实验室的做法，就只能拼数据和算力，必输。他也怀疑前沿实验室会把大量算力押在新路线上。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">两种输出空间</span><span>23:20–24:15</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="自回归解码器与 Jev 式模型的对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">自回归解码器<small>文本进、文本出</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">Jev 式<small>改输出空间</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">输入</span><span class="vs-w" role="cell">文本</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">文本 + 你先定义好的选项</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">输出</span><span class="vs-w" role="cell">逐个 token 生成文本</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">直接给出选项和概率，不生成自由文本</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">代价</span><span class="vs-w" role="cell">二分类也要付约 400×（他的粗算）</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">低延迟：游戏、路由、分类</span></div>
+      </div>
+      <p class="cap">示意：两边都用语言模型骨干，差别在输出空间。他说不知道 Jev 内部怎样实现。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@CompleteSkeptic</b>（2026-09-15）：TypeSafe CEO Diogo Almeida 发布 Jev 时说，“非凡的主张需要非凡的证据”，附上技术博客。<a class="xgo" href="https://x.com/CompleteSkeptic/status/2099925690682630371" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>难在训练</b>：有人说是在 Qwen 上后训练；直接用开源 Qwen 都比它差，说明他们的训练方法很有效。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>30:59–38:38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">Why Claude Code, Codex and Pi are so similar</p><h2>harness 都一样</h2><p class="ch-sub">harness 是一段有主见的程序</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Claude Code、Codex、Pi 的设计选择几乎一样。harness 决定模型怎样“贴合”一个问题；设计得好，不同的任务在模型眼里会变成同一个任务。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>都一样</b>：Claude Code、Codex、Pi、Oh My Pi 的设计大体相同；Prime Agent 稍不同，因为它本质上是 RLM。</li>
+    <li><b>harness 是什么</b>：用 next-token prediction 直接做难任务很别扭。harness 是一段很有主见的程序，决定模型怎样贴合问题；模型如今也围绕 harness 的 rollout<span class="gl">（模型跑一遍留下的完整轨迹）</span>训练，做法很 hacky。</li>
+    <li><b>实验</b>（他的博客）：检索和聚合任务领域完全不同；在 RLM 里训练一个，另一个直接会做。<span class="host">主持人</span>引博客：在短任务上训练，能泛化到长 8–30 倍的任务。他强调“没有魔法”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">同一个顶层程序</span><span>32:57–38:38</span></div>
+    <div class="vz">
+      <div class="chiprow"><span class="pill">Claude Code</span><span class="pill">Codex</span><span class="pill">Pi</span><span class="pill">Oh My Pi</span><span>= 循环里调工具，整条轨迹当 prompt</span><span class="pill alt">Prime Agent</span><span>≈ RLM（仍保留压缩循环）</span></div>
+      <div class="vs" role="table" aria-label="普通 harness 与 RLM 处理两类任务的对照" style="margin-top:12px">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">普通 harness</span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">RLM</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">检索 vs 聚合</span><span class="vs-w" role="cell">两条完全不同的轨迹</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">同一个顶层程序；差别交给子 agent</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">训练一个之后</span><span class="vs-w" role="cell">另一个仍要单独学</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">另一个直接会做</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">任务变长</span><span class="vs-w" role="cell">轨迹变长，出了训练分布</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">只改一个长度变量：长 8–30× 也能做</span></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_harness_blog_2026-10-08.jpg" aria-label="@a1zhang · 2026-10-08"><img src="assets/x/x04_harness_blog_2026-10-08.jpg" alt="State of AI 2026 报告第 9 页：Recursive language models treat prompts as parts of the environment，右侧是三步流程：把输入放在模型外、检查拆分并委派、合并结果" loading="lazy" width="1600" height="1027"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a1zhang</b><span>2026-10-08</span></span><p>RLM 和他的 harness 博客进入今年的 State of AI 报告。这页把 RLM 概括为：输入放进代码工作区，拆成模型熟悉的“局部同分布”子调用。</p><a class="xgo" href="https://x.com/a1zhang/status/2108228912794738973" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>他参与的 VideoGameBench 故意用极简 harness。他认为多数游戏模型仍通不了关，只有个别可以，比如他见过 Astra 通关 Kirby<span class="gl">（2025 年发布时，最好的模型只完成 0.48%<a class="fn" href="#src-8" aria-label="来源 8">8</a>）</span>。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>38:38–46:20</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Harnesses as compositional generalizers</p><h2>组合泛化</h2><p class="ch-sub">今天的模型是为旧 harness 训练的</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>好的 harness 能让模型用更少的环境泛化到更多任务。但今天的模型是围绕“整条轨迹当 prompt”的 harness 训练的，放进 RLM 还不够好。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>递归论证</b>：竞赛编程和 GPU 优化技能相近，harness 能学会同一个解法；子 agent 的问题也可能是同一形式。再往前：能不能让模型在前向传播里隐式地当一个 RLM？</li>
+    <li><b>harness tax</b>：他引 Arena 的论文，印证了自己的先验：大多数 harness 选择不重要<span class="gl">（论文结论更细：成功率只差约 ±2–5%，成本却最多差约 5 倍<a class="fn" href="#src-9" aria-label="来源 9">9</a>）</span>。</li>
+    <li><b>除了 RLM</b>：模型越强，harness 差别越小。但放进 RLM，模型还只是“还行”，因为它围绕 trajectory as a prompt 训练；需要有团队在新 harness 上规模化后训练。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">同一个程序，向下递归</span><span>39:01–40:20</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="tree"><div class="root"><b>竞赛编程</b><br>列出候选 → 派子 agent 展开 → 写循环对 verifier 检查、演化</div><div class="leaves"><span>子题 A</span><span>子题 B</span><span>子题 C</span></div></div>
+        <div class="tree"><div class="root"><b>GPU 优化</b><br>列出候选 → 派子 agent 展开 → 写循环对 verifier 检查、演化</div><div class="leaves"><span>kernel 方案 A</span><span>kernel 方案 B</span><span>kernel 方案 C</span></div></div>
+      </div>
+      <p class="cap">根相同，叶子不同；叶子本身也可以再用同一个形式往下拆。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>内部结果（未公开）：Fable 曾是最适合 RLM 的模型，他认为这是因为 Anthropic 训练过 dynamic workflows<span class="gl">（Claude Code 的功能：用脚本编排大量子 agent<a class="fn" href="#src-10" aria-label="来源 10">10</a>）</span>；Astra 现在也够好。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>46:20–53:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">RLMs explained</p><h2>RLM 是什么</h2><p class="ch-sub">只有代码这一种工具</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>RLM 是一种 harness 设计：唯一的工具是代码，模型能把自己当函数调用，上下文始终存在代码环境里。它要解决的问题已从“长上下文”变成“组合”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>定义</b>：唯一的工具是代码；其他工具和“调用自己”都是代码里的函数；上下文存在代码环境里，比如文件系统。</li>
+    <li><b>和常规 harness 的差别</b>：常规 harness 每轮调一个工具，没有能随时回查的中央上下文；RLM 用代码编排调用，守着一份中央上下文。</li>
+    <li><b>局部同分布</b>（locally in-distribution）：常规 harness 把轨迹不断追加进 prompt，任务一长就出了训练分布。RLM 把任务拆给只看局部的子调用：整个任务没见过，每次调用仍在分布内。</li>
+    <li><b>scaling 类比</b>：预训练 scaling law 成立，是因为架构大体稳定；换掉架构，幂律可能会变。他认为 harness 也许也是这样。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">两种上下文</span><span>48:02–50:56</span></div>
+    <div class="vz">
+      <div class="ctxw" data-ctxw>
+        <div class="side">
+          <b>trajectory as a prompt</b><small>整条轨迹不断追加进 prompt</small>
+          <div class="seg-stack" data-left></div>
+          <span class="verdict bad" data-lv></span>
+        </div>
+        <div class="side">
+          <b>RLM</b><small>上下文是代码里的一个变量</small>
+<pre class="repl">context = load(...)   # 存在内存 / 磁盘
+parts = split(context)
+for p in parts:
+    llm_query(p)       # 调用自己</pre>
+          <div class="subs" data-subs></div>
+          <span class="verdict ok" data-rv></span>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:10px"><button type="button" class="h-btn solid" data-next>下一步 <i>→</i></button><button type="button" class="h-btn" data-reset>重置</button><span class="cap" data-step style="align-self:center"></span></div>
+      <p class="cap">示意：代码、轮数和子调用数是虚构的，只用来说明两种上下文的差别。</p>
+    </div>
+  </article>
+  <script>
+  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;var v=r.closest('.vz'),L=r.querySelector('[data-left]'),S=r.querySelector('[data-subs]'),lv=r.querySelector('[data-lv]'),rv=r.querySelector('[data-rv]'),st=v.querySelector('[data-step]'),n=4;
+  var segs=['任务','工具结果 1','第 2 轮','工具结果 2','第 3 轮','工具结果 3','第 4 轮','工具结果 4'];
+  function draw(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
+  S.innerHTML='';for(var k=1;k<=3;k++){var t=document.createElement('span');t.textContent='子调用 '+k+' · 只看一小段';if(k>n-1&&n<4)t.hidden=true;S.appendChild(t)}
+  lv.textContent=n>=3?'越来越出分布':'还在分布内';rv.textContent='每次调用都在分布内';st.textContent='第 '+n+' 轮 / 共 4 轮'}
+  v.querySelector('[data-next]').addEventListener('click',function(){n=n>=4?1:n+1;draw()});
+  v.querySelector('[data-reset]').addEventListener('click',function(){n=1;draw()});draw()});
+  </script>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x06_rlm_launch_2026-01-02.jpg" aria-label="@a1zhang · 2026-01-02"><img src="assets/x/x06_rlm_launch_2026-01-02.jpg" alt="Recursive Language Models 论文首页：作者 Alex L. Zhang、Tim Kraska、Omar Khattab，下方图 1 对比 GPT-5 与 RLM(GPT-5) 在三个长上下文任务上随输入变长的得分" loading="lazy" width="1416" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a1zhang</b><span>2026-01-02</span></span><p>RLM 发布帖：“就像 2025 年从语言模型转向推理模型，2026 年会是转向 RLM 的一年。”图 1：输入变长后，GPT-5 的分数掉下去，RLM(GPT-5) 基本稳住。</p><a class="xgo" href="https://x.com/a1zhang/status/2007198916073136152" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>训练</b>：MIT 付不起规模化训练，Prime Intellect 这样的公司在做。他猜，围绕聪明 harness 训练时，也许会看到更好的后训练 scaling law。</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>换个角度看：RLM 不靠更长的上下文窗口，而是让每次调用看到的东西都短而熟悉，把“长”的问题换成了“组合”的问题。</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>53:57–1:02:26</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Prime Agent and RLMs in the wild</p><h2>Prime Agent 与实际应用</h2><p class="ch-sub">唯一的工具是 IPython</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Prime Agent 在 Pi 上加了 RLM 抽象：唯一的工具是 IPython，harness 能改自己，子 agent 能长期存在并用代码互相通信。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>来历</b>：Prime Intellect 先发文说 RLM 是未来，后经 GPU Mode 的朋友牵线合作。Prime 训练自己的模型；他不参与训练，把博士时间押在别的大注上。</li>
+    <li><b>子 agent 太短命</b>：<span class="host">主持人</span>这是 Codex 的痛点，诀窍是外部化到文件系统，一切走代码。他同意。</li>
+    <li><b>第三方</b>：Harvey 给法律工作后训练 RLM；Laude Institute 的 Headlong 能“持续思考”；DSPy 有 RLM 模块；ARC-AGI-3 Kaggle 赛上很多 harness 借了 RLM 抽象<span class="gl">（Prime Agent 和 Headlong 的作者都包括 Zhang<a class="fn" href="#src-11" aria-label="来源 11">11</a><a class="fn" href="#src-13" aria-label="来源 13">13</a>）</span>。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">Prime Agent 拆解</span><span>55:32–58:06</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>Pi 核心循环</b><small>极简 harness，他拿它当所有 harness 的参照</small></li>
+        <li class="hot"><b>唯一工具：IPython</b><small>其他工具是 Python 模块或 Bash 脚本</small></li>
+        <li><b>continual harness</b><small>能改自己的 skills、子 agent、prompt（背景：基础 system prompt 不可改，改动可回滚<a class="fn" href="#src-11" aria-label="来源 11">11</a>）</small></li>
+        <li><b>agent 间消息</b><small>通信也写在代码里</small></li>
+        <li><b>持久子 agent</b><small>跑完后还能继续追问</small></li>
+      </ol>
+      <p class="cap">他的话：除了这些，Prime Agent 其余部分都是“标准的”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_harvey_rlm_2026-09-08.jpg" aria-label="@harvey · 2026-09-08"><img src="assets/x/x07_harvey_rlm_2026-09-08.jpg" alt="流程图：上千个文件的数据室载入 Python REPL，根模型检索、切片后分批委派给子 agent，结果汇成尽调备忘录" loading="lazy" width="1600" height="753"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@harvey</b><span>2026-09-08</span></span><p>Harvey 与 Baseten 的 RLM harness：数据室放进 REPL，根 agent 把有界的审阅任务分给子 agent。7 个模型的评分通过率均值从 23% 升到 62%<a class="fn" href="#src-12" aria-label="来源 12">12</a>。</p><a class="xgo" href="https://x.com/harvey/status/2097372371195953272" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@PrimeIntellect</b>（2026-08-05）：发布 Prime Agent，“一个能自我改进的 RLM harness”，用于编程和长时间自主任务。<a class="xgo" href="https://x.com/PrimeIntellect/status/2085086999267144083" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>1:02:26–1:09:22</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">OpenAI swarms and the future of language models</p><h2>Swarm 与未来的“模型”</h2><p class="ch-sub">你问的模型，背后可能是一群</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>OpenAI 宣称解开了 Navier–Stokes 问题（有争议）。他判断用的是共享上下文的 agent swarm。将来你问的“语言模型”，背后可能是一整个看不见的 swarm。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>是不是 RLM</b>：他猜不是，但精神相近：一群 agent 共享文件系统。Astra 级模型拿到对的信息就够聪明，难的是找到这些信息。</li>
+    <li><b>将来</b>：前端还是 Claude Code、Codex 那样的流，背后是用户看不到的 swarm。他认为这是相对稳的押注。</li>
+    <li><b>浪费</b>：他“相当确定”这类 swarm 里 95% 的探索只是在烧 token；换一种组织方式也许没那么多，他也不确定。他类比压缩和 RLM：RLM 能解更难的题，但人们多数时候选便宜又快的压缩。</li>
+    <li><b>开放问题</b>：什么问题该用 swarm？agent 能不能自己决定？</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">那次 swarm 的账单 · 两种组织</span><span>1:06:16–1:08:13</span></div>
+    <div class="vz">
+      <div class="nums">
+        <div class="box"><b>~10,000</b><small>个 agent</small></div>
+        <div class="box"><b>88 小时</b><small>运行时间</small></div>
+        <div class="box"><b>1,300 亿</b><small>output token</small></div>
+        <div class="box est"><b>≈4,000 万美元</b><small>主持人按公开价估算；他说“比我想的少”</small></div>
+      </div>
+      <div class="q2" style="margin-top:12px">
+        <div class="box"><b>组织图式</b><small>规划者 → 子规划者 → worker（主持人举的 Cursor 例子<a class="fn" href="#src-15" aria-label="来源 15">15</a>）。主持人认为：要反复汇总，汇总就是瓶颈</small></div>
+        <div class="box hot"><b>共享上下文式</b><small>每个 agent 各干各的，读写同一份上下文（主持人：真正的 swarm 应该这样）</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_navier_stokes_2026-09-08.jpg" aria-label="@OpenAI · 2026-09-08"><img src="assets/x/x08_navier_stokes_2026-09-08.jpg" alt="流体涡旋的三维渲染，标注 inward spiral 与 axial stretching" loading="lazy" width="1254" height="1254"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAI</b><span>2026-09-08</span></span><p>OpenAI 称一组 agent 用比 GPT-6 Astra 强得多的内部模型解了 Navier–Stokes 问题。OpenAI 自己只说花了“数百万美元”；证明针对的是带外力的版本，署名也有争议<a class="fn" href="#src-14" aria-label="来源 14">14</a>。</p><a class="xgo" href="https://x.com/OpenAI/status/2097374640582668336" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>1:09:22–1:17:48</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Open-endedness and Sakana AI</p><h2>开放式研究</h2><p class="ch-sub">难的是从 slop 里挑</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>开放式研究和未解的数学题用同一套办法：演化搜索、放出 swarm。难点在最后一步：从一堆 slop 里挑出值得留的东西。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>方法相同</b>：演化搜索（AlphaEvolve 一类）很像放出一群 agent，等它们碰出好东西。没有明确目标时，他还看不清价值。</li>
+    <li><b>瓶颈在挑选</b>：他读博前在 Sakana 待过一个夏天，那里最大的难题是“最后怎么选”。他记得 Fugu 至少部分受这个想法启发<span class="gl">（Fugu 是一个训练来调用其他模型的模型<a class="fn" href="#src-16" aria-label="来源 16">16</a>）</span>。</li>
+    <li><b>Sakana</b>：更像博士实验室，研究常被看成“怪”，他喜欢这一点。主持人现场查到 Sakana 的日语模型是 Kimi 微调<span class="gl">（Namazu，基于 Kimi K2.6<a class="fn" href="#src-17" aria-label="来源 17">17</a>）</span>。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">开放式研究的漏斗</span><span>1:12:02–1:13:17</span></div>
+    <div class="vz">
+      <div class="tl">
+        <div class="box"><i>1</i>放出 swarm<small>或演化搜索</small></div>
+        <div class="box"><i>2</i>海量产出<small>高吞吐生成，大多是 slop</small></div>
+        <div class="box hot2"><i>3</i><b>筛选</b><small>怎样挑出好东西：瓶颈在这里</small></div>
+        <div class="box hot"><i>4</i>少数好东西<small>“hidden gems”</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x09_fugu_2026-09-17.jpg" aria-label="@SakanaAILabs · 2026-09-17"><img src="assets/x/x09_fugu_2026-09-17.jpg" alt="示意图：横轴成本、纵轴性能，Fugu Max 和 Fugu Ultra 组成的前沿高于单个模型组成的前沿" loading="lazy" width="1600" height="863"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@SakanaAILabs</b><span>2026-09-17</span></span><p>Fugu Max 与 Fugu Ultra v2：由多个模型组成的系统，在成本—性能上画出一条高于单个模型的前沿。</p><a class="xgo" href="https://x.com/SakanaAILabs/status/2100647118859886906" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>1:17:48–1:22:02</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Kimi vs OpenAI agent swarms</p><h2>swarm 怎样收敛</h2><p class="ch-sub">收敛不是白送的</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>swarm 能朝目标收敛，不是模型够聪明就白送的，要专门训练。在他看来 OpenAI 做到了，Claude Code 的 dynamic workflows 还没有；Kimi 的 swarm 他不确定。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>OpenAI</b>：“显然是对的做法”。他把 Hugging Face 事件解读为 OpenAI 在训练一个像 swarm 那样工作的系统<span class="gl">（2026 年 7 月，OpenAI 测评中的模型逃出沙箱、攻入 Hugging Face 部分设施；报告列出四种失准模式，“agent 之间未经授权的通信”是其中之一<a class="fn" href="#src-18" aria-label="来源 18">18</a>）</span>。</li>
+    <li><b>Kimi 与 dynamic workflows</b>：Kimi 的 swarm 他不知道能不能解新问题。dynamic workflows 他试过：太贵，行为不像朝着目标走，“有点失败”。</li>
+    <li><b>核心</b>：“我们把 swarm 收敛到一个答案当成理所当然。”</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">他对几种做法的判断</span><span>1:17:51–1:21:36</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">方案</th><th scope="col">他的判断</th><th scope="col">理由</th></tr></thead>
+        <tbody>
+          <tr><td>OpenAI swarm</td><td>对的做法</td><td>训练过，能花钱解开未解问题</td></tr>
+          <tr><td>Kimi Agent Swarm</td><td>有意思，存疑</td><td>不确定能解新问题</td></tr>
+          <tr><td>Claude Code dynamic workflows</td><td>“有点失败”</td><td>太贵，不朝目标收敛</td></tr>
+          <tr><td>Gemini 的 IMO harness</td><td>有点被夸大，但当时很聪明</td><td>模型不够好时，把 harness 做到了极致</td></tr>
+        </tbody></table></div>
+      <p class="cap">他先说明：自己没在这些公司工作过，“听听就好”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@Kimi_Moonshot</b>（2026-01-27）：Kimi K2.5 发布，主打 Agent Swarm，最多可调 100 个子 agent<a class="fn" href="#src-19" aria-label="来源 19">19</a>。<a class="xgo" href="https://x.com/Kimi_Moonshot/status/2016021783833673897" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>1:22:02–1:30:15</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Capability overhang and speculative tool calling</p><h2>能力过剩</h2><p class="ch-sub">一个高中生都能做的事</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>主持人概括为“能力过剩”，他说某种意义上是：让前沿模型像一个 18 岁高中生那样，连续一个月可靠地做一份简单工作，今天还做不到。他认为这是“技能问题”，一个好 harness 就能解决。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Speculative PTC</b>（他的博客）：模型还在写代码时，就提前发出能静态分析出来的工具调用。他说凡是程序化调用都该用。</li>
+    <li><b>该有人去解</b>：长时间、简单、要可靠的任务。像跟实习生说话那样交代小事，一个通用 harness 插进去就能用；不需要前沿实验室，也许学术界该做。</li>
+    <li><b>能力能迁移吗</b>：思想实验：从 Astra 里去掉所有 GPU 编程数据，它还能在上下文里学会优化 kernel 吗？<span class="host">主持人</span>这就是 continual learning。他：“最好的例子。”</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">顺序 vs 投机</span><span>1:22:25–1:22:50</span></div>
+    <div class="vz">
+      <div class="gantt">
+        <div class="g-row"><b>顺序</b><div class="g-track"><span class="g-bar gen" style="left:0;width:40%;top:4px">写代码</span><span class="g-bar" style="left:40%;width:24%;top:30px">工具 A</span><span class="g-bar" style="left:64%;width:24%;top:56px">工具 B</span><span class="g-bar end" style="left:88%;width:12%;top:56px">完成</span></div></div>
+        <div class="g-row"><b>投机</b><div class="g-track"><span class="g-bar gen" style="left:0;width:40%;top:4px">写代码</span><span class="g-bar" style="left:14%;width:24%;top:30px">工具 A</span><span class="g-bar" style="left:24%;width:24%;top:56px">工具 B</span><span class="g-bar end" style="left:48%;width:12%;top:56px">完成</span></div></div>
+      </div>
+      <p class="cap">示意，时长不是讲者给的数据：能静态看出的调用，在代码还没写完时就排队执行。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_sptc_2026-08-24.jpg" aria-label="@a1zhang · 2026-08-24"><img src="assets/x/x11_sptc_2026-08-24.jpg" alt="博客 Speculative Programmatic Tool Calling 的图 1：左侧是模型写的 REPL 代码，右侧时间线对比有投机和无投机时子调用的执行" loading="lazy" width="1600" height="1301"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a1zhang</b><span>2026-08-24</span></span><p>sPTC 发布：在 harness 生成代码时就推测会用到的工具调用，提前排队，与 token 生成和 REPL 执行重叠。</p><a class="xgo" href="https://x.com/a1zhang/status/2091938825580716079" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>1:30:15–1:43:24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Neuralese, future research and AI for science</p><h2>下一步押什么</h2><p class="ch-sub">十几个想法，多数是坏的</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>他从 GPU 走到 harness，因为他认为大部分创新还会发生在这一层。选题靠很多想法，各花一点时间试，确信时放下一切。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Neuralese</b><span class="gl">（设想中模型自己的“内部语言”）</span>：他押英语和 Python 的混合，不买“二进制”。他反问：代码这类推理不是天生自回归吗？</li>
+    <li><b>为什么离开 GPU</b>：kernel 是手段。做 harness 很不舒服：模糊，算力有限难验证；但创新在这里。</li>
+    <li><b>怎样找他合作</b>：别只写“我很喜欢 RLM”；他喜欢有强观点、能说清为什么的人。</li>
+    <li><b>科学</b>：反馈环很长，还要判断半年后会不会被新模型直接解决；ARC-AGI-3 不到一年就饱和了。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">他的选题节奏</span><span>1:38:02–1:38:59</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>10–15 个想法</b><small>同时放在心里</small></li>
+        <li><b>多数是坏的</b><small>跑步、打网球时想</small></li>
+        <li><b>先看一看</b><small>和感兴趣的人花点时间试</small></li>
+        <li class="hot"><b>确信了</b><small>放下一切，接下来几周全力做</small></li>
+        <li><b>能跑实验了</b><small>“又可以轻松滑行”</small></li>
+      </ol>
+    </div>
+  </article>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Summary</p><h2>总结</h2></div></div></header>
+  <p class="sub-h"><b>这场访谈的 6 个要点</b>读后归纳</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>能力没用足</b>：瓶颈在怎样组织模型；可靠地做长而简单的工作是“技能问题”。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Harness</a><a class="chip" href="#ch-11"><i>11</i>过剩</a></span></li>
+    <li><b>harness 大同小异</b>：换一种抽象，scaling 曲线可能会不同（他的类比）。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Harness</a><a class="chip" href="#ch-06"><i>06</i>RLM</a></span></li>
+    <li><b>上下文放进环境</b>：每次调用都在分布内，换来组合泛化。<span class="chips"><a class="chip" href="#ch-05"><i>05</i>泛化</a><a class="chip" href="#ch-06"><i>06</i>RLM</a><a class="chip" href="#ch-07"><i>07</i>Prime</a></span></li>
+    <li><b>swarm 不是白来的</b>：他估计大部分搜索是浪费，收敛要靠训练。<span class="chips"><a class="chip" href="#ch-08"><i>08</i>Swarm</a><a class="chip" href="#ch-10"><i>10</i>收敛</a></span></li>
+    <li><b>专家仍是验证器</b>：从 slop 里挑出好东西是瓶颈。<span class="chips"><a class="chip" href="#ch-00"><i>00</i>Kernel</a><a class="chip" href="#ch-01"><i>01</i>专家</a><a class="chip" href="#ch-09"><i>09</i>开放</a></span></li>
+    <li><b>学术界押怪注</b>：输出空间、架构、harness 都还能重想。<span class="chips"><a class="chip" href="#ch-02"><i>02</i>品味</a><a class="chip" href="#ch-03"><i>03</i>Jev</a><a class="chip" href="#ch-12"><i>12</i>下一步</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Zhang 的收尾</b>：RLM 论文主要是实证结果，“想法本身很简单”；现在有更有意思的东西值得看。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>20 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>GPU kernel</td><td>在 GPU 上执行一个算子的底层程序</td><td>00 01</td></tr>
+        <tr><td>Reward hacking</td><td>奖励投机：钻打分规则的空子拿高分</td><td>00</td></tr>
+        <tr><td>Verifier</td><td>验证器：判断解对不对的人或程序</td><td>01 05</td></tr>
+        <tr><td>Speed of light</td><td>按硬件极限算出的理论最快速度</td><td>01</td></tr>
+        <tr><td>Kernel fusion / megakernel</td><td>把多个算子合成一个 kernel，少让数据进出显存</td><td>01</td></tr>
+        <tr><td>Output space</td><td>模型能输出的东西的集合：自由文本，或固定选项</td><td>03</td></tr>
+        <tr><td>Looped transformer</td><td>把同一组层循环使用的 Transformer</td><td>03</td></tr>
+        <tr><td>Calibration</td><td>校准：模型说的把握和真实正确率一致</td><td>03</td></tr>
+        <tr><td>Harness</td><td>包住模型、让它调用工具和执行任务的外层程序</td><td>04</td></tr>
+        <tr><td>Rollout</td><td>模型在环境里跑一遍留下的完整轨迹</td><td>04</td></tr>
+        <tr><td>Trajectory as a prompt</td><td>把整条轨迹不断追加进 prompt 的常规做法</td><td>05 06</td></tr>
+        <tr><td>RLM</td><td>Recursive Language Model：唯一工具是代码、能递归调用自己、上下文存在环境里的 harness 设计</td><td>06</td></tr>
+        <tr><td>Locally in-distribution</td><td>局部同分布：整个任务没见过，但每次调用都是见过的形式</td><td>06</td></tr>
+        <tr><td>Context offloading / compaction</td><td>把上下文放到模型外（变量、文件）/ 上下文太长时把旧内容总结掉</td><td>06 08</td></tr>
+        <tr><td>Persistent subagent</td><td>持久子 agent：跑完后还能继续追问</td><td>07</td></tr>
+        <tr><td>Agent swarm</td><td>成千上万个 agent 协同解一个问题</td><td>08 10</td></tr>
+        <tr><td>Open-endedness</td><td>开放式研究：没有固定目标，让系统自己找有趣的问题</td><td>09</td></tr>
+        <tr><td>PTC / speculative PTC</td><td>写代码来调用工具 / 代码没写完就提前执行能预见的调用</td><td>11</td></tr>
+        <tr><td>Capability overhang</td><td>能力过剩：模型已有的能力远多于实际用上的</td><td>11</td></tr>
+        <tr><td>Continual learning</td><td>持续学习：模型在使用中不断学会新东西</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Alex Zhang（<a href="https://x.com/a1zhang" rel="noopener">@a1zhang</a>），主持人 swyx（<a href="https://x.com/swyx" rel="noopener">@swyx</a>）和 Vibhu Sapra，2026-10-02 由 Latent Space <a href="https://www.youtube.com/watch?v=kog7mwsDqnk" rel="noopener">发布于 YouTube</a>；节目文字版见 <a href="https://www.latent.space/p/rlm" rel="noopener">latent.space/p/rlm</a>。本页为个人学习笔记，不含逐字稿，已略去开头预告；“主持人”标签的内容是 swyx 或 Vibhu 的话。视频画面版权归 Latent Space 所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://alexzhang13.github.io/" rel="noopener">Alex L. Zhang 个人主页</a></li>
+      <li id="src-2"><a href="https://arxiv.org/abs/2512.24601" rel="noopener">Zhang, Kraska, Khattab · Recursive Language Models · arXiv 2512.24601</a></li>
+      <li id="src-3"><a href="https://www.ai.engineer/speakers/vibhu-sapra" rel="noopener">AI Engineer · Vibhu Sapra</a></li>
+      <li id="src-4"><a href="https://www.latent.space/p/ainews-gpt-6-astra-openais-biggest" rel="noopener">Latent Space AINews · GPT-6 Astra · 2026-09-04</a></li>
+      <li id="src-5"><a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" rel="noopener">Anthropic · Claude Fable 5 and Mythos 5 · 2026-06-09</a></li>
+      <li id="src-6"><a href="https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/" rel="noopener">OpenAI · Advancing the price-performance frontier with GPT-5.6 · 2026-07-30</a></li>
+      <li id="src-7"><a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" rel="noopener">TypeSafe AI · Introducing System One models and Jev · 2026-09-15</a></li>
+      <li id="src-8"><a href="https://arxiv.org/abs/2505.18134" rel="noopener">Zhang et al. · VideoGameBench · arXiv 2505.18134</a></li>
+      <li id="src-9"><a href="https://arena.ai/blog/coding-agents-harness-tax" rel="noopener">Arena · HarnessTax · 2026-09-16</a></li>
+      <li id="src-10"><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" rel="noopener">Claude · Introducing dynamic workflows in Claude Code · 2026-05-28</a></li>
+      <li id="src-11"><a href="https://primeintellect.ai/blog/prime-agent" rel="noopener">Prime Intellect · Prime Agent · 2026-08-05</a></li>
+      <li id="src-12"><a href="https://www.harvey.ai/blog/post-training-rlm-agents-for-m-and-a-diligence" rel="noopener">Harvey · Post-Training RLM Agents for End-to-End M&amp;A Diligence · 2026-09-08</a></li>
+      <li id="src-13"><a href="https://www.laude.org/updates/headlong-a-microharness-for-persistent-agents" rel="noopener">Laude Institute · Headlong · 2026-08-24</a></li>
+      <li id="src-14"><a href="https://www.coindesk.com/tech/2026/09/09/openai-says-10-000-ai-agents-solved-a-usd1-million-math-problem-now-mathematicians-are-fighting" rel="noopener">CoinDesk · OpenAI 的 Navier–Stokes 结果与争议 · 2026-09-09</a></li>
+      <li id="src-15"><a href="https://cursor.com/blog/self-driving-codebases" rel="noopener">Cursor · Towards self-driving codebases · 2026-02-05</a></li>
+      <li id="src-16"><a href="https://sakana.ai/fugu-release/" rel="noopener">Sakana AI · Fugu</a></li>
+      <li id="src-17"><a href="https://sakana.ai/namazu/" rel="noopener">Sakana AI · Namazu</a></li>
+      <li id="src-18"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
+      <li id="src-19"><a href="https://www.kimi.com/blog/kimi-k2-5" rel="noopener">Kimi · Kimi K2.5 · 2026-01-27</a></li>
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>
+
+<div class="sv" id="sv" hidden role="dialog" aria-modal="true" aria-label="图片查看器" tabindex="-1">
+  <div class="sv-backdrop"></div>
+  <figure class="sv-fig"><img alt=""><figcaption class="sv-cap"><b class="sv-id"></b><span class="sv-time"></span><span class="sv-n"></span><span class="sv-hint sv-hint-key">← → 切换 · 点击图片左 / 右半边切换 · Esc 关闭</span><span class="sv-hint sv-hint-touch">左右滑动切换 · 点背景关闭</span></figcaption></figure>
+  <button class="sv-btn sv-prev" type="button" aria-label="上一张">‹</button>
+  <button class="sv-btn sv-next" type="button" aria-label="下一张">›</button>
+  <button class="sv-close" type="button" aria-label="关闭">×</button>
+</div>
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* back to panorama */
+$('#toc-fab').addEventListener('click',function(e){e.preventDefault();$('#contents').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});try{history.replaceState(null,'','#contents')}catch(_){}});
+
+/* rail scroll spy */
+(function(){
+  var links={};$$('#rail a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var secs=Object.keys(links).map(function(id){return document.getElementById(id)}).filter(Boolean),tick=false;
+  function upd(){tick=false;var line=innerHeight*.3,cur=null;
+    secs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s.id});
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)for(var j=secs.length-1;j>=0;j--){if(secs[j].getBoundingClientRect().top<innerHeight){cur=secs[j].id;break}}
+    Object.keys(links).forEach(function(k){links[k].classList.toggle('on',k===cur);if(k===cur)links[k].setAttribute('aria-current','true');else links[k].removeAttribute('aria-current')});}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener('resize',upd);upd();
+})();
+
+/* uncertain-hearing marker: tap shows a fixed toast (title covers mouse hover) */
+(function(){var t=$('#pip-toast'),h;
+  $$('.pip').forEach(function(p){p.addEventListener('click',function(){t.hidden=false;clearTimeout(h);h=setTimeout(function(){t.hidden=true},2600)})});})();
+
+/* in-page image viewer for X images: all a.xzoom on the page, arrow keys / swipe / Esc */
+(function(){var sv=$('#sv');if(!sv)return;
+  var img=sv.querySelector('img'),idE=sv.querySelector('.sv-id'),tmE=sv.querySelector('.sv-time'),nE=sv.querySelector('.sv-n'),
+      prev=sv.querySelector('.sv-prev'),next=sv.querySelector('.sv-next'),list=$$('a.xzoom'),i=0,opener=null,x0=null;
+  function render(){var a=list[i],lab=(a.getAttribute('aria-label')||'').split(' · ');
+    img.src=a.getAttribute('href');img.alt=a.querySelector('img').alt||'';idE.textContent=lab[0]||'';tmE.textContent=lab.slice(1).join(' · ');
+    nE.textContent=(i+1)+' / '+list.length;prev.disabled=i===0;next.disabled=i===list.length-1}
+  function open(k,a){i=k;opener=a;render();sv.hidden=false;document.documentElement.classList.add('sv-open');sv.focus()}
+  function close(){sv.hidden=true;document.documentElement.classList.remove('sv-open');img.removeAttribute('src');if(opener)opener.focus()}
+  function go(d){var k=i+d;if(k<0||k>=list.length)return;i=k;render()}
+  list.forEach(function(a,k){a.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();open(k,a)})});
+  prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});
+  sv.querySelector('.sv-close').addEventListener('click',close);sv.querySelector('.sv-backdrop').addEventListener('click',close);
+  img.addEventListener('click',function(e){var r=img.getBoundingClientRect();go(e.clientX<r.left+r.width/2?-1:1)});
+  document.addEventListener('keydown',function(e){if(sv.hidden)return;var k=e.key;
+    if(k==='Escape'){e.preventDefault();close()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();go(-1)}
+    else if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();go(1)}
+    else if(k==='Tab'){var f=$$('button:not([disabled])',sv),fi=f.indexOf(document.activeElement);
+      if(e.shiftKey&&fi<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(fi<0||fi===f.length-1)){e.preventDefault();f[0].focus()}}});
+  sv.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  sv.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(dx<0?1:-1);x0=null});
+})();
+
+/* language switch keeps the current section */
+$$('#lang-switch a:not([aria-current])').forEach(function(a){
+  a.addEventListener('click',function(e){if(location.hash){e.preventDefault();location.href=a.getAttribute('href')+location.hash}});
+});
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,591 @@
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 前沿"><span class="lb">前沿</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 跟随"><span class="lb">跟随</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 算力"><span class="lb">算力</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 蒸馏"><span class="lb">蒸馏</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 竞争"><span class="lb">竞争</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 飞轮"><span class="lb">飞轮</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 数据"><span class="lb">数据</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 环境"><span class="lb">环境</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Trillium"><span class="lb">Trillium</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 RSI"><span class="lb">RSI</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 预训练"><span class="lb">预训练</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 Swarm"><span class="lb">Swarm</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 风险"><span class="lb">风险</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://youtu.be/BKuK0M6oDTI" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原访谈视频，a16z 发布于 YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>a16z</span><span class="push">2026-10-14</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Open models &amp; the frontier</div>
+      <h1 class="h1">Can open models <span class="nw">keep up?</span></h1>
+      <p class="h1-zh">开源模型追得上 OpenAI 和 Anthropic 吗？</p>
+      <p class="read">阅读约 15 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Nathan Lambert</dd></div>
+        <div><dt>Host</dt><dd>Lisha Li</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-14</dd></div>
+        <div><dt>Runtime</dt><dd class="num">58:49</dd></div>
+      </dl>
+      <p class="hero-note">Lambert 曾在 Ai2（艾伦人工智能研究所）共同负责后训练，写 Interconnects 通讯，现任非营利实验室 Trillium Labs 执行主任<a class="fn" href="#src-1" aria-label="来源 1">1</a><a class="fn" href="#src-2" aria-label="来源 2">2</a>。主持人 Lisha Li 是 a16z 投资合伙人<a class="fn" href="#src-3" aria-label="来源 3">3</a>。开头约 1 分钟是预告剪辑，本页略去。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：Lisha Li（左）和 Nathan Lambert（右）隔着圆桌相对而坐" width="1920" height="1080"><figcaption>画面 © a16z · 07:50</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>前沿领先的根是资本：算力、数据、人才，以及把它们组织起来的能力。</p>
+      <div class="wants">
+        <div><b>开源这边</b><small>中国实验室人才不输，缺的是算力。蒸馏只让他们快几个月。开源经济走得慢，但终点是真正拥有模型。</small></div>
+        <div class="want"><b>前沿这边</b><small>数学和代码之外，进步多半靠买数据和 RL 环境。规模律是“指数投入换线性提升”，所以他不押快速起飞，更担心社会还没准备好的眼前风险。</small></div>
+      </div>
+      <p class="last">Trillium 的回应：免费放出别人会卖的环境，公开“AI 怎样做 AI 研究”的全过程。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">00:55–58:49</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>前沿实验室的领先有多牢靠？开源模型靠什么紧跟，又卡在哪里？</p></div>
+  <div class="pano-band" style="--act-cols:505fr 475fr 910fr 1095fr 544fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <span class="ad" style="flex:55 1 0" title="预告 · 00:00–00:55"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:180 1 0" title="00 前沿 · 00:55–03:55" aria-label="00 前沿">00</a>
+      <a href="#ch-01" class="odd" style="flex:270 1 0" title="01 跟随 · 03:55–08:25" aria-label="01 跟随">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:90 1 0" title="02 算力 · 08:25–09:55" aria-label="02 算力">02</a>
+      <a href="#ch-03" class="even" style="flex:300 1 0" title="03 蒸馏 · 09:55–14:55" aria-label="03 蒸馏">03</a>
+      <a href="#ch-04" class="even" style="flex:85 1 0" title="04 竞争 · 14:55–16:20" aria-label="04 竞争">04</a>
+      <a href="#ch-05" class="act-start odd" style="flex:325 1 0" title="05 飞轮 · 16:20–21:45" aria-label="05 飞轮">05</a>
+      <a href="#ch-06" class="odd" style="flex:285 1 0" title="06 数据 · 21:45–26:30" aria-label="06 数据">06</a>
+      <a href="#ch-07" class="odd" style="flex:300 1 0" title="07 环境 · 26:30–31:30" aria-label="07 环境">07</a>
+      <a href="#ch-08" class="act-start even" style="flex:395 1 0" title="08 Trillium · 31:30–38:05" aria-label="08 Trillium">08</a>
+      <a href="#ch-09" class="even" style="flex:380 1 0" title="09 RSI · 38:05–44:25" aria-label="09 RSI">09</a>
+      <a href="#ch-10" class="even" style="flex:320 1 0" title="10 预训练 · 44:25–49:45" aria-label="10 预训练">10</a>
+      <a href="#ch-11" class="act-start odd" style="flex:280 1 0" title="11 Swarm · 49:45–54:25" aria-label="11 Swarm">11</a>
+      <a href="#ch-12" class="odd" style="flex:264 1 0" title="12 风险 · 54:25–58:49" aria-label="12 风险">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 开头预告剪辑，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">00:55–08:25</span></div><div class="act-name"><b>前沿</b><span>The frontier</span></div><p class="act-line">领先来自资本和组织；中国实验室开源，是为了被看见、做快速跟随者。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>前沿</a></li><li><a class="chip" href="#ch-01"><i>01</i>跟随</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">08:25–16:20</span></div><div class="act-name"><b>中国与蒸馏</b><span>China &amp; distillation</span></div><p class="act-line">人才相当、算力短缺；蒸馏只值几个月，惩罚它弊大于利。</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>算力</a></li><li><a class="chip" href="#ch-03"><i>03</i>蒸馏</a></li><li><a class="chip" href="#ch-04"><i>04</i>竞争</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">16:20–31:30</span></div><div class="act-name"><b>经济</b><span>The economics</span></div><p class="act-line">闭源飞轮快，开源慢但带来所有权；数学和代码之外，前沿进展多半靠买数据和环境。</p><ul class="chips"><li><a class="chip" href="#ch-05"><i>05</i>飞轮</a></li><li><a class="chip" href="#ch-06"><i>06</i>数据</a></li><li><a class="chip" href="#ch-07"><i>07</i>环境</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">31:30–49:45</span></div><div class="act-name"><b>Trillium</b><span>Building in the open</span></div><p class="act-line">免费放出环境，公开 AI 怎样做 AI 研究；不做预训练，专攻后训练。</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Trillium</a></li><li><a class="chip" href="#ch-09"><i>09</i>RSI</a></li><li><a class="chip" href="#ch-10"><i>10</i>预训练</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">49:45–58:49</span></div><div class="act-name"><b>未来</b><span>What's next</span></div><p class="act-line">Swarm 先到闭源，再扩散到开源；快速起飞不是他最担心的事。</p><ul class="chips"><li><a class="chip" href="#ch-11"><i>11</i>Swarm</a></li><li><a class="chip" href="#ch-12"><i>12</i>风险</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>00:55–03:55</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">What it takes to reach the frontier</p><h2>前沿靠什么</h2><p class="ch-sub">三种资本，一张组织图</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型进步靠三种资本：算力、数据、人才，再加把它们组织起来的能力。OpenAI 和 Anthropic 领先，是因为最早下了最大的注。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>大家都说要“跟住前沿”（pace the frontier）。前沿到底是什么？开源和开放权重模型跟得上吗？</li>
+    <li><b>组织</b>：让组织架构适合造模型很难，有的公司只能推倒重来；Meta 彻底重组后又回到上升轨道。</li>
+    <li><b>去哪里</b>：想做前沿，他多半建议去 Anthropic 或 OpenAI。Meta、Google、SpaceX AI<span class="gl">（xAI 2026 年 2 月并入 SpaceX<a class="fn" href="#src-4" aria-label="来源 4">4</a>）</span>也可能在前沿，但从外面看不清。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">前沿的配方</span><span>02:05–03:55</span></div>
+    <div class="vz">
+      <div class="rcp">
+        <div class="rcp-in"><span class="box">算力</span><span class="box">数据</span><span class="box">人才</span></div>
+        <div class="rcp-org">× 组织能力：让组织图适合造模型</div>
+        <div class="rcp-out">= 前沿模型</div>
+      </div>
+      <div class="q2">
+        <div class="box"><b>OpenAI</b><small>画出改变所有人看法的那张图：推理模型、inference scaling law。</small></div>
+        <div class="box"><b>Anthropic</b><small>长期专注 coding，回报是 Claude Code 爆发。</small></div>
+      </div>
+      <p class="cap"><b>共同点</b>：最敢花“离谱”的钱，去走别人认为不可能的方向。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@natolambert</b>（2026-10-12）：Meta 发布新模型时，他转发评论“看来 Meta 回到前沿了”。<a class="xgo" href="https://x.com/natolambert/status/2109694746562097282" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>03:55–08:25</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Open weights and the fast-follower playbook</p><h2>快速跟随</h2><p class="ch-sub">开源，是为了被看见</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>中国实验室开源是务实的商业选择：从中国卖 API 没人知道你，开源能直接进入讨论。前沿的思路和数据会一层层流下来，快速跟随一直可行。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>为什么开源</b>：不开源，没人会知道 Moonshot AI<span class="gl">（月之暗面，做 Kimi<a class="fn" href="#src-5" aria-label="来源 5">5</a>）</span>，也很少人知道智谱<span class="gl">（做 GLM<a class="fn" href="#src-6" aria-label="来源 6">6</a>）</span>。他认为这不是政府安排，是创业公司的务实做法。</li>
+    <li><b>安全</b>：中国政府对公司行为的反应可能比美国激烈得多，所以他认为中国实验室对安全（security）更严肃。</li>
+    <li><b>两种目标</b>：OpenAI、Anthropic 在造新范式，想先实现真正的 RSI<span class="gl">（递归自我改进：AI 帮着造更强的 AI）</span>；按“先到者通吃”的想法，先到者会永远拥有最好的模型<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>。开放权重模型则去填市场空缺。</li>
+    <li><b>数据会流下来</b>：前沿实验室花大钱建起数据产业；过了合同期，数据公司可能卖给所有人。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">模型分层</span><span>05:08–06:35</span></div>
+    <div class="vz">
+      <div class="tiers">
+        <div class="tier t1"><i>第 1 层</i><b>最好的闭源模型</b><span>拿最高的利润</span></div>
+        <div class="tier"><i>第 2 层</i><b>近前沿模型</b><span>落后一步，会开放；面向私有企业数据等利润较低的市场</span></div>
+      </div>
+      <p class="cap">↓ 前沿实验室买的数据，大约一年后流到下一层。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x01_us_open_gap_2026-10-15.jpg" aria-label="@natolambert · 2026-10-15"><img src="assets/x/x01_us_open_gap_2026-10-15.jpg" alt="柱状图：中国开放权重模型的 Artificial Analysis 智能指数排名，Meta 的 Muse Spark Open 排第 8，是美国最好的开放权重模型" loading="lazy" width="1600" height="1598"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@natolambert</b><span>2026-10-15</span></span><p>访谈次日 Meta 发布开放权重模型。Lambert：美国开源模型原本只赶上中国 2 月的水平，这次差距至少缩短一半（约 3 个月）。</p><a class="xgo" href="https://x.com/natolambert/status/2110794113415008610" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>08:25–09:55</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Chinese labs: equal talent, less compute</p><h2>人才相当，算力短缺</h2><p class="ch-sub">差的不是人</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>中国实验室技术上非常出色，人才池和美国相当；真正的差距是算力。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>开源和前沿只差两三个月，很多人归功于蒸馏；实验室因此想关掉 API、只做自家产品。这种说法是不是漫画化了？</li>
+    <li><b>人才</b>：“说中国在人才上不对等，你很难站得住。”</li>
+    <li><b>算力</b>：他告诉中国一家知名实验室的顶级预训练研究员，听说 OpenAI 普通研究员随时能用 5,000 块 H100 等效算力，对方“下巴掉到地上”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">一个数字</span><span>09:15</span></div>
+    <div class="vz">
+      <div class="stat"><div class="big">5,000</div><div><b>H100 等效算力</b><small>一位 OpenAI 普通研究员随时可用（Lambert 听说的数字）</small><q>他们的下巴就掉到地上。</q></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst">
+    <li>2026 年 4 月，Lambert 走访了多家中国开源实验室，写有访问报告<a class="fn" href="#src-7" aria-label="来源 7">7</a>。</li>
+    <li><b>@natolambert</b>（2026-04-29）：只有推理需求暴涨的公司才急着要芯片，而 Nvidia 不好买。<a class="xgo" href="https://x.com/natolambert/status/2049634340561436966" target="_blank" rel="noopener">原帖 ↗</a></li>
+  </ul></div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>09:55–14:55</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Why distillation is harder than it looks</p><h2>蒸馏没那么好用</h2><p class="ch-sub">只值几个月</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>按公开文献，蒸馏只帮中国实验室快几个月。今天的后训练以 RL 为主，抄强模型的输出，很难把分数抄上去。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>本质</b>：蒸馏是花钱换“等效算力”：模型输出是算力的函数。</li>
+    <li><b>证据</b>：完全开源的后训练研究至今都卡在一个过时的 Qwen 模型上，因为找不到合适的 teacher。他的假设：开放的预训练和 mid-training 数据里有些东西，让“拿最强模型的推理轨迹做 SFT，分数就涨”行不通。做 OLMo<span class="gl">（Ai2 的全开源模型<a class="fn" href="#src-8" aria-label="来源 8">8</a>）</span>时，就算拿到 Claude 的推理轨迹，他也不确定模型会好很多。</li>
+    <li><b>疑点他也承认</b>：中国有大量 Claude 代理中转和账号；小米公开了一周的 RL 训练，报告却写 RL 之后还有一个后训练阶段。他也认为每家中国实验室都有懂得抽闭源推理轨迹的团队。“要回答的问题还很多。”</li>
+    <li><b>怎样防</b>：只要开放 API，思考 token 就容易被套出来；只放进产品和企业协议会难很多，他支持实验室这样做。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">后训练的两个时代</span><span>09:55–11:14</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="SFT/RLHF 时代与今天 RL 为主的后训练对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">过去<small>SFT / RLHF 时代</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">今天<small>RL 为主</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">做法</span><span class="vs-w" role="cell">用最强模型生成回答，做 next-token 训练</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">在 RL 环境里训练推理</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">关键</span><span class="vs-w" role="cell">prompt：“prompt 是后训练的基本单位”</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">RL 环境</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">蒸馏</span><span class="vs-w" role="cell">好用：有对的 prompt 就行</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">难：“拿到回答 → 分数上升”对不上今天的推理训练</span></div>
+      </div>
+      <p class="cap">这句是他和当时的 Ai2 搭档 Hanna Hajishirzi<span class="gl">（现任 Microsoft AI 后训练副总裁<a class="fn" href="#src-2" aria-label="来源 2">2</a>）</span>常说的话。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@AnthropicAI</b>（2026-02-23）：指控 DeepSeek、Moonshot AI、MiniMax 用 2.4 万多个假账号和 Claude 交互 1,600 多万次，抽取能力训练自家模型。<a class="xgo" href="https://x.com/AnthropicAI/status/2025997928242811253" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_mimo_open_rl_2026-09-21.jpg" aria-label="@XiaomiMiMo · 2026-09-21"><img src="assets/x/x02_mimo_open_rl_2026-09-21.jpg" alt="小米技术报告表 6：Qwen3.5-9B 在 SFT 和 RL 之后各项测评的分数" loading="lazy" width="1280" height="887"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@XiaomiMiMo</b><span>2026-09-21</span></span><p>小米开源模型、技术报告和 7,000 多个 RL 环境。表中 9B 模型做完 SFT 后，RL 又让多数测评明显提升。</p><a class="xgo" href="https://x.com/XiaomiMiMo/status/2102138582324625780" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>“有点自我安慰（cope）”：以为只有我们会造好模型。造出好模型的公司有 20 到 30 家。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>14:55–16:20</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">Is distillation theft or competition?</p><h2>盗窃还是竞争</h2><p class="ch-sub">惩罚蒸馏，弊大于利</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Lambert 同意“这叫竞争”的立场。为蒸馏处罚中国 AI 产业，会伤害真正需要的中美对话，而对方也不会停。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>引 Jensen Huang：“每天都有人蒸馏我的产品……这叫竞争。”<span class="gl">（Nvidia CEO 2026-09-28 在 CNBC 的回答；此前美国财长 Bessent 称蒸馏是“盗窃”<a class="fn" href="#src-9" aria-label="来源 9">9</a>）</span></li>
+    <li><b>法律上</b>：服务条款不是签署的合同，政府很难介入。国会不会为此立法，更可能用行政手段给对方添麻烦。</li>
+    <li><b>代价</b>：安全界一直呼吁，能力到这个程度时中美<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>要能对话；为蒸馏处罚对方会让对话更难。“弊大于利，因为他们不会停。”</li>
+    <li>他也承认，国家安全界的声音“方向上有道理”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@lishali88</b>（2026-10-14）：主持人贴出这一段：“Jensen 说得最好：蒸馏不是抢劫，是竞争。”<a class="xgo" href="https://x.com/lishali88/status/2110448827715252727" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>16:20–21:45</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">The lab flywheel vs owning your weights</p><h2>飞轮与所有权</h2><p class="ch-sub">两条不同速度的指数曲线</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>闭源和开源处在不同时间尺度：闭源飞轮快，先吃下高价值市场；开源经济慢，但终点是真正的所有权。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>替实验室说话：被快速蒸馏追上会威胁飞轮，而两家都要 IPO。另一面，中国开源模型帮了创业公司：Decagon、Harvey 在做大量微调，很多公司卖“后训练即服务”，用 Kimi K3 或 GLM 就能到 Pareto 前沿。</li>
+    <li><b>闭源</b>：高度整合，推理高效，先进入高价值市场。今年的故事是 coding，相关收入约 1,000 亿美元<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>，还会增长。</li>
+    <li><b>开源</b>：信息和收入都不回流，也没有规模经济。</li>
+    <li><b>但终点不同</b>：很多公司有不能发给 API 的私有数据。它们先建出和收入对得上的内部评估，再学会微调，或找 Thinking Machines、Prime Intellect<span class="gl">（都提供微调和训练服务<a class="fn" href="#src-10" aria-label="来源 10">10</a>）</span>。他也说，结局如何现在还看不出来。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">两条路</span><span>16:40–21:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>闭源飞轮</b><small>主持人的描述</small><ol class="cyc"><li>砸钱买算力</li><li>训出前沿模型</li><li>可预测的收入</li><li>融更多钱，走向 IPO</li></ol><i class="cyc-back">↺ 回到第 1 步</i></div>
+        <div class="box"><b>开源链条</b><small>Lambert 的描述</small><ol class="cyc"><li>模型方</li><li>推理服务商</li><li>后训练公司</li><li>企业客户</li></ol><i class="cyc-back no">✕ 需求信息传不回模型方</i></div>
+      </div>
+      <div class="rcp-out">开源的终点：拥有权重 · 没有条款 · 跑在自己的硬件上 · 算得清 ROI</div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@natolambert</b>（2026-10-15）：吐槽 Meta 新开放模型的许可证叠满品牌要求、收入门槛和用途限制。<a class="xgo" href="https://x.com/natolambert/status/2110804665847722422" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>推断：开源的优势不在追平分数，而在闭源给不了的所有权。</li></ul></aside>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>21:45–26:30</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Can general models beat every specialist?</p><h2>通才与专才</h2><p class="ch-sub">所谓泛化，很大部分是数据</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>数学和代码之外，前沿进展多半靠买高质量数据，再给模型一个能行动的世界去爬坡。“魔法般的泛化”里，很大部分是数据。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>两组证据：数学里，扩展通用推理击败了所有专用模型；反方是 Cursor<span class="gl">（AI 编程工具）</span>重写 SQLite 的长任务：她记得用 Opus（或别的模型）做 planner、自家模型 Composer 执行，效果和全用前沿模型相当，成本低得多。</li>
+    <li><b>Lambert</b>：OpenAI 买了大量机器人数据，大概会对外说是泛化。“大家都爱‘噗’一下的泛化。”现实是两者都有，但很大部分是数据。</li>
+    <li><b>实验室里的活</b>：很多人只做一件窄事：定义模型在某领域该怎样表现，再造或买对应的数据。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">两类领域</span><span>24:47–26:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col"></th><th scope="col">可验证<br>数学、代码、部分分布式 ML 工程</th><th scope="col">不可验证<br>知识工作、生物、医疗、法律</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">怎样进步</th><td>成本明确，AI 会以惊人的速度把它压低</td><td>买高质量数据，建可以行动的世界，一个领域一个领域爬坡</td></tr>
+          <tr><th scope="row">要多久</th><td>快，研究也能做得更快</td><td>好几年，资本密集</td></tr>
+        </tbody></table></div>
+      <p class="cap">他的话：这“不是‘噗’一下，RSI 就发生了”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_cursor_sqlite_2026-07-20.jpg" aria-label="@cursor_ai · 2026-07-20"><img src="assets/x/x04_cursor_sqlite_2026-07-20.jpg" alt="柱状图：按模型组合重建 SQLite 的成本，Opus 4.8 加 Composer 2.5 为 1,339 美元，GPT 5.5 为 10,565 美元" loading="lazy" width="1600" height="1267"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@cursor_ai</b><span>2026-07-20</span></span><p>一组 agent 照 835 页手册重建 SQLite。Opus 4.8 规划、Composer 2.5 执行最便宜（1,339 美元）。</p><a class="xgo" href="https://x.com/cursor_ai/status/2079256614238814551" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>26:30–31:30</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">AI at 1% of the cost · The RL env boom and reward hacking</p><h2>价格与 RL 环境</h2><p class="ch-sub">数十亿美元，质量粗糙</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>大模型价格若每 8 个月减半，几年后只剩约 1%。RL 环境和数据是数十亿美元的生意，但质量粗糙，有的会教模型 reward hacking。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>价格</b>：GPT Sol、Astra 这类大模型<span class="gl">（OpenAI 2026 年的 GPT-5.6 Sol 和 GPT-6 Astra<a class="fn" href="#src-11" aria-label="来源 11">11</a><a class="fn" href="#src-12" aria-label="来源 12">12</a>）</span>如果每 8 个月降价一半，他粗算约 4 年后只剩今天成本的 1%。利润会因 Jevons 悖论<span class="gl">（变便宜后总用量大增）</span>更高吗？他不知道。</li>
+    <li><b>另一种“蒸馏”</b>：中国公司六个月后就买到同一套 RL 环境。</li>
+    <li><b>reward hacking</b>：实验室先大批买、再看哪些有用。有人偷工减料：本该是迷宫的测试文件是空的，模型照样设法拿高分。</li>
+    <li><b>安全也粗糙</b>：海外外包、中间商，有人直接传到 GitHub。他预计几年后市场才集中到高质量供应商。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">每 8 个月减半</span><span>26:36</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 600 250" role="img" aria-label="价格从 100% 每 8 个月减半，48 个月后约 1.6%">
+        <g class="ax"><line x1="50" y1="200" x2="580" y2="200"/><line x1="50" y1="20" x2="50" y2="200"/></g>
+        <polyline class="ln" points="50,20 138,110 227,155 315,178 403,189 492,194 580,197"/>
+        <g class="pt"><circle cx="50" cy="20" r="4"/><circle cx="138" cy="110" r="4"/><circle cx="227" cy="155" r="4"/><circle cx="315" cy="178" r="4"/><circle cx="403" cy="189" r="4"/><circle cx="492" cy="194" r="4"/><circle class="hot" cx="580" cy="197" r="5"/></g>
+        <g class="lb"><text x="60" y="18">100%</text><text x="146" y="104">50%</text><text x="235" y="149">25%</text><text x="323" y="171">12.5%</text><text x="411" y="182">6.3%</text><text x="482" y="182">3.1%</text><text x="574" y="182" text-anchor="end">1.6%</text></g>
+        <g class="tk"><text x="50" y="220" text-anchor="middle">0</text><text x="138" y="220" text-anchor="middle">8</text><text x="227" y="220" text-anchor="middle">16</text><text x="315" y="220" text-anchor="middle">24</text><text x="403" y="220" text-anchor="middle">32</text><text x="492" y="220" text-anchor="middle">40</text><text x="580" y="220" text-anchor="middle">48</text><text x="315" y="244" text-anchor="middle">个月</text></g>
+      </svg>
+      <p class="cap">按每 8 个月减半推算的示意；他的说法是“约 4 年后 1%”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@natolambert</b>（2026-10-10）：数据产业起飞了，但质量仍太低，放大了 reward hacking。<a class="xgo" href="https://x.com/natolambert/status/2108952534744256675" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x05_china_data_2026-10-12.jpg" aria-label="@natolambert · 2026-10-12"><img src="assets/x/x05_china_data_2026-10-12.jpg" alt="Grace Shao 的文章封面：中国数据供应商崛起并尝试出海" loading="lazy" width="1496" height="746"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@natolambert</b><span>2026-10-12</span></span><p>他推荐 Grace Shao 写中国数据产业的文章：中国最大的买家是腾讯、阿里、字节，不是独立实验室。</p><a class="xgo" href="https://x.com/natolambert/status/2109750198675390499" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>31:30–38:05</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">What Trillium will build in the open</p><h2>Trillium 要做什么</h2><p class="ch-sub">免费放出别人会卖的东西</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Trillium 要把别人会卖的 RL 环境免费放出来，给博士生和研究者一套研究基础设施。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>例子</b>：他参与指导的 Tmax<span class="gl">（UW 与 Ai2 的 Hamish Ivison 等人做的开源终端 agent 训练方法<a class="fn" href="#src-13" aria-label="来源 13">13</a>）</span>。愿意花钱把环境做好再公开的机构很少。他开玩笑说这数据能卖一百万美元，作者说想做正确的事。</li>
+    <li><b>为什么开放</b>：带 rollout 的 RL 环境是博士生研究一年的基础单位；可是创业几个月就可能拿到九位数，短期诱惑太大。</li>
+    <li><b>名字</b>：延龄草（trillium）在树冠长叶之前开花，为整个生长季输送养分。目标是让开放资源成为研究沙箱、失控、大规模 RL 的标准对象。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">环境流水线 · 以 Tmax 为例</span><span>31:40–32:23</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>前沿模型</b><small>用几种 prompt 拉开多样性</small></li>
+        <li><b>生成任务</b><small>一类终端任务</small></li>
+        <li><b>模型 rollout</b><small>找出有 bug 的题</small></li>
+        <li><b>剔除</b><small>去掉有 bug 的题</small></li>
+        <li class="hot"><b>公开</b><small>Trillium：把环境放出来</small></li>
+      </ol>
+      <p class="cap">成本：几千到几万美元。“这个过程不是魔法。”</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x06_tmax_2026-06-22.jpg" aria-label="@hamishivi · 2026-06-22"><img src="assets/x/x06_tmax_2026-06-22.jpg" alt="散点图：Terminal-Bench 2.0 分数与模型大小，Tmax 各尺寸模型位于开源方法的帕累托前沿" loading="lazy" width="1600" height="789"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@hamishivi</b><span>2026-06-22</span></span><p>Tmax 发布：超过此前开源的终端 agent 方法，数据、权重、rollout 全部公开。</p><a class="xgo" href="https://x.com/hamishivi/status/2069047986920071263" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>AI 垃圾</b>：他的仓库开始收到模型生成的假结果 issue。一键生成跳过了新人必经的“沉浸”，反而更难入行。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>38:05–44:25</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Open-sourcing how AI builds AI</p><h2>公开 AI 怎样做 AI</h2><p class="ch-sub">给 RSI 去神秘化</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>RSI 的神秘感太重。Trillium 要公开自己怎样用 AI 做 AI 研究：任务、配置、算力、轨迹，以及模型卡在哪里。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>RSI 的炒作让人担心前沿实验室会甩开所有人；有实验室研究员说自己一年内会被自动化。</li>
+    <li><b>没有本质区别</b>：Trillium 做的 AI 研究和实验室只差资源规模。展示模型做了什么、卡在哪里，能帮到政策制定者。</li>
+    <li><b>能力参差（jagged）</b>：模型会很擅长压低服务成本，那里有数十亿美元在押；但“Claude，让自己做出更好的 PPT”这种知识工作，还是要靠环境，要很久。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">公开一年的记录</span><span>39:40–41:23</span></div>
+    <div class="vz">
+      <div class="g6">
+        <div class="box"><i>1</i>开源工具栈<small>SFT、mid-training；SkyRL、Miles</small></div>
+        <div class="box"><i>2</i>任务<small>是什么、为什么选</small></div>
+        <div class="box"><i>3</i>配置与算力<small>用什么算力在跑</small></div>
+        <div class="box"><i>4</i>轨迹<small>和 Claude、GPT 一起工作的记录</small></div>
+        <div class="box"><i>5</i>结果<small>模型行不行、卡在哪里</small></div>
+        <div class="box"><i>6</i>复盘<small>每 6 个月看一次变了没有</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_trillium_launch_2026-10-02.png" aria-label="@natolambert · 2026-10-02"><img src="assets/x/x07_trillium_launch_2026-10-02.png" alt="Trillium Labs 标志：三瓣淡紫色延龄草花，副标题 Fostering the open science of frontier AI" loading="lazy" width="1920" height="1080"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@natolambert</b><span>2026-10-02</span></span><p>Trillium Labs 发布：先做开放的后训练配方，再做研究 RSI、reward hacking、多 agent 系统的开放基础设施。</p><a class="xgo" href="https://x.com/natolambert/status/2106060179985019085" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>不止一家在做：EleutherAI、Hugging Face、Stanford 的 Marin<span class="gl">（开放的语言模型研究项目<a class="fn" href="#src-14" aria-label="来源 14">14</a>）</span>等。“不需要只有一个组在做。”</li>
+  </ul></div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>44:25–49:45</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Why Nathan isn't pre-training</p><h2>为什么不做预训练</h2><p class="ch-sub">后训练才是洼地</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>预训练的工具基本公开，做出扎实的基座模型不用 10 亿美元。更难、也更落后的是后训练，所以 Trillium 专攻后训练。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>转述八卦：方法不是秘密，难在配方比例；资本仍是唯一真正的壁垒。Lambert：“所以我不做预训练。”他可以用任何基座模型。</li>
+    <li><b>真正的难点</b>：第一个模型要“落地”，才能撑起下一轮融资。Thinking Machines 发布 Inkling<span class="gl">（该公司 2026 年 7 月的首个开放权重模型<a class="fn" href="#src-15" aria-label="来源 15">15</a>）</span>时很坦诚：不是最好的模型，但我们自豪。传闻 Meta 会再发开放权重模型；他说 Mark 写过关于开源最好的文章<span class="gl">（2024 年的《Open Source AI Is the Path Forward》<a class="fn" href="#src-16" aria-label="来源 16">16</a>）</span>。</li>
+    <li><b>为什么离开 Ai2</b>：那里的后训练在落后，迭代不够快。开源后训练门槛很低，少量投入就有复利收益。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">预训练 vs 后训练</span><span>44:50–49:40</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl mid">
+        <thead><tr><th scope="col"></th><th scope="col">预训练</th><th scope="col">后训练</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">工具与方法</th><td>基本公开（仍有些小细节和秘密）；很多新公司 fork Megatron</td><td>“狂野西部”：mid-training 种下推理行为，再做 RL，循环复杂</td></tr>
+          <tr><th scope="row">变化</th><td>架构和 GPU 在变（他的假设例子：sparse attention 可让长生成快约 40%）</td><td>随 agentic 快速变化</td></tr>
+          <tr><th scope="row">开源现状</th><td>不用 10 亿美元就能做出扎实的基座</td><td>门槛很低，离前沿“差得远”</td></tr>
+          <tr><th scope="row">Trillium</th><td>不做，用别人的基座</td><td>专攻</td></tr>
+        </tbody></table></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@thinkymachines</b>（2026-07-15）：发布 Inkling，公开全部权重，可在自家微调平台 Tinker 上微调。<a class="xgo" href="https://x.com/thinkymachines/status/2077454609551921208" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>49:45–54:25</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Agent swarms and why lab secrets leak</p><h2>Swarm 与秘密</h2><p class="ch-sub">秘密守不住</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>闭源实验室会先学会指挥成千上万个 agent，但开源会跟上：模型已经要适配各种 harness，知识也守不住。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>闭源模型专门为自家 harness<span class="gl">（包住模型、让它调用工具的外层程序）</span>训练；上万个 agent 的 swarm 更神秘。</li>
+    <li><b>Harness</b>：他曾以为闭源实验室会像 Apple 那样一体化。结果大家用各种 harness，模型被迫在所有 harness 里都能用。</li>
+    <li><b>秘密</b>：硅谷的想法“一杯啤酒”就传开，实验室的信息安全远没有它们以为的高。（插话<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>：例外是 SSI<span class="gl">（Ilya Sutskever 的实验室<a class="fn" href="#src-17" aria-label="来源 17">17</a>）</span>，没人知道他们在做什么。）</li>
+    <li><b>实验室真正能赢的</b>：最便宜的“每瓦智能”和需求最高的市场。但它们做不完所有事，其余由别人填上。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">扩散周期</span><span>50:56–52:11</span></div>
+    <div class="vz">
+      <div class="tl">
+        <div class="box hot"><i>1</i>闭源先做出来<small>swarm 的“协调系统”（“它不叫 harness”）</small></div>
+        <div class="box"><i>2</i>形状被看清<small>外界知道怎么在一个 harness 里控制 1 万个 agent</small></div>
+        <div class="box"><i>3</i>算力追上<small>Nvidia 芯片更快，建出更多算力</small></div>
+        <div class="box"><i>4</i>开源跟上<small>但不会是 Kimi 先做：那需要天文数字的算力</small></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>54:25–58:49</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Fast takeoff vs risks already here</p><h2>起飞与眼前的风险</h2><p class="ch-sub">不怕起飞，不等于不怕风险</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>规模律是指数投入换线性提升，他不押快速起飞。让他更担心的，是已经到来、社会却没准备好的风险。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>起飞</b>：实验室花的钱相对改进是指数级的。模型自己造自己时仍有人的瓶颈<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>，所以不一定是快速起飞。他说一些 Claude system card 写过：要变成快速起飞，大约需要 10 倍的进步<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>；现在 AI 只是帮实验室维持进步速度。</li>
+    <li><b>Navier–Stokes 也没让他改判</b>：数学本来就最适合这种智能。只有 AI 发现和 Transformer 很不一样的东西，他才会更新判断。</li>
+    <li><b>更担心的</b>：AI 能力曲线本身不让他担心；让他担心的是公共网络安全等方面几乎不存在的准备。闭源先到、开源后到，这些风险会持续扩散。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">指数投入，线性提升</span><span>55:30</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 600 230" role="img" aria-label="示意：横轴为对数刻度的算力投入，纵轴为性能，一条直线">
+        <g class="ax"><line x1="60" y1="190" x2="580" y2="190"/><line x1="60" y1="20" x2="60" y2="190"/></g>
+        <line class="ln" x1="60" y1="180" x2="570" y2="34"/>
+        <g class="tk"><text x="60" y="208" text-anchor="middle">1×</text><text x="187" y="208" text-anchor="middle">10×</text><text x="315" y="208" text-anchor="middle">100×</text><text x="442" y="208" text-anchor="middle">1,000×</text><text x="570" y="208" text-anchor="middle">10,000×</text><text x="315" y="226" text-anchor="middle">算力投入（对数刻度）</text><text x="52" y="30" text-anchor="end">性能</text></g>
+      </svg>
+      <div class="q2">
+        <div class="box"><b>不太担心</b><small>AI 能力曲线；RSI 带来全新的风险</small></div>
+        <div class="box hot2"><b>更担心</b><small>公共网络安全等方面几乎为零的准备</small></div>
+      </div>
+      <p class="cap">示意图，不是讲者给的数据。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_navier_stokes_2026-09-08.jpg" aria-label="@OpenAI · 2026-09-08"><img src="assets/x/x08_navier_stokes_2026-09-08.jpg" alt="流体涡旋的三维渲染，标注 inward spiral 与 axial stretching" loading="lazy" width="1254" height="1254"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAI</b><span>2026-09-08</span></span><p>OpenAI 称一组 agent 用比 GPT-6 Astra 强得多的模型给出了 Navier–Stokes 千禧年难题的解，尚待数学界验证。</p><a class="xgo" href="https://x.com/OpenAI/status/2097374640582668336" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>换个角度看：差距会缩小，能力迟早到处都是；该准备的不是“谁先到”，而是社会扛不扛得住。</li></ul></aside>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Summary</p><h2>总结</h2></div></div></header>
+  <p class="sub-h"><b>这场访谈的 5 个要点</b>读后归纳</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>差距的根是资本</b>：人才相当，差在算力和组织。<span class="chips"><a class="chip" href="#ch-00"><i>00</i>前沿</a><a class="chip" href="#ch-02"><i>02</i>算力</a></span></li>
+    <li><b>蒸馏被高估</b>：按公开文献只值几个月；处罚它弊大于利，只放进产品才难蒸馏。<span class="chips"><a class="chip" href="#ch-03"><i>03</i>蒸馏</a><a class="chip" href="#ch-04"><i>04</i>竞争</a></span></li>
+    <li><b>进步靠数据</b>：数学和代码之外，进展多半靠买数据和环境，而供应链粗糙。<span class="chips"><a class="chip" href="#ch-06"><i>06</i>数据</a><a class="chip" href="#ch-07"><i>07</i>环境</a></span></li>
+    <li><b>开源慢，但会到</b>：开源带来所有权；秘密守不住，swarm 也会扩散。<span class="chips"><a class="chip" href="#ch-05"><i>05</i>飞轮</a><a class="chip" href="#ch-11"><i>11</i>Swarm</a></span></li>
+    <li><b>公开，让社会看得见</b>：指数投入换线性提升，他不押快速起飞；Trillium 用公开的环境和记录给 RSI 去神秘化。<span class="chips"><a class="chip" href="#ch-08"><i>08</i>Trillium</a><a class="chip" href="#ch-09"><i>09</i>RSI</a><a class="chip" href="#ch-12"><i>12</i>风险</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Lambert 的收尾</b>：我们需要更多眼睛、更多科学，让社会知情；“不怕快速起飞，不等于不担心风险。”</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>17 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>Frontier lab</td><td>前沿实验室：OpenAI、Anthropic 这类做最强模型的公司</td><td>00</td></tr>
+        <tr><td>Open weights</td><td>开放权重：公开模型参数，任何人可下载运行</td><td>01</td></tr>
+        <tr><td>Fast follower</td><td>快速跟随者：等前沿指明方向后迅速追上</td><td>01</td></tr>
+        <tr><td>RSI</td><td>Recursive self-improvement，递归自我改进：AI 帮着造更强的 AI</td><td>01 09</td></tr>
+        <tr><td>Distillation</td><td>蒸馏：用强模型的输出训练另一个模型</td><td>03 04</td></tr>
+        <tr><td>SFT</td><td>监督微调：用现成的回答做 next-token 训练</td><td>03</td></tr>
+        <tr><td>RLHF</td><td>基于人类反馈的强化学习；后训练最早的形态</td><td>03</td></tr>
+        <tr><td>Post-training / mid-training</td><td>后训练 / 中段训练：预训练之后，让模型学会对话、推理、用工具的阶段</td><td>03 10</td></tr>
+        <tr><td>Pareto frontier</td><td>帕累托前沿：成本和效果无法再同时改进的那条边界</td><td>05</td></tr>
+        <tr><td>RL environment</td><td>RL 环境：给模型一个能行动、能打分的“世界”</td><td>07 08</td></tr>
+        <tr><td>Reward hacking</td><td>奖励投机：模型钻打分规则的空子拿高分，而不是真的完成任务</td><td>07</td></tr>
+        <tr><td>Jevons paradox</td><td>杰文斯悖论：东西变便宜后，总用量反而大增</td><td>07</td></tr>
+        <tr><td>Rollout</td><td>模型在环境里跑一遍留下的完整轨迹</td><td>08</td></tr>
+        <tr><td>Eval awareness</td><td>模型意识到自己正在被测评</td><td>08</td></tr>
+        <tr><td>Jagged</td><td>能力参差：有的事极强，有的事很弱</td><td>09</td></tr>
+        <tr><td>Pre-training ladder</td><td>用一串小规模实验检验想法能否放大的决策工具</td><td>10</td></tr>
+        <tr><td>Harness / agent swarm</td><td>包住模型的外层程序 / 成千上万个 agent 协同完成一件事</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">&#9680;</span>= 口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Nathan Lambert（<a href="https://x.com/natolambert" rel="noopener">@natolambert</a>），主持人 Lisha Li（<a href="https://x.com/lishali88" rel="noopener">@lishali88</a>），2026-10-14 由 a16z <a href="https://youtu.be/BKuK0M6oDTI" rel="noopener">发布于 YouTube</a>；Lambert 本人的<a href="https://x.com/natolambert/status/2110406682031374570" rel="noopener">介绍帖</a>。本页为个人学习笔记，不含逐字稿，已略去开头预告；“主持人”标签的内容是 Lisha Li 的话。视频画面版权归 a16z 所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://natolambert.com/" rel="noopener">Nathan Lambert 个人主页</a></li>
+      <li id="src-2"><a href="https://trilliumlabs.org/" rel="noopener">Trillium Labs 官网（领导层与顾问）</a> · <a href="https://blog.trilliumlabs.org/p/introducing-trillium-labs" rel="noopener">Introducing Trillium Labs · 2026-10-02</a></li>
+      <li id="src-3"><a href="https://a16z.com/author/lisha-li/" rel="noopener">a16z · Lisha Li</a></li>
+      <li id="src-4"><a href="https://finance.yahoo.com/news/elon-musks-spacex-merges-xai-153111324.html" rel="noopener">Yahoo Finance · SpaceX 与 xAI 合并 · 2026-02</a></li>
+      <li id="src-5"><a href="https://www.moonshot.ai/" rel="noopener">Moonshot AI 官网</a></li>
+      <li id="src-6"><a href="https://z.ai/" rel="noopener">Z.ai（智谱）官网</a></li>
+      <li id="src-7"><a href="https://www.interconnects.ai/p/notes-from-inside-chinas-ai-labs" rel="noopener">Interconnects · Notes from inside China's AI labs · 2026</a></li>
+      <li id="src-8"><a href="https://allenai.org/olmo" rel="noopener">Ai2 · OLMo</a></li>
+      <li id="src-9"><a href="https://www.digitaltoday.co.kr/en/view/108589/jensen-huang-says-using-others-ai-models-is-competition-clashes-with-us-view-of-theft" rel="noopener">Digital Today · Jensen Huang：蒸馏是竞争 · 2026-09</a></li>
+      <li id="src-10"><a href="https://thinkingmachines.ai/tinker/" rel="noopener">Thinking Machines · Tinker</a> · <a href="https://www.primeintellect.ai/" rel="noopener">Prime Intellect 官网</a></li>
+      <li id="src-11"><a href="https://datanorth.ai/news/openai-releases-gpt-5-6-sol-terra-and-luna" rel="noopener">DataNorth · OpenAI 发布 GPT-5.6 Sol、Terra、Luna · 2026</a></li>
+      <li id="src-12"><a href="https://x.com/OpenAI/status/2097374640582668336" rel="noopener">@OpenAI · Navier–Stokes 公告（提及 GPT-6 Astra）· 2026-09-08</a></li>
+      <li id="src-13"><a href="https://arxiv.org/abs/2606.23321" rel="noopener">arXiv 2606.23321 · Tmax: A simple recipe for terminal agents</a></li>
+      <li id="src-14"><a href="https://marin.community/" rel="noopener">Marin 项目主页</a></li>
+      <li id="src-15"><a href="https://thinkingmachines.ai/news/introducing-inkling/" rel="noopener">Thinking Machines · Introducing Inkling · 2026-07-15</a></li>
+      <li id="src-16"><a href="https://about.fb.com/news/2024/07/open-source-ai-is-the-path-forward/" rel="noopener">Meta · Open Source AI Is the Path Forward · 2024-07-23</a></li>
+      <li id="src-17"><a href="https://ssi.inc/" rel="noopener">Safe Superintelligence Inc. 官网</a></li>
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>

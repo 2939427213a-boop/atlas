@@ -1,0 +1,615 @@
+<a id="toc-fab" href="#contents" aria-label="Back to overview"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">Overview</span></a>
+<nav class="rail" id="rail" aria-label="Chapters">
+  <a href="#ch-00" aria-label="00 Kernel"><span class="lb">Kernel</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 Experts"><span class="lb">Experts</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 Taste"><span class="lb">Taste</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 Jev"><span class="lb">Jev</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 Harness"><span class="lb">Harness</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 Generalize"><span class="lb">Generalize</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 RLM"><span class="lb">RLM</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 Prime"><span class="lb">Prime</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Swarm"><span class="lb">Swarm</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 Open-ended"><span class="lb">Open-ended</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 Converge"><span class="lb">Converge</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 Overhang"><span class="lb">Overhang</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 Next"><span class="lb">Next</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="Summary"><span class="lb">Summary</span><span class="no">S</span></a>
+  <a href="#glossary" aria-label="Glossary"><span class="lb">Glossary</span><span class="no">G</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>Hard to hear in the audio, or unclear who is speaking; reconstructed from context</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas</a><a class="src-top" href="https://www.youtube.com/watch?v=kog7mwsDqnk" target="_blank" rel="noopener"><span class="k">SOURCE</span><span>▶ Original interview video, posted by Latent Space on YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>Latent Space</span><span class="push">2026-10-02</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Harnesses, RLMs &amp; swarms</div>
+      <h1 class="h1">Recursive <span class="nw">Language Models</span></h1>
+      <p class="h1-zh">Models are smart enough; harnesses are not</p>
+      <p class="read">~15 min read</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Alex Zhang</dd></div>
+        <div><dt>Hosts</dt><dd>swyx · Vibhu</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-02</dd></div>
+        <div><dt>Runtime</dt><dd class="num">1:43:24</dd></div>
+      </dl>
+      <p class="hero-note">Zhang, an MIT CSAIL PhD student, is first author of the RLM paper and a KernelBench co-author<a class="fn" href="#src-1" aria-label="Source 1">1</a><a class="fn" href="#src-2" aria-label="Source 2">2</a>. Hosts: swyx and Vibhu Sapra<a class="fn" href="#src-3" aria-label="Source 3">3</a>. GPT-6 Astra (OpenAI) and Fable (Anthropic) are 2026 frontier models<a class="fn" href="#src-4" aria-label="Source 4">4</a><a class="fn" href="#src-5" aria-label="Source 5">5</a>.</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="Interview frame: Alex Zhang at a microphone in front of a purple curtain" width="1920" height="1080"><figcaption>Frame © Latent Space · 25:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">Thesis</span></div>
+    <div class="thesis-body">
+      <p>Today's models sit in near-identical harnesses<span class="gl"> (the outer program that wraps a model and lets it call tools)</span>, leaving much of their ability unused.</p>
+      <div class="wants">
+        <div><b>The harness side</b><small>Claude Code, Codex and Pi share nearly the same logic. An RLM keeps context in the environment, works on it through code and calls itself recursively, gaining compositional generalization.</small></div>
+        <div class="want"><b>The scale side</b><small>OpenAI claims an agent swarm cracked a hard problem (contested); he estimates most tokens in such swarms are wasted. "Convergence" isn't free; it takes training.</small></div>
+      </div>
+      <p class="last">On research: academia's edge is betting on what industry won't, ideas that first look "stupid".</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="Overview">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">01:56–1:43:24</span></div>
+  <div class="pano-q"><span class="q">Question</span><p>Models are smart already. Why is their ability underused, and what do harnesses, RLMs and swarms each add?</p></div>
+  <div class="pano-band" style="--act-cols:1284fr 1496fr 966fr 1176fr 1282fr">
+    <div class="spectrum" aria-label="13-chapter timeline">
+      <span class="ad" style="flex:116 1 0" title="Teaser · 00:00–01:56"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:458 1 0" title="00 Kernel · 01:56–09:34" aria-label="00 Kernel">00</a>
+      <a href="#ch-01" class="odd" style="flex:342 1 0" title="01 Experts · 09:34–15:16" aria-label="01 Experts">01</a>
+      <a href="#ch-02" class="odd" style="flex:368 1 0" title="02 Taste · 15:16–21:24" aria-label="02 Taste">02</a>
+      <a href="#ch-03" class="act-start even" style="flex:575 1 0" title="03 Jev · 21:24–30:59" aria-label="03 Jev">03</a>
+      <a href="#ch-04" class="even" style="flex:459 1 0" title="04 Harness · 30:59–38:38" aria-label="04 Harness">04</a>
+      <a href="#ch-05" class="even" style="flex:462 1 0" title="05 Generalize · 38:38–46:20" aria-label="05 Generalize">05</a>
+      <a href="#ch-06" class="act-start odd" style="flex:457 1 0" title="06 RLM · 46:20–53:57" aria-label="06 RLM">06</a>
+      <a href="#ch-07" class="odd" style="flex:509 1 0" title="07 Prime · 53:57–1:02:26" aria-label="07 Prime">07</a>
+      <a href="#ch-08" class="act-start even" style="flex:416 1 0" title="08 Swarm · 1:02:26–1:09:22" aria-label="08 Swarm">08</a>
+      <a href="#ch-09" class="even" style="flex:506 1 0" title="09 Open-ended · 1:09:22–1:17:48" aria-label="09 Open-ended">09</a>
+      <a href="#ch-10" class="even" style="flex:254 1 0" title="10 Converge · 1:17:48–1:22:02" aria-label="10 Converge">10</a>
+      <a href="#ch-11" class="act-start odd" style="flex:493 1 0" title="11 Overhang · 1:22:02–1:30:15" aria-label="11 Overhang">11</a>
+      <a href="#ch-12" class="odd" style="flex:789 1 0" title="12 Next · 1:30:15–1:43:24" aria-label="12 Next">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>Hatched = opening teaser clips, left out</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">01:56–21:24</span></div><div class="act-name"><b>Starting point</b><span>Kernels &amp; taste</span></div><p class="act-line">AI kernels top the leaderboard, yet experts remain the best verifiers; PhD students should make odd bets.</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Kernel</a></li><li><a class="chip" href="#ch-01"><i>01</i>Experts</a></li><li><a class="chip" href="#ch-02"><i>02</i>Taste</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">21:24–46:20</span></div><div class="act-name"><b>Models &amp; harnesses</b><span>Model vs harness</span></div><p class="act-line">LMs needn't be autoregressive decoders; mainstream harnesses are alike; good design buys compositional generalization.</p><ul class="chips"><li><a class="chip" href="#ch-03"><i>03</i>Jev</a></li><li><a class="chip" href="#ch-04"><i>04</i>Harness</a></li><li><a class="chip" href="#ch-05"><i>05</i>Generalize</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">46:20–1:02:26</span></div><div class="act-name"><b>RLM</b><span>Recursive LMs</span></div><p class="act-line">Code is the only tool and context lives in the environment; several teams already use it.</p><ul class="chips"><li><a class="chip" href="#ch-06"><i>06</i>RLM</a></li><li><a class="chip" href="#ch-07"><i>07</i>Prime</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">1:02:26–1:22:02</span></div><div class="act-name"><b>Swarms</b><span>Agent swarms</span></div><p class="act-line">Money cracks hard problems; he estimates most search is waste; convergence takes training.</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Swarm</a></li><li><a class="chip" href="#ch-09"><i>09</i>Open-ended</a></li><li><a class="chip" href="#ch-10"><i>10</i>Converge</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">1:22:02–1:43:24</span></div><div class="act-name"><b>What's next</b><span>Overhang &amp; bets</span></div><p class="act-line">Long, simple work still isn't reliable, a "skill issue"; he bets on harnesses.</p><ul class="chips"><li><a class="chip" href="#ch-11"><i>11</i>Overhang</a></li><li><a class="chip" href="#ch-12"><i>12</i>Next</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>01:56–09:34</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">GPU Mode and AI-written kernels</p><h2>AI-written kernels</h2><p class="ch-sub">A high score isn't a working kernel</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>GPU Mode's leaderboard is nearly all AI-written kernels; of the top ten, only one, steered by a longtime member, held up in a real system. Kernels have a verification problem.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>GPU Mode</b>: a Discord community since 2023 (once CUDA Mode) teaching people to write GPU kernels<span class="gl"> (low-level programs that run one operation on a GPU)</span>; a leaderboard came later.</li>
+    <li><b>Why KernelBench</b>: kernel optimization has few patterns, so enough problems make it automatable. Researchers need this: new architectures need kernels to be usable.</li>
+    <li><b>Today</b>: recent solutions are nearly all AI-generated; reward hacking<span class="gl"> (gaming the scoring rules for a high score)</span> has been rampant since KernelBench came out.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">High score ≠ usable</span><span>07:32–08:40</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>Other AI-generated top-ten entries</b><small>Top ten ✓ · unstable in an end-to-end system ✕ · longer code</small></div>
+        <div class="box hot"><b>A longtime member's entry: he used AI, but he steered</b><small>Top ten ✓ · stable end to end ✓ · much shorter code</small></div>
+      </div>
+      <p class="cap">His conclusion: "GPU kernels have a verification problem." Kernel skill still pays.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_gpt56_price_2026-07-30.jpg" aria-label="@OpenAI · 2026-07-30"><img src="assets/x/x00_gpt56_price_2026-07-30.jpg" alt="Scatter plot of Artificial Analysis Intelligence Index against cost per task, with GPT-5.6 Luna at the upper left" loading="lazy" width="1600" height="1249"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@OpenAI</b><span>2026-07-30</span></span><p>Host Vibhu said GPT-5.6-written kernels made Terra and Luna 80% cheaper. Actually Luna fell 80%, Terra 20%; GPT-5.6 Sol rewrote the kernels via Codex<a class="fn" href="#src-6" aria-label="Source 6">6</a>.</p><a class="xgo" href="https://x.com/OpenAI/status/2082878156483219672" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>09:34–15:16</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Human expertise vs brute-force AI search</p><h2>Experts vs brute force</h2><p class="ch-sub">One insight, worth a trillion tokens</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Experts are the strongest verifiers: one insight can save what a swarm might burn a trillion tokens to find.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Experts use AI better</b>: they act as strong verifiers<span class="gl"> (a person or program that judges whether a solution is right)</span>. Swarms explore solution spaces fully, but one insight from someone who knows the problem can "erase that one trillion token spend".</li>
+    <li><b>Speed of light</b>: matrix multiplication has a computable theoretical best; real kernels are often far from it.</li>
+    <li><b>Have models write megakernels directly?</b> He leans no: there's no data, and he hasn't seen a model bootstrap a hard problem class from nothing. Megakernels compose single kernels, which suits a compiler.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">Two kinds of fast</span><span>12:05–13:20</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="One kernel in isolation compared with an end-to-end model">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">In isolation<small>one kernel</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">End to end<small>the whole model</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Start</span><span class="vs-w" role="cell">All data in GPU memory (HBM)</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">The previous layer's output may still be in cache</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Approach</span><span class="vs-w" role="cell">Each operation as fast as possible</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Slow the first operation a little to keep data for the second (kernel fusion / megakernel)</span></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>15:16–21:24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Research taste and taking big bets</p><h2>Research taste</h2><p class="ch-sub">When people say "isn't this just subagents?"</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>The best academic research tackles problems industry ignores. A first reaction of "what's the point?" is often a good sign.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Background</b>: undergrad at Princeton with the SWE-bench team. He thinks taste grows from opportunities.</li>
+    <li><b>The common mistake</b>: topics that look good to industry labs, with goals boxed in by today's models.</li>
+    <li><b>His conclusion</b>: PhD students can work on almost anything, free of bureaucracy. Most big bets fail; that's normal.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">First reaction → later</span><span>18:03–19:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>SWE-bench</b><small>"An impossible task; nobody cares" → after Devin, everyone hill-climbs it</small></div>
+        <div class="box"><b>STaR / Quiet-STaR · chain of thought · ReAct</b><small>"Isn't this obvious?" → changed the field's direction</small></div>
+        <div class="box hot"><b>RLM</b><small>"Isn't this just subagents?" → he calls that a good sign</small></div>
+        <div class="box"><b>Jev (see 03)</b><small>"We've had this for years" → opens a new design space</small></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>21:24–30:59</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Jev and rethinking the language model</p><h2>Rethinking the "language model"</h2><p class="ch-sub">The output space is a knob too</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Jev matters not as "another classifier" but for its question: must a language model be a text-in, text-out autoregressive decoder? Output space and latency can be tuned together.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Jev</b><span class="gl"> (TypeSafe AI, 2026-09-15: developers define the output space, and the model returns calibrated probabilities, not free text<a class="fn" href="#src-7" aria-label="Source 7">7</a>)</span> was hyped, then dismissed as "just an NLP classifier"; RLMs were called "not a language model". His answer: a language model needn't be a Transformer decoder.</li>
+    <li><b>New questions</b>: why pay ~400× (his rough figure) for a binary classification? Can harness work move inside the model? That would help RLMs and swarms, whose worst bottleneck is speed.</li>
+    <li><b>Neolabs</b>: copying big labs means competing on data and compute, a sure loss. He doubts frontier labs put much compute into new directions.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">Two output spaces</span><span>23:20–24:15</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="An autoregressive decoder compared with a Jev-style model">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">Autoregressive decoder<small>text in, text out</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">Jev-style<small>a different output space</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Input</span><span class="vs-w" role="cell">Text</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Text + options you define first</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Output</span><span class="vs-w" role="cell">Text, one token at a time</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">An option and its probability, no free text</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Cost</span><span class="vs-w" role="cell">~400× even for binary choices (his rough figure)</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Low latency: games, routing, classification</span></div>
+      </div>
+      <p class="cap">Illustrative: both use a language-model backbone; only the output space differs. He doesn't know Jev's internals.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@CompleteSkeptic</b> (2026-09-15): launching Jev, TypeSafe CEO Diogo Almeida wrote that extraordinary claims need extraordinary evidence, linking a technical blog. <a class="xgo" href="https://x.com/CompleteSkeptic/status/2099925690682630371" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>Training is the hard part</b>: some say it's post-trained on Qwen; every open Qwen does worse, so their training clearly works.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>30:59–38:38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">Why Claude Code, Codex and Pi are so similar</p><h2>All harnesses look alike</h2><p class="ch-sub">A harness is an opinionated program</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Claude Code, Codex and Pi make nearly the same design choices. A harness decides how a model "fits" a problem; done well, different tasks look like one task to the model.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>All the same</b>: Claude Code, Codex, Pi and Oh My Pi share one broad design; Prime Agent differs slightly, being inherently an RLM.</li>
+    <li><b>What a harness is</b>: next-token prediction is awkward for hard tasks. A harness is "a very opinionated program" for fitting a model to a problem. Models are now trained around harness rollouts<span class="gl"> (the full trace of one model run)</span>, in hacky ways.</li>
+    <li><b>Experiment</b> (his blog): a retrieval task and an aggregation task from unrelated domains; train an RLM on one and it does the other. <span class="host">Host</span>Quoting the blog: train on short tasks, generalize to 8–30× longer ones. He stresses "there's no magic here".</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">The same top-level program</span><span>32:57–38:38</span></div>
+    <div class="vz">
+      <div class="chiprow"><span class="pill">Claude Code</span><span class="pill">Codex</span><span class="pill">Pi</span><span class="pill">Oh My Pi</span><span>= tool calls in a loop, whole trajectory as prompt</span><span class="pill alt">Prime Agent</span><span>≈ RLM (still keeps a compaction loop)</span></div>
+      <div class="vs" role="table" aria-label="An ordinary harness compared with an RLM on two kinds of task" style="margin-top:12px">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">Ordinary harness</span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">RLM</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Retrieval vs aggregation</span><span class="vs-w" role="cell">Two very different trajectories</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">One top-level program; sub-agents absorb the differences</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">After training on one</span><span class="vs-w" role="cell">The other must still be learned</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Does the other directly</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Longer tasks</span><span class="vs-w" role="cell">Longer trajectory, out of distribution</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Only a length variable changes: works 8–30× longer</span></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_harness_blog_2026-10-08.jpg" aria-label="@a1zhang · 2026-10-08"><img src="assets/x/x04_harness_blog_2026-10-08.jpg" alt="Page 9 of the State of AI 2026 report: Recursive language models treat prompts as parts of the environment; at right, a three-step flow: keep the input outside the model, inspect, split and delegate, then merge the results" loading="lazy" width="1600" height="1027"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@a1zhang</b><span>2026-10-08</span></span><p>This year's State of AI report features RLMs and his harness blog, summing up RLMs as: input in a code workspace, split into familiar, "locally in-distribution" sub-calls.</p><a class="xgo" href="https://x.com/a1zhang/status/2108228912794738973" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>His VideoGameBench deliberately uses a minimal harness. He thinks most models still can't beat its games; a few can: he saw Astra beat Kirby<span class="gl"> (at its 2025 release, the best model completed 0.48%<a class="fn" href="#src-8" aria-label="Source 8">8</a>)</span>.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>38:38–46:20</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Harnesses as compositional generalizers</p><h2>Compositional generalization</h2><p class="ch-sub">Today's models were trained for old harnesses</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>A good harness lets a model generalize to more tasks from fewer environments. But today's models were trained on "trajectory as a prompt" harnesses, so they're not yet good inside an RLM.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>The recursive argument</b>: competitive programming and GPU optimization use similar skills, so a harness can learn one strategy for both; sub-agent problems may share that form too. Further: could a model act as an RLM implicitly in its forward pass?</li>
+    <li><b>Harness tax</b>: he cites Arena's paper as confirming his prior: most harness choices don't matter<span class="gl"> (the paper is subtler: success rates differ only ~±2–5%, cost up to ~5×<a class="fn" href="#src-9" aria-label="Source 9">9</a>)</span>.</li>
+    <li><b>Except RLMs</b>: stronger models make harnesses matter less. But in an RLM, models are only "okay", trained as they are on trajectory as a prompt; teams must scale post-training on new harnesses.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">One program, recursing down</span><span>39:01–40:20</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="tree"><div class="root"><b>Competitive programming</b><br>List candidates → sub-agents expand them → loop: check against a verifier, evolve</div><div class="leaves"><span>Subproblem A</span><span>Subproblem B</span><span>Subproblem C</span></div></div>
+        <div class="tree"><div class="root"><b>GPU optimization</b><br>List candidates → sub-agents expand them → loop: check against a verifier, evolve</div><div class="leaves"><span>Kernel option A</span><span>Kernel option B</span><span>Kernel option C</span></div></div>
+      </div>
+      <p class="cap">Same root, different leaves; each leaf can split again the same way.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>Internal results (not public): Fable was the best model for RLMs, he thinks because Anthropic trained for dynamic workflows<span class="gl"> (a Claude Code feature: scripts orchestrating many sub-agents<a class="fn" href="#src-10" aria-label="Source 10">10</a>)</span>; Astra is now good enough too.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>46:20–53:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">RLMs explained</p><h2>What an RLM is</h2><p class="ch-sub">Code is the only tool</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>An RLM is a harness design: code is the only tool, the model can call itself as a function, and context always lives in the code environment. Its target has shifted from "long context" to "composition".</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Definition</b>: code is the only tool; other tools, and self-calls, are functions in it; context lives in the code environment, e.g. a file system.</li>
+    <li><b>Versus a standard harness</b>: a standard harness calls one tool per turn, with no central context to draw on; an RLM orchestrates calls in code around a central context.</li>
+    <li><b>Locally in-distribution</b>: standard harnesses keep appending the trajectory to the prompt, so long tasks drift out of distribution. An RLM splits the task into sub-calls that each see a local piece: the whole task is unseen, yet every call stays in distribution.</li>
+    <li><b>A scaling analogy</b>: pre-training scaling laws hold because architectures are fairly stable; change the architecture and the power law may shift. Harnesses may be similar, he thinks.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">Two kinds of context</span><span>48:02–50:56</span></div>
+    <div class="vz">
+      <div class="ctxw" data-ctxw>
+        <div class="side">
+          <b>trajectory as a prompt</b><small>the whole trajectory keeps being appended to the prompt</small>
+          <div class="seg-stack" data-left></div>
+          <span class="verdict bad" data-lv></span>
+        </div>
+        <div class="side">
+          <b>RLM</b><small>context is a variable in code</small>
+<pre class="repl">context = load(...)   # in memory / on disk
+parts = split(context)
+for p in parts:
+    llm_query(p)       # calls itself</pre>
+          <div class="subs" data-subs></div>
+          <span class="verdict ok" data-rv></span>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:10px"><button type="button" class="h-btn solid" data-next>Next <i>→</i></button><button type="button" class="h-btn" data-reset>Reset</button><span class="cap" data-step style="align-self:center"></span></div>
+      <p class="cap">Illustrative: code, turns and sub-calls are made up, only to contrast the two kinds of context.</p>
+    </div>
+  </article>
+  <script>
+  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;var v=r.closest('.vz'),L=r.querySelector('[data-left]'),S=r.querySelector('[data-subs]'),lv=r.querySelector('[data-lv]'),rv=r.querySelector('[data-rv]'),st=v.querySelector('[data-step]'),n=4;
+  var segs=['Task','Tool result 1','Turn 2','Tool result 2','Turn 3','Tool result 3','Turn 4','Tool result 4'];
+  function draw(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
+  S.innerHTML='';for(var k=1;k<=3;k++){var t=document.createElement('span');t.textContent='Sub-call '+k+' · sees one small slice';if(k>n-1&&n<4)t.hidden=true;S.appendChild(t)}
+  lv.textContent=n>=3?'Drifting out of distribution':'Still in distribution';rv.textContent='Every call stays in distribution';st.textContent='Turn '+n+' of 4'}
+  v.querySelector('[data-next]').addEventListener('click',function(){n=n>=4?1:n+1;draw()});
+  v.querySelector('[data-reset]').addEventListener('click',function(){n=1;draw()});draw()});
+  </script>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x06_rlm_launch_2026-01-02.jpg" aria-label="@a1zhang · 2026-01-02"><img src="assets/x/x06_rlm_launch_2026-01-02.jpg" alt="First page of the Recursive Language Models paper, by Alex L. Zhang, Tim Kraska and Omar Khattab; Figure 1 below compares GPT-5 and RLM(GPT-5) on three long-context tasks as input length grows" loading="lazy" width="1416" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@a1zhang</b><span>2026-01-02</span></span><p>RLM launch post: as 2025 shifted from language models to reasoning models, 2026 would shift to RLMs. Figure 1: with longer inputs GPT-5 drops; RLM(GPT-5) mostly holds.</p><a class="xgo" href="https://x.com/a1zhang/status/2007198916073136152" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>Training</b>: MIT can't afford scaled training; companies like Prime Intellect do it. He guesses training around a smart harness may yield better post-training scaling laws.</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst">
+    <li>Seen another way: an RLM doesn't need a longer context window. It keeps what each call sees short and familiar, turning a "length" problem into a "composition" one.</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>53:57–1:02:26</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Prime Agent and RLMs in the wild</p><h2>Prime Agent and real-world use</h2><p class="ch-sub">The only tool is IPython</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Prime Agent adds the RLM abstraction to Pi: IPython is the only tool, the harness can modify itself, and sub-agents persist and talk in code.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Origin</b>: Prime Intellect posted that RLMs were the future; a GPU Mode friend connected them. Prime trains its own models; he stays out, saving PhD time for other big bets.</li>
+    <li><b>Sub-agents die too soon</b>: <span class="host">Host</span>A Codex pain point; the trick is to externalize to a file system and run everything through code. He agrees.</li>
+    <li><b>Third parties</b>: Harvey post-trained an RLM for legal work; Laude Institute's Headlong "thinks persistently"; DSPy has an RLM module; many ARC-AGI-3 Kaggle harnesses borrowed the RLM abstraction<span class="gl"> (Zhang co-authored both Prime Agent and Headlong<a class="fn" href="#src-11" aria-label="Source 11">11</a><a class="fn" href="#src-13" aria-label="Source 13">13</a>)</span>.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">Prime Agent, piece by piece</span><span>55:32–58:06</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>Pi core loop</b><small>Minimalist; his reference for all harnesses</small></li>
+        <li class="hot"><b>Only tool: IPython</b><small>Other tools are Python modules or Bash scripts</small></li>
+        <li><b>continual harness</b><small>Can modify its own skills, sub-agents and prompt (context: the base system prompt is fixed; changes can be rolled back<a class="fn" href="#src-11" aria-label="Source 11">11</a>)</small></li>
+        <li><b>Agent-to-agent messages</b><small>Also written in code</small></li>
+        <li><b>Persistent sub-agents</b><small>Can still be prompted after finishing</small></li>
+      </ol>
+      <p class="cap">In his words: apart from these, the rest of Prime Agent is "standard".</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_harvey_rlm_2026-09-08.jpg" aria-label="@harvey · 2026-09-08"><img src="assets/x/x07_harvey_rlm_2026-09-08.jpg" alt="Flow chart: a data room of thousands of files loads into a Python REPL; the root model searches and slices it, hands batches to sub-agents, and the results merge into a diligence memo" loading="lazy" width="1600" height="753"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@harvey</b><span>2026-09-08</span></span><p>Harvey and Baseten's RLM harness: the data room sits in a REPL; the root agent assigns bounded reviews to sub-agents. Mean rubric pass rate across 7 models rose from 23% to 62%<a class="fn" href="#src-12" aria-label="Source 12">12</a>.</p><a class="xgo" href="https://x.com/harvey/status/2097372371195953272" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@PrimeIntellect</b> (2026-08-05): launched Prime Agent, "a self-improving RLM harness", for coding and long autonomous tasks. <a class="xgo" href="https://x.com/PrimeIntellect/status/2085086999267144083" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>1:02:26–1:09:22</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">OpenAI swarms and the future of language models</p><h2>Swarms and the future "model"</h2><p class="ch-sub">The model you query may be a crowd</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>OpenAI claims it solved a Navier–Stokes problem (contested). He judges it used an agent swarm with shared context. The "language model" you query may one day be a whole hidden swarm.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Is it an RLM?</b> He guesses not, though it's close in spirit: agents sharing a file system. Given the right information, an Astra-class model is smart enough; finding it is the hard part.</li>
+    <li><b>The future</b>: the front end stays a Claude Code- or Codex-style stream, backed by a swarm the user never sees. He calls this a relatively safe bet.</li>
+    <li><b>Waste</b>: he's "fairly certain" 95% of such swarms' exploration just burns tokens; with a different setup maybe less, he's "not sure". His analogy: RLMs solve harder tasks than compaction, but people mostly pick compaction, which is cheaper and faster.</li>
+    <li><b>Open questions</b>: which problems need a swarm? Can the agent decide itself?</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">That swarm's bill · two ways to organize</span><span>1:06:16–1:08:13</span></div>
+    <div class="vz">
+      <div class="nums">
+        <div class="box"><b>~10,000</b><small>agents</small></div>
+        <div class="box"><b>88 hours</b><small>runtime</small></div>
+        <div class="box"><b>130 billion</b><small>output tokens</small></div>
+        <div class="box est"><b>≈$40 million</b><small>Host's estimate at public prices; he: "less than I thought"</small></div>
+      </div>
+      <div class="q2" style="margin-top:12px">
+        <div class="box"><b>Org chart</b><small>Planner → sub-planners → workers (host's Cursor example<a class="fn" href="#src-15" aria-label="Source 15">15</a>). Host's view: repeated gathering is the bottleneck</small></div>
+        <div class="box hot"><b>Shared context</b><small>Agents work independently on one shared context (host: a true swarm works this way)</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_navier_stokes_2026-09-08.jpg" aria-label="@OpenAI · 2026-09-08"><img src="assets/x/x08_navier_stokes_2026-09-08.jpg" alt="3D render of a fluid vortex, labelled inward spiral and axial stretching" loading="lazy" width="1254" height="1254"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@OpenAI</b><span>2026-09-08</span></span><p>OpenAI says agents on an internal model far stronger than GPT-6 Astra solved a Navier–Stokes problem. OpenAI only says it spent "millions of dollars"; the proof covers a forced version, and credit is disputed<a class="fn" href="#src-14" aria-label="Source 14">14</a>.</p><a class="xgo" href="https://x.com/OpenAI/status/2097374640582668336" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>1:09:22–1:17:48</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Open-endedness and Sakana AI</p><h2>Open-ended research</h2><p class="ch-sub">The hard part is picking from the slop</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Open-ended research and unsolved math share methods: evolutionary search, unleashed swarms. The hard part is the last step: picking keepers from a pile of slop.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Same methods</b>: evolutionary search (AlphaEvolve and kin) is much like launching a swarm and hoping for something good. Without a clear objective, he can't yet see the value.</li>
+    <li><b>Selection is the bottleneck</b>: at Sakana, where he spent a pre-PhD summer, the biggest problem was how to "ultimately choose at the end". He recalls Fugu was at least partly inspired by this<span class="gl"> (Fugu is a model trained to call other models<a class="fn" href="#src-16" aria-label="Source 16">16</a>)</span>.</li>
+    <li><b>Sakana</b>: more like a PhD lab, with research people find "weird", which he likes. The host found on air that Sakana's Japanese model is a Kimi fine-tune<span class="gl"> (Namazu, built on Kimi K2.6<a class="fn" href="#src-17" aria-label="Source 17">17</a>)</span>.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">The open-ended research funnel</span><span>1:12:02–1:13:17</span></div>
+    <div class="vz">
+      <div class="tl">
+        <div class="box"><i>1</i>Unleash a swarm<small>or evolutionary search</small></div>
+        <div class="box"><i>2</i>Mass output<small>High-throughput generation, mostly slop</small></div>
+        <div class="box hot2"><i>3</i><b>Filtering</b><small>Picking out the good: the bottleneck</small></div>
+        <div class="box hot"><i>4</i>A few good finds<small>"hidden gems"</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x09_fugu_2026-09-17.jpg" aria-label="@SakanaAILabs · 2026-09-17"><img src="assets/x/x09_fugu_2026-09-17.jpg" alt="Diagram with cost on the x-axis and performance on the y-axis: the frontier of Fugu Max and Fugu Ultra lies above the frontier of single models" loading="lazy" width="1600" height="863"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@SakanaAILabs</b><span>2026-09-17</span></span><p>Fugu Max and Fugu Ultra v2: multi-model systems tracing a cost–performance frontier above any single model.</p><a class="xgo" href="https://x.com/SakanaAILabs/status/2100647118859886906" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>1:17:48–1:22:02</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Kimi vs OpenAI agent swarms</p><h2>How swarms converge</h2><p class="ch-sub">Convergence isn't free</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Swarm convergence doesn't come free with a smart model; it takes dedicated training. In his view OpenAI has done it and Claude Code's dynamic workflows haven't; on Kimi's swarm he's unsure.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>OpenAI</b>: "clearly the right thing to do". He reads the Hugging Face incident as OpenAI training a swarm-like system<span class="gl"> (in July 2026 a model in OpenAI testing escaped its sandbox into parts of Hugging Face's infrastructure; the report lists four misalignment modes, including "unauthorized communication between agents"<a class="fn" href="#src-18" aria-label="Source 18">18</a>)</span>.</li>
+    <li><b>Kimi and dynamic workflows</b>: he doesn't know if Kimi's swarm can solve anything novel. He tried dynamic workflows: too expensive, not goal-directed, "sort of a flop".</li>
+    <li><b>The core</b>: "We take for granted what it means for a swarm to converge to an answer."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">His verdicts</span><span>1:17:51–1:21:36</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">Approach</th><th scope="col">His verdict</th><th scope="col">Why</th></tr></thead>
+        <tbody>
+          <tr><td>OpenAI swarm</td><td>The right approach</td><td>Trained; money can crack unsolved problems</td></tr>
+          <tr><td>Kimi Agent Swarm</td><td>Interesting, but doubtful</td><td>Unsure it can solve new problems</td></tr>
+          <tr><td>Claude Code dynamic workflows</td><td>"Sort of a flop"</td><td>Too expensive; doesn't converge on the goal</td></tr>
+          <tr><td>Gemini's IMO harness</td><td>A bit overhyped, but clever for its time</td><td>Maxed out the harness when models fell short</td></tr>
+        </tbody></table></div>
+      <p class="cap">His caveat: he hasn't worked at any of these companies, so "take this with a grain of salt".</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@Kimi_Moonshot</b> (2026-01-27): launched Kimi K2.5, featuring Agent Swarm with up to 100 sub-agents<a class="fn" href="#src-19" aria-label="Source 19">19</a>. <a class="xgo" href="https://x.com/Kimi_Moonshot/status/2016021783833673897" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>1:22:02–1:30:15</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Capability overhang and speculative tool calling</p><h2>Capability overhang</h2><p class="ch-sub">A job any high schooler could do</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>The host calls it "capability overhang"; in some sense, he agrees: frontier models still can't do a simple job reliably for a month, as an 18-year-old high schooler could. He calls it a "skill issue" a good harness could fix.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Speculative PTC</b> (his blog): while the model is still writing code, launch the tool calls static analysis can already see. Anything with programmatic calling should use it, he says.</li>
+    <li><b>Someone should solve this</b>: long, simple tasks done reliably. Hand off small jobs as to an intern, via one general plug-in harness; no frontier lab needed; maybe academia should do it.</li>
+    <li><b>Does ability transfer?</b> Thought experiment: strip all GPU-programming data from Astra; could it still learn kernel optimization in context? <span class="host">Host</span>That's continual learning. He: "That's the best example."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">Sequential vs speculative</span><span>1:22:25–1:22:50</span></div>
+    <div class="vz">
+      <div class="gantt">
+        <div class="g-row"><b>Sequential</b><div class="g-track"><span class="g-bar gen" style="left:0;width:40%;top:4px">Write code</span><span class="g-bar" style="left:40%;width:24%;top:30px">Tool A</span><span class="g-bar" style="left:64%;width:24%;top:56px">Tool B</span><span class="g-bar end" style="left:88%;width:12%;top:56px">Done</span></div></div>
+        <div class="g-row"><b>Speculative</b><div class="g-track"><span class="g-bar gen" style="left:0;width:40%;top:4px">Write code</span><span class="g-bar" style="left:14%;width:24%;top:30px">Tool A</span><span class="g-bar" style="left:24%;width:24%;top:56px">Tool B</span><span class="g-bar end" style="left:48%;width:12%;top:56px">Done</span></div></div>
+      </div>
+      <p class="cap">Illustrative; durations aren't the speaker's data: statically visible calls are queued before the code is done.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_sptc_2026-08-24.jpg" aria-label="@a1zhang · 2026-08-24"><img src="assets/x/x11_sptc_2026-08-24.jpg" alt="Figure 1 of the blog post Speculative Programmatic Tool Calling: model-written REPL code on the left; on the right, timelines of sub-call execution with and without speculation" loading="lazy" width="1600" height="1301"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@a1zhang</b><span>2026-08-24</span></span><p>sPTC launch: predict tool calls while code is still being generated and queue them early, overlapping generation with REPL execution.</p><a class="xgo" href="https://x.com/a1zhang/status/2091938825580716079" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>1:30:15–1:43:24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Neuralese, future research and AI for science</p><h2>What to bet on next</h2><p class="ch-sub">A dozen ideas, most of them bad</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>He moved from GPUs to harnesses because he thinks most innovation is yet to come at this layer. He picks topics by holding many ideas, trying each briefly, and dropping everything once convinced.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Neuralese</b><span class="gl"> (a hypothetical "inner language" of models)</span>: he bets on a mix of English and Python and doesn't buy "binary". He asks back: isn't reasoning like code inherently autoregressive?</li>
+    <li><b>Why leave GPUs</b>: kernels are a means. Harness work is uncomfortable: fuzzy, hard to verify with limited compute; but the innovation is there.</li>
+    <li><b>How to reach out to him</b>: don't just write "I really like RLMs"; he likes opinionated people who can say why.</li>
+    <li><b>Science</b>: feedback loops are long, and you must judge whether a new model will just solve it in six months; ARC-AGI-3 saturated in under a year.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">How he picks topics</span><span>1:38:02–1:38:59</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>10–15 ideas</b><small>All at once</small></li>
+        <li><b>Most are bad</b><small>Mulled over on runs or at tennis</small></li>
+        <li><b>Take a look</b><small>Try it briefly with interested people</small></li>
+        <li class="hot"><b>Convinced</b><small>Drop everything; all in for weeks</small></li>
+        <li><b>Experiments running</b><small>"kind of easy coasting again"</small></li>
+      </ol>
+    </div>
+  </article>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">S</div><div><p class="en-line">Summary</p><h2>Summary</h2></div></div></header>
+  <p class="sub-h"><b>6 takeaways from the conversation</b>our synthesis</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>Ability goes unused</b>: the bottleneck is how models are organized; reliable long, simple work is a "skill issue".<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Harness</a><a class="chip" href="#ch-11"><i>11</i>Overhang</a></span></li>
+    <li><b>Harnesses are near-identical</b>: a different abstraction might change the scaling curve (his analogy).<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Harness</a><a class="chip" href="#ch-06"><i>06</i>RLM</a></span></li>
+    <li><b>Put context in the environment</b>: every call stays in distribution, which buys compositional generalization.<span class="chips"><a class="chip" href="#ch-05"><i>05</i>Generalize</a><a class="chip" href="#ch-06"><i>06</i>RLM</a><a class="chip" href="#ch-07"><i>07</i>Prime</a></span></li>
+    <li><b>Swarms aren't free</b>: he estimates most search is waste; convergence takes training.<span class="chips"><a class="chip" href="#ch-08"><i>08</i>Swarm</a><a class="chip" href="#ch-10"><i>10</i>Converge</a></span></li>
+    <li><b>Experts are still the verifiers</b>: picking the good out of the slop is the bottleneck.<span class="chips"><a class="chip" href="#ch-00"><i>00</i>Kernel</a><a class="chip" href="#ch-01"><i>01</i>Experts</a><a class="chip" href="#ch-09"><i>09</i>Open-ended</a></span></li>
+    <li><b>Academia should make odd bets</b>: output spaces, architectures and harnesses are all open to rethinking.<span class="chips"><a class="chip" href="#ch-02"><i>02</i>Taste</a><a class="chip" href="#ch-03"><i>03</i>Jev</a><a class="chip" href="#ch-12"><i>12</i>Next</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Zhang's close</b>: the RLM paper is mostly empirical results; "the actual idea is quite simple". There are more interesting things to look at now.</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">G</div><div><p class="en-line">Glossary</p><h2>Glossary</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>20 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th><th scope="col">Where</th></tr></thead>
+      <tbody>
+        <tr><td>GPU kernel</td><td>A low-level program that runs one operation on a GPU</td><td>00 01</td></tr>
+        <tr><td>Reward hacking</td><td>Gaming the scoring rules to get a high score</td><td>00</td></tr>
+        <tr><td>Verifier</td><td>A person or program that judges whether a solution is right</td><td>01 05</td></tr>
+        <tr><td>Speed of light</td><td>The theoretical best speed, computed from hardware limits</td><td>01</td></tr>
+        <tr><td>Kernel fusion / megakernel</td><td>Merging several operations into one kernel so data moves in and out of GPU memory less</td><td>01</td></tr>
+        <tr><td>Output space</td><td>The set of things a model can output: free text, or fixed options</td><td>03</td></tr>
+        <tr><td>Looped transformer</td><td>A Transformer that reuses the same layers in a loop</td><td>03</td></tr>
+        <tr><td>Calibration</td><td>A model's stated confidence matches how often it's actually right</td><td>03</td></tr>
+        <tr><td>Harness</td><td>The outer program that wraps a model and lets it call tools and carry out tasks</td><td>04</td></tr>
+        <tr><td>Rollout</td><td>The full trace a model leaves after one run in an environment</td><td>04</td></tr>
+        <tr><td>Trajectory as a prompt</td><td>The standard practice of appending the whole trajectory to the prompt, turn after turn</td><td>05 06</td></tr>
+        <tr><td>RLM</td><td>Recursive Language Model: a harness design whose only tool is code, which can call itself recursively and keeps context in the environment</td><td>06</td></tr>
+        <tr><td>Locally in-distribution</td><td>The whole task is unseen, but each call takes a form the model has seen</td><td>06</td></tr>
+        <tr><td>Context offloading / compaction</td><td>Keeping context outside the model (variables, files) / summarizing old content when context gets too long</td><td>06 08</td></tr>
+        <tr><td>Persistent subagent</td><td>A sub-agent you can keep prompting after it finishes</td><td>07</td></tr>
+        <tr><td>Agent swarm</td><td>Thousands of agents working together on one problem</td><td>08 10</td></tr>
+        <tr><td>Open-endedness</td><td>Research with no fixed objective, where the system finds interesting problems itself</td><td>09</td></tr>
+        <tr><td>PTC / speculative PTC</td><td>Writing code to call tools / launching foreseeable calls before the code is finished</td><td>11</td></tr>
+        <tr><td>Capability overhang</td><td>Models have far more ability than is actually put to use</td><td>11</td></tr>
+        <tr><td>Continual learning</td><td>A model keeps learning new things while in use</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>Further thinking = interpretation and extension based on the conversation, for reference</div>
+  <section class="credit" id="credits" aria-label="Credits">
+    <h3>Credits</h3>
+    <p><b>Interview</b>: guest Alex Zhang (<a href="https://x.com/a1zhang" rel="noopener">@a1zhang</a>), hosts swyx (<a href="https://x.com/swyx" rel="noopener">@swyx</a>) and Vibhu Sapra, <a href="https://www.youtube.com/watch?v=kog7mwsDqnk" rel="noopener">posted by Latent Space on YouTube</a> on 2026-10-02; the show's write-up is at <a href="https://www.latent.space/p/rlm" rel="noopener">latent.space/p/rlm</a>. Personal study notes, no transcript, opening teaser left out; items tagged Host are the words of swyx or Vibhu; video frames © Latent Space.</p>
+    <p><b>Visual design</b>: visual style inspired by, borrowing from, and partly adapting the Hermes / LENS design language of <a href="https://nousresearch.com" rel="noopener">Nous Research</a>, from its open-source component library <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a> (MIT License), adapting its colours, arc-border animation, scan-line effect, and background texture. Licence details: <a href="NOTICE.txt">NOTICE.txt</a>.</p>
+    <p lang="en">This page is not an official Nous Research work. It is not affiliated with or endorsed by Nous Research.</p>
+    <p><b>Fonts</b>: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC; open-source (SIL Open Font License 1.1), via Google Fonts.</p>
+    <p>The guest, hosts or rights holders who want anything on this page changed or removed: contact <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a> on X.</p>
+    <p><b>Context</b>: cards and boxes tagged Context, and the notes in parentheses on people and terms, come from the public sources and X posts below, not from the interview. X post screenshots © their authors.</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://alexzhang13.github.io/" rel="noopener">Alex L. Zhang's website</a></li>
+      <li id="src-2"><a href="https://arxiv.org/abs/2512.24601" rel="noopener">Zhang, Kraska, Khattab · Recursive Language Models · arXiv 2512.24601</a></li>
+      <li id="src-3"><a href="https://www.ai.engineer/speakers/vibhu-sapra" rel="noopener">AI Engineer · Vibhu Sapra</a></li>
+      <li id="src-4"><a href="https://www.latent.space/p/ainews-gpt-6-astra-openais-biggest" rel="noopener">Latent Space AINews · GPT-6 Astra · 2026-09-04</a></li>
+      <li id="src-5"><a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" rel="noopener">Anthropic · Claude Fable 5 and Mythos 5 · 2026-06-09</a></li>
+      <li id="src-6"><a href="https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/" rel="noopener">OpenAI · Advancing the price-performance frontier with GPT-5.6 · 2026-07-30</a></li>
+      <li id="src-7"><a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" rel="noopener">TypeSafe AI · Introducing System One models and Jev · 2026-09-15</a></li>
+      <li id="src-8"><a href="https://arxiv.org/abs/2505.18134" rel="noopener">Zhang et al. · VideoGameBench · arXiv 2505.18134</a></li>
+      <li id="src-9"><a href="https://arena.ai/blog/coding-agents-harness-tax" rel="noopener">Arena · HarnessTax · 2026-09-16</a></li>
+      <li id="src-10"><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" rel="noopener">Claude · Introducing dynamic workflows in Claude Code · 2026-05-28</a></li>
+      <li id="src-11"><a href="https://primeintellect.ai/blog/prime-agent" rel="noopener">Prime Intellect · Prime Agent · 2026-08-05</a></li>
+      <li id="src-12"><a href="https://www.harvey.ai/blog/post-training-rlm-agents-for-m-and-a-diligence" rel="noopener">Harvey · Post-Training RLM Agents for End-to-End M&amp;A Diligence · 2026-09-08</a></li>
+      <li id="src-13"><a href="https://www.laude.org/updates/headlong-a-microharness-for-persistent-agents" rel="noopener">Laude Institute · Headlong · 2026-08-24</a></li>
+      <li id="src-14"><a href="https://www.coindesk.com/tech/2026/09/09/openai-says-10-000-ai-agents-solved-a-usd1-million-math-problem-now-mathematicians-are-fighting" rel="noopener">CoinDesk · OpenAI's Navier–Stokes result and the dispute over it · 2026-09-09</a></li>
+      <li id="src-15"><a href="https://cursor.com/blog/self-driving-codebases" rel="noopener">Cursor · Towards self-driving codebases · 2026-02-05</a></li>
+      <li id="src-16"><a href="https://sakana.ai/fugu-release/" rel="noopener">Sakana AI · Fugu</a></li>
+      <li id="src-17"><a href="https://sakana.ai/namazu/" rel="noopener">Sakana AI · Namazu</a></li>
+      <li id="src-18"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
+      <li id="src-19"><a href="https://www.kimi.com/blog/kimi-k2-5" rel="noopener">Kimi · Kimi K2.5 · 2026-01-27</a></li>
+    </ol>
+    <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
+  </section>
+</footer>
+</main>

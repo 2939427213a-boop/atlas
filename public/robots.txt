@@ -1,0 +1,6 @@
+# Not for search engines or AI crawlers. Only X's card bot may fetch pages for share previews.
+User-agent: Twitterbot
+Allow: /
+
+User-agent: *
+Disallow: /

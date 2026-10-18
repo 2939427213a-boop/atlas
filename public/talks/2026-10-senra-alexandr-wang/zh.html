@@ -1,0 +1,1561 @@
+<!doctype html>
+<!--
+  Alexandr Wang on Muse · David Senra · 2026-10-11 — Chinese study notes.
+  Visual style inspired by and adapted from Nous Research's Hermes / LENS design language
+  (@nous-research/ui, MIT License). Not affiliated with Nous Research. See NOTICE.txt.
+  Fonts: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC (SIL OFL 1.1, via Google Fonts).
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alexandr Wang on Muse · David Senra</title>
+<meta name="description" content="David Senra 访谈 Alexandr Wang 的学习笔记：Meta 为什么押注个人 agent，Muse 怎样用 7 个月磨到可靠、用 meme 破圈，以及 Wang 怎样从头重建 Meta 的 AI 实验室。">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Atlas">
+<meta property="og:title" content="Alexandr Wang on Muse · 学习笔记">
+<meta property="og:description" content="David Senra 访谈 Alexandr Wang 的学习笔记：Meta 为什么押注个人 agent，Muse 怎样用 7 个月磨到可靠、用 meme 破圈，以及 Wang 怎样从头重建 Meta 的 AI 实验室。">
+<meta property="og:url" content="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/zh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/assets/cover.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="访谈画面：Alexandr Wang 和 David Senra 相对而坐">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@steamedbun1111">
+<link rel="canonical" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/zh">
+<link rel="alternate" hreflang="en" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/">
+<link rel="alternate" hreflang="zh-CN" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/zh">
+<link rel="alternate" hreflang="x-default" href="https://atlas.haoli-agi.com/talks/2026-10-senra-alexandr-wang/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ===== tokens (teal dark only) ===== */
+:root{
+  --background-base:#041c1c;--background:#041c1c;--midground-base:#ffe6cb;--midground:#ffe6cb;
+  --warm-glow:rgba(255,189,56,.35);--amber:#f2b544;--red:#ff7a6b;
+  --font-display:'Unbounded','Noto Sans SC',sans-serif;--font-sans:'Instrument Serif','Noto Sans SC',serif;
+  --font-zh:'Noto Sans SC',sans-serif;--font-mond:'JetBrains Mono','Noto Sans SC',monospace;--font-mono:'JetBrains Mono','Noto Sans SC',monospace;
+  --mg-80:color-mix(in srgb,var(--midground-base) 80%,transparent);--mg-65:color-mix(in srgb,var(--midground-base) 65%,transparent);
+  --mg-45:color-mix(in srgb,var(--midground-base) 45%,transparent);--line:color-mix(in srgb,var(--midground-base) 16%,transparent);
+  --line-2:color-mix(in srgb,var(--midground-base) 34%,transparent);--fill:color-mix(in srgb,var(--midground-base) 5%,transparent);
+  --panel:color-mix(in srgb,var(--background-base) 84%,transparent);--rail-top:max(56px,calc(50vh - 214px));
+}
+*{box-sizing:border-box}
+html{background:#000;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000;color:var(--midground);font-family:var(--font-zh);font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+b,strong{font-weight:700}
+code{font-family:var(--font-mono);font-size:.88em;padding:0 .3em;border:1px solid var(--line);background:var(--fill)}
+button{font:inherit;color:inherit}
+p{margin:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* backdrop stack */
+.hermes-bg>*{position:fixed;inset:0;pointer-events:none}
+.bg-l1{z-index:1;background:var(--background-base);mix-blend-mode:difference}
+.bg-l2{z-index:2;width:100%;height:150vh;object-fit:cover;object-position:top left;filter:invert(1);opacity:.033;mix-blend-mode:difference}
+.bg-l99{z-index:99;background:radial-gradient(120% 90% at 0% 0%,var(--warm-glow),transparent 60%);opacity:.22;mix-blend-mode:lighten}
+.bg-l201{z-index:201;opacity:.5;mix-blend-mode:color-dodge;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gradient-stroke{0%{background-position:15% 15%}100%{background-position:75% 75%}}
+@keyframes dash-flow{to{stroke-dashoffset:-12}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes flipin{from{transform:rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.arc-host{position:relative}
+.arc-border{--arc-c1:var(--midground);--arc-c2:var(--background);--arc-duration:2.23s;
+  --arc-gradient:linear-gradient(160deg,transparent 0%,transparent 15%,var(--arc-c1) 20%,var(--arc-c2) 25%,transparent 35%,transparent 55%,var(--arc-c1) 60%,var(--arc-c2) 65%,transparent 75%,transparent 95%,var(--arc-c1) 100%);
+  position:absolute;z-index:3;overflow:hidden;border-radius:inherit;inset:-2px;padding:1.25px;pointer-events:none;opacity:0;transition:opacity .2s;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.arc-border::before{content:'';position:absolute;inset:0;background:var(--arc-gradient);background-size:300% 300%;animation:gradient-stroke var(--arc-duration) linear infinite}
+.arc-host:hover>.arc-border,.arc-host:focus-visible>.arc-border,.arc-host.on>.arc-border{opacity:1}
+
+/* PiP marker */
+.pip{display:inline-block;margin-left:1px;font-size:.62em;line-height:1;vertical-align:super;color:var(--amber);cursor:help;outline-offset:2px}
+.toast{position:fixed;z-index:70;left:12px;right:12px;bottom:14px;max-width:460px;margin:0 auto;padding:10px 14px;border:1px solid var(--amber);background:var(--background-base);color:var(--midground);font-size:13px;line-height:1.5}
+.toast[hidden]{display:none}
+
+.credit .privacy-note{font-family:var(--font-mono);font-size:11px}
+/* ===== language switch ===== */
+.lang-switch{position:fixed;z-index:70;top:12px;right:12px;display:flex;border:1px solid var(--line-2);background:var(--panel);font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em}
+.lang-switch a{display:flex;align-items:center;justify-content:center;min-width:36px;height:28px;padding:0 10px;color:var(--midground);text-decoration:none}
+.lang-switch a[lang=zh-CN]{font-family:var(--font-zh);letter-spacing:0}
+.lang-switch a[aria-current]{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.lang-switch a:not([aria-current]):hover{background:var(--fill)}
+.lang-switch a:focus-visible{outline:1px solid var(--midground);outline-offset:2px}
+.top-row{display:flex;gap:8px;margin:0 0 14px}
+.home-link{display:flex;align-items:center;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.06em;white-space:nowrap}
+.home-link:hover{border-color:var(--midground)}
+.src-top{flex:1;min-width:0;display:flex;align-items:center;gap:10px;margin:0;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;letter-spacing:.03em}
+.src-top .k{font-weight:700;letter-spacing:.14em;color:var(--mg-65)}
+.src-top .go{margin-left:auto}
+.src-top:hover{border-color:var(--midground)}
+
+/* ===== right rail ===== */
+#toc-fab{position:fixed;z-index:60;right:12px;top:var(--rail-top);display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;text-decoration:none;font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em;
+  background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+#toc-fab:hover .fab-k{animation:blink 1s step-end infinite}
+#toc-fab:active{filter:invert(1)}
+.rail{position:fixed;z-index:59;right:12px;top:calc(var(--rail-top) + 38px);display:flex;flex-direction:column;align-items:flex-end;padding:4px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.rail{background:color-mix(in srgb,var(--background-base) 94%,transparent);border-color:var(--line)}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;height:24px;text-decoration:none;color:var(--mg-65);outline-offset:-2px}
+.rail .no{display:inline-grid;place-items:center;min-width:30px;height:20px;padding:0 4px;font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.rail .lb{max-width:9em;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--mg-80)}
+.rail a:hover .no{border-color:var(--line-2);color:var(--midground)}
+.rail a.on .no{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.rail a.on .lb{color:var(--midground)}
+.rail .sep{height:1px;width:30px;margin:4px 0;background:var(--line)}
+
+/* ===== layout ===== */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:40px clamp(92px,calc(775px - 50vw),190px) 120px 48px}
+.wrap>*+*{margin-top:56px}
+section[id],article[id],details[id],div[id]{scroll-margin-top:16px}
+.panel{position:relative;border:1px solid var(--line);background:var(--panel)}
+.bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--fill);font-family:var(--font-mono);font-size:11px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.bar .k{color:var(--midground);font-weight:700;font-family:var(--font-zh);letter-spacing:.04em;font-size:12.5px;text-transform:none}
+.bar .push{margin-left:auto}
+.eyebrow{font-family:var(--font-mond);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mg-65)}
+.en-line{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kv{display:grid;margin:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.kv>div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kv dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mg-45);margin-bottom:4px}
+.kv dd{margin:0;font-family:var(--font-sans);font-size:17px;line-height:1.35}
+.kv dd.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero-body{container-type:inline-size;padding:clamp(22px,3.4vw,44px) clamp(18px,3.4vw,44px) 26px}
+.h1{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:clamp(26px,6.9cqi,72px);line-height:.96;letter-spacing:.01em;margin:14px 0}
+.h1 .nw{white-space:nowrap}
+.h1-zh{margin:0 0 14px;font-size:clamp(17px,1.8vw,21px);font-weight:500;color:var(--mg-80)}
+.h1-zh::before{content:'// ';font-family:var(--font-mono);color:var(--mg-45)}
+.read{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:3px 10px;border:1px solid var(--line-2);font-size:13px}
+.read::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--midground);animation:blink 1.6s step-end infinite}
+.kv-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero-note{margin-top:14px;font-size:13px;line-height:1.65;color:var(--mg-65)}
+.thesis-body{padding:20px clamp(18px,3vw,32px) 22px;font-size:clamp(16px,1.5vw,18px);line-height:1.8}
+.thesis-body ul{margin:8px 0 12px;padding:0;list-style:none}
+.thesis-body li{position:relative;padding-left:1.4em}
+.thesis-body li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+.thesis-body .last{padding-top:12px;border-top:1px dashed var(--line)}
+.hl{background:var(--midground);color:var(--background-base);padding:0 .25em}
+
+/* panorama */
+.pano{container-type:inline-size}
+.pano-q{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;padding:18px clamp(14px,2.6vw,28px) 4px}
+.pano-q .q{font-weight:700;font-size:13px;padding:1px 8px;background:var(--midground);color:var(--background-base)}
+.pano-q p{font-size:clamp(16px,1.6vw,19px);line-height:1.7;font-weight:500}
+.pano-band{padding:16px clamp(14px,2.6vw,28px) 22px}
+.spectrum{display:flex;height:34px;border:1px solid var(--line-2);background:var(--background-base)}
+.spectrum a{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;text-decoration:none;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-80);border-left:1px solid var(--line);transition:background .15s,color .15s}
+.spectrum a:first-child{border-left:0}
+.spectrum a.act-start{border-left:1px solid var(--midground)}
+.spectrum a.odd{background:color-mix(in srgb,var(--midground-base) 9%,transparent)}
+.spectrum a.even{background:color-mix(in srgb,var(--midground-base) 18%,transparent)}
+.spectrum a:hover,.spectrum a:focus-visible,.spectrum a.on{background:var(--midground);color:var(--background-base)}
+.acts{display:grid;grid-template-columns:var(--act-cols);margin:0;padding:0;list-style:none;border-left:1px solid var(--line)}
+.act{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.act::before{content:'';position:absolute;left:-1px;top:0;width:1px;height:14px;background:var(--midground)}
+.act-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.act-no{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.6cqi,40px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--midground)}
+.act-time{font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45);white-space:nowrap}
+.act-name b{display:block;font-size:19px;font-weight:900;line-height:1.25}
+.act-name span{display:block;margin-top:3px;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mg-65);line-height:1.4}
+.act-line{font-size:13.5px;line-height:1.7;color:var(--mg-80)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 0;padding:4px 0 0;list-style:none}
+.chip{display:inline-flex;align-items:baseline;gap:6px;padding:2px 8px;border:1px solid var(--line-2);text-decoration:none;font-size:12px;line-height:1.6;white-space:nowrap}
+.chip i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+span.chip{white-space:normal}
+a.chip:hover,a.chip:focus-visible{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+a.chip:hover i,a.chip:focus-visible i{color:inherit}
+@container (max-width:860px){
+  .acts{grid-template-columns:minmax(0,1fr);border-left:0;margin-top:14px;border-top:1px solid var(--line)}
+  .act{display:grid;grid-template-columns:54px minmax(0,1fr);column-gap:12px;row-gap:6px;border-left:1px solid var(--line);padding:12px}
+  .act::before{height:100%;width:2px}
+  .act-top{display:contents}
+  .act-no{grid-row:1/span 4;font-size:30px}
+  .act-time,.act-name,.act-line,.act .chips{grid-column:2}
+}
+
+/* chapters */
+.ch>*+*{margin-top:16px}
+.ch-head-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,3vw,30px);align-items:end;padding:clamp(18px,2.6vw,28px) clamp(16px,2.6vw,28px) 20px}
+.ch-no{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,6vw,80px);line-height:.8;background:var(--midground);color:var(--background-base);padding:.08em .1em 0}
+.ch-no.zh{font-family:var(--font-zh);font-weight:900;line-height:1;padding:.06em .12em}
+.ch-head-body .en-line{margin-bottom:6px;font-size:clamp(11.5px,1.25vw,14px);color:var(--mg-80)}
+.ch-head-body h2{margin:0;font-size:clamp(22px,2.8vw,34px);line-height:1.22;font-weight:900}
+.ch-sub{margin-top:6px;font-size:15px;color:var(--mg-65)}
+.oneliner{display:grid;grid-template-columns:auto minmax(0,1fr)}
+.oneliner .lbl{writing-mode:vertical-rl;padding:12px 7px;border-right:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:var(--mg-45);text-transform:uppercase}
+.oneliner p{padding:16px clamp(16px,2.6vw,26px);font-size:clamp(16px,1.55vw,18.5px);line-height:1.75;font-weight:500}
+.grp{display:flex;align-items:center;gap:12px;margin-top:28px !important;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mg-45)}
+.grp::after{content:'';flex:1;height:1px;background:var(--line)}
+.grp .gt{font-family:var(--font-zh);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:none;color:var(--midground)}
+
+/* text blocks */
+.pts{padding:16px clamp(14px,2.4vw,24px)}
+.pts>*+*{margin-top:12px}
+.lst{margin:0;padding:0;list-style:none}
+.lst>li{position:relative;padding-left:1.4em;font-size:14.5px;line-height:1.75}
+.lst>li+li{margin-top:6px}
+.lst>li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+ol.lst{counter-reset:n}
+ol.lst>li{counter-increment:n;padding-left:2em}
+ol.lst>li::before{content:counter(n,decimal-leading-zero);font-size:11px;top:.3em}
+.lst .lst{margin-top:4px}
+.lst .lst>li{font-size:14px;color:var(--mg-80)}
+.lst .lst>li::before{content:'·'}
+.sub-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--mg-65)}
+.sub-h b{font-family:var(--font-zh);font-size:13.5px;letter-spacing:.02em;color:var(--midground);margin-right:6px}
+pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-2);background:var(--background-base);font-family:var(--font-mono);font-size:12px;line-height:1.6;color:var(--mg-80)}
+.note-line{font-size:12.5px;color:var(--mg-65)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.tbl.mid{min-width:560px}
+.tbl th{text-align:left;font-weight:500;font-size:12px;color:var(--mg-65);padding:9px 12px;border-bottom:1px solid var(--line-2);background:var(--fill);vertical-align:bottom}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td,.tbl tbody tr:last-child th{border-bottom:0}
+.tbl td+td,.tbl th+th,.tbl th+td{border-left:1px solid var(--line)}
+.tbl tbody th{font-weight:700;font-size:13.5px;color:var(--midground);background:transparent;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tbl tbody tr:hover>*{background:var(--fill)}
+
+/* speaker notes / analysis */
+.notes{padding:14px clamp(14px,2.4vw,24px)}
+.analysis{position:relative;border-left:2px solid color-mix(in srgb,var(--midground) 32%,transparent);background:transparent}
+.an-tag{display:block;padding:8px clamp(14px,2.4vw,24px) 0;color:var(--mg-65);font-family:var(--font-mono);font-size:11px;letter-spacing:.14em}
+.an-tag::before{content:'↳ '}
+.analysis .lst{padding:4px clamp(14px,2.4vw,24px) 10px}
+.analysis .lst>li{color:var(--mg-80)}
+.analysis .lst>li::before{color:var(--mg-65)}
+.analysis a{color:var(--midground)}
+
+/* ===== widgets: shared ===== */
+.viz{container-type:inline-size}
+.vz{padding:16px clamp(12px,2.2vw,22px) 18px}
+.vz>*+*{margin-top:14px}
+.cap{font-size:13px;line-height:1.65;color:var(--mg-65)}
+.cap b{color:var(--midground);font-weight:500}
+.h-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:0;padding:7px 12px;font-family:var(--font-zh);font-size:13px;line-height:1.3;background:transparent;color:var(--midground);
+  box-shadow:inset -1px -1px 0 0 #ffffff12,inset 1px 1px 0 0 #ffffff29,0 0 0 1px var(--line-2);transition:background .15s,color .15s}
+.h-btn:hover{background:var(--fill)}
+.h-btn:active{filter:invert(1)}
+.h-btn:disabled{opacity:.4;cursor:default}
+.h-btn[aria-checked="true"],.h-btn[aria-pressed="true"],.h-btn.solid{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.h-btn i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.mini{cursor:pointer;border:1px solid var(--line-2);background:transparent;padding:1px 8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--midground)}
+.mini:hover{background:var(--fill)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;flex-wrap:wrap}
+.seg .h-btn{box-shadow:0 0 0 1px var(--line-2)}
+.arr{display:grid;place-items:center;color:var(--mg-45);transition:color .2s}
+.arr svg{display:block;width:34px;height:12px;overflow:visible}
+.arr .ln{stroke-dasharray:3 3}
+.arr.lit{color:var(--midground)}
+.arr.lit .ln{animation:dash-flow 1s linear infinite}
+.box{border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.box small{display:block;font-size:12px;color:var(--mg-65)}
+.box.lit{border-color:var(--midground)}
+.box.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.box.hot small{color:inherit;opacity:.75}
+.box.dim{opacity:.35}
+.mono{font-family:var(--font-mono)}
+
+/* 00 · switcher */
+.flip-row{display:grid;grid-template-columns:76px minmax(0,1fr);border-top:1px solid var(--line)}
+.flip{border:1px solid var(--line);border-top:0}
+.flip-k{padding:9px 12px;font-size:13px;color:var(--mg-65)}
+.flip-v{padding:9px 12px;border-left:1px solid var(--line);font-size:14.5px;perspective:600px}
+.flip-v>span{display:block;animation:flipin .35s ease both}
+.flip-v .a,.is-a .flip-v .w{display:none}
+.is-a .flip-v .a{display:block}
+.is-a .flip-v{background:var(--fill)}
+
+/* 01 · stairs + duo tracks */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;gap:6px}
+.stair{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.stair .tx{padding:0 2px;font-size:13px;line-height:1.55;color:var(--mg-80)}
+.stair .tx b{display:block;color:var(--midground);font-size:14px}
+.stair .tx i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.stair .riser{height:calc(var(--lv) * 22px);border:1px solid var(--line-2);border-bottom:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 6px)}
+.stair:last-child .riser{background:var(--midground)}
+.stairs-axis{display:flex;justify-content:flex-end;gap:8px;font-size:12.5px;color:var(--mg-65);border-top:1px solid var(--line-2);padding-top:6px}
+@container (max-width:620px){
+  .stairs{grid-template-columns:minmax(0,1fr);gap:10px}
+  .stair{flex-direction:row-reverse;align-items:center;justify-content:flex-end}
+  .stair .riser{height:24px;width:calc(var(--lv) * 14px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .stairs-axis{justify-content:flex-start}
+}
+.trk{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:start}
+.trk+.trk{margin-top:12px}
+.trk-l{padding-top:4px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cell{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:26px;min-height:26px;padding:0 8px;border:1px solid var(--line-2);font-size:12px;transition:background .2s,color .2s}
+.cell.ap{border-style:dashed;font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.cell.on{background:var(--midground);color:var(--background-base)}
+.cell.wait{animation:blink .5s step-end infinite}
+.cell.in{border-color:var(--amber);color:var(--amber);font-size:11.5px}
+.cell.in.on{background:var(--amber);color:#1b1304}
+.cell .ok{margin-left:6px;font-family:var(--font-mono);font-size:10px;padding:0 4px;border:1px solid currentColor}
+.trk .cap{margin-top:6px}
+
+/* 02 · file tree */
+.ft{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;align-items:start}
+@container (max-width:620px){.ft{grid-template-columns:minmax(0,1fr)}}
+.ft-tree{border:1px solid var(--line);padding:10px 12px;font-family:var(--font-mono);font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto;color:var(--mg-45)}
+.ft-file{cursor:pointer;border:0;background:none;padding:0 5px;font-family:var(--font-mono);font-size:12.5px;color:var(--midground);border-bottom:1px dotted var(--mg-45)}
+.ft-file[aria-pressed="true"]{background:var(--midground);color:var(--background-base)}
+.ft-desc{border:1px solid var(--line-2);padding:12px 14px}
+.ft-desc code{display:inline-block;margin-bottom:6px}
+.ft-desc p{font-size:14.5px}
+.why{border-left:3px solid var(--line-2);padding:4px 0 4px 12px}
+
+/* 03 · simulator, router, system */
+.sim-lanes{border:1px solid var(--line)}
+.lane{display:grid;grid-template-columns:170px 120px minmax(0,1fr);align-items:center;border-top:1px solid var(--line)}
+.lane:first-child{border-top:0}
+.lane>*{padding:9px 12px;min-width:0}
+.lane>*+*{border-left:1px solid var(--line)}
+.ln-h b{display:block;font-size:14px}
+.ln-h small{display:block;font-size:11.5px;color:var(--mg-65);line-height:1.5}
+.lane.head{background:var(--fill)}
+.lane.head>*{padding:5px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--mg-45)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;font-size:12.5px;border:1px dashed var(--line-2);color:var(--mg-65);white-space:nowrap}
+.pill.on{border:1px solid var(--midground);background:var(--midground);color:var(--background-base);font-weight:700}
+.pill.keep{border:1px solid var(--midground);color:var(--midground)}
+.track{display:grid;grid-template-columns:repeat(var(--n,10),minmax(0,1fr));gap:3px;align-items:center}
+.track span{height:18px;border:1px solid transparent}
+.track .on{background:var(--midground)}
+.track .off{border-color:var(--line);background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 4px)}
+.track .keep{background:color-mix(in srgb,var(--midground-base) 55%,transparent)}
+.track .empty{border:1px dashed color-mix(in srgb,var(--midground-base) 10%,transparent)}
+.track.ev span{height:auto;border:0;font-family:var(--font-mono);font-size:9.5px;line-height:1.2;text-align:center;color:var(--mg-45);white-space:nowrap;overflow:hidden}
+.track.ev span.last{color:var(--midground)}
+.sim-log{margin:0;padding:8px 12px;border:1px solid var(--line);background:var(--background-base);font-size:13px;line-height:1.7;list-style:none;min-height:3.6em}
+.sim-log li{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:8px;color:var(--mg-45)}
+.sim-log li span:first-child{font-family:var(--font-mono);font-size:11px}
+.sim-log li:first-child{color:var(--midground)}
+@container (max-width:700px){
+  .lane{grid-template-columns:minmax(0,1fr) auto}
+  .lane>*+*{border-left:0}
+  .lane .track{grid-column:1/-1;padding-top:0}
+  .lane.head>*:not(.track){display:none}
+  .lane.head .track{padding-top:6px}
+}
+.rt-grid{display:grid;grid-template-columns:minmax(0,1.2fr) 38px minmax(0,1fr) 38px minmax(0,1fr) 38px minmax(0,1.1fr);align-items:center}
+.rt-src{display:flex;flex-direction:column;gap:5px}
+.rt-src .h-btn{justify-content:flex-start;text-align:left;width:100%;padding:5px 10px}
+.rt-node b{display:block;font-size:14.5px}
+.rt .rt-node,.rt .out{opacity:.5}
+.rt.has-sel .rt-node{opacity:1;border-color:var(--midground)}
+.rt-dec{display:flex;flex-direction:column;gap:8px}
+.out{padding:6px 10px;border:1px dashed var(--line-2);font-size:13px;color:var(--mg-65);transition:background .2s,opacity .2s}
+.rt.has-sel[data-worth="1"] .out.yes,.rt.has-sel[data-worth="0"] .out.no{opacity:1;background:var(--midground);color:var(--background-base);border:1px solid var(--midground)}
+.rt-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.rt-log{font-size:13px;color:var(--mg-65)}
+.rt-log b{color:var(--midground);font-weight:500}
+@container (max-width:680px){
+  .rt-grid{grid-template-columns:minmax(0,1fr);row-gap:4px}
+  .rt-grid .arr svg{transform:rotate(90deg);margin:8px 0}
+  .rt-src{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr) 48px minmax(0,1.5fr) 48px minmax(0,1fr);align-items:stretch}
+.s3-col{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);padding:10px;min-width:0;outline-offset:2px;transition:border-color .2s,opacity .2s}
+.s3-col>b{font-size:14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.s3-v{text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-65);line-height:1}
+.s3-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.3fr);gap:6px;align-items:stretch}
+.s3-row .bi{align-self:center;font-family:var(--font-mono);color:var(--mg-65)}
+.s3-gut{display:flex;flex-direction:column;justify-content:space-between;padding:44px 2px 16px}
+.s3-gut.g2{justify-content:center}
+.s3-gut .lnk{transition:opacity .2s}
+.s3-gut .back svg{transform:scaleX(-1)}
+.sys3[data-hl] .lnk{opacity:.2}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"],.sys3[data-hl="server"] .lnk[data-link~="server"],.sys3[data-hl="comp"] .lnk[data-link~="comp"]{opacity:1}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .arr,.sys3[data-hl="server"] .lnk[data-link~="server"] .arr,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .arr{color:var(--midground)}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .ln,.sys3[data-hl="server"] .lnk[data-link~="server"] .ln,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .ln{animation:dash-flow 1s linear infinite}
+.sys3[data-hl="apps"] [data-col="apps"],.sys3[data-hl="server"] [data-col="server"],.sys3[data-hl="comp"] [data-col="comp"]{border-color:var(--midground)}
+.sys3[data-hl="apps"] [data-col="comp"],.sys3[data-hl="comp"] [data-col="apps"]{opacity:.4}
+@container (max-width:700px){
+  .s3-grid{grid-template-columns:minmax(0,1fr)}
+  .s3-gut{flex-direction:row;justify-content:center;gap:40px;padding:6px 0}
+  .s3-gut .arr svg{transform:rotate(90deg);margin:6px auto}
+  .s3-gut .back svg{transform:rotate(-90deg)}
+}
+
+/* 04 · crash + queue */
+.cr-lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.cr-lane:first-of-type{border-top:0}
+.cr-lane .lb b{display:block;font-family:var(--font-mono);font-size:12.5px}
+.cr-lane .lb small{display:block;font-size:12px;color:var(--mg-65)}
+.stp{display:inline-grid;place-items:center;min-width:56px;padding:3px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;animation:pop .25s ease both}
+.stp.done{background:var(--fill)}
+.stp.x{border-color:var(--red);color:var(--red)}
+.stp.redo{border-style:dashed;color:var(--mg-45)}
+.stp.go{background:var(--midground);color:var(--background-base)}
+.ctr{font-size:13.5px}
+.ctr b{font-family:var(--font-mono);font-size:15px;padding:0 6px;border:1px solid var(--line-2)}
+@container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
+.q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.qbox{border:1px solid var(--line);padding:12px}
+.qbox>*+*{margin-top:10px}
+.qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
+.qc{display:inline-grid;place-items:center;height:26px;padding:0 9px;border:1px solid var(--line-2);font-size:12px;animation:pop .25s ease both}
+.qc.run{background:repeating-linear-gradient(135deg,var(--fill) 0 6px,transparent 6px 12px);border-color:var(--midground)}
+.qc.cut{border-color:var(--red);color:var(--red);text-decoration:line-through}
+.qc.jump{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.qc.merge{background:var(--midground);color:var(--background-base)}
+
+/* 05 · hub + UI controls */
+.hub{display:grid;grid-template-columns:minmax(0,1.5fr) 40px auto 40px minmax(0,.8fr);align-items:center}
+.hub-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.hub-tools,.hub-ch{display:flex;flex-wrap:wrap;gap:5px}
+.hub-ch{flex-direction:column}
+.tg{display:inline-block;padding:2px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap}
+.hub-mid{padding:14px 16px;background:var(--midground);color:var(--background-base);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em}
+@container (max-width:680px){
+  .hub{grid-template-columns:minmax(0,1fr)}
+  .hub .arr svg{transform:rotate(90deg);margin:8px auto}
+  .hub-mid{justify-self:center}
+  .hub-ch{flex-direction:row}
+}
+.uic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@container (max-width:600px){.uic{grid-template-columns:minmax(0,1fr)}}
+.uic-card{border:1px solid var(--line-2);background:var(--background-base);padding:12px}
+.uic-card>*+*{margin-top:8px}
+.uic-card h4{margin:0;font-size:14px}
+.fld{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.fld.filled{color:var(--midground);border-color:var(--midground)}
+.uic-card .state{font-family:var(--font-mono);font-size:11px;color:var(--midground)}
+.emo{display:flex;gap:6px}
+.emo button{cursor:pointer;width:36px;height:30px;border:1px solid var(--line-2);background:none;font-size:15px}
+.emo button[aria-pressed="true"]{border-color:var(--midground);background:var(--fill)}
+
+/* 06 · blocks, ladder, helpers */
+.blocks{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:460px}
+.blocks span{aspect-ratio:1;border:1px solid var(--line);transition:background .25s}
+.blocks span.t{background:var(--midground);border-color:var(--midground)}
+.blk-n{font-family:var(--font-mono);font-size:13px}
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;align-items:end}
+.rung{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.rung .bar2{height:calc(var(--lv) * 12px + 10px);border:1px solid var(--line-2);border-bottom:0;background:var(--fill);transition:background .2s,border-color .2s}
+.rung .t{font-size:12.5px;line-height:1.45;transition:color .2s,opacity .2s}
+.ladder.broken .r2 .t,.ladder.broken .r4 .t{text-decoration:line-through;color:var(--red)}
+.ladder.broken .r2 .bar2,.ladder.broken .r4 .bar2{border-color:var(--red)}
+.ladder.broken .r6 .bar2{background:var(--midground)}
+.ladder.broken .r6 .t{color:var(--midground);font-weight:700}
+.ladder.broken .r1,.ladder.broken .r3,.ladder.broken .r5{opacity:.35}
+.ladder-axis{display:flex;justify-content:flex-end;border-top:1px solid var(--line-2);padding-top:6px;font-size:12.5px;color:var(--mg-65)}
+.rule{padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px;transition:background .2s,color .2s}
+.rule.hot{background:var(--midground);color:var(--background-base)}
+@container (max-width:620px){
+  .ladder{grid-template-columns:minmax(0,1fr);gap:6px}
+  .rung{flex-direction:row-reverse;justify-content:flex-end;align-items:center;gap:10px}
+  .rung .bar2{height:22px;width:calc(var(--lv) * 12px + 10px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .ladder-axis{justify-content:flex-start}
+}
+.hp{display:grid;grid-template-columns:auto 38px auto 38px minmax(0,1fr) 38px auto;align-items:center}
+.hp-help{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+@container (max-width:720px){
+  .hp{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .hp .arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 07 · auto-review */
+.ar{display:grid;grid-template-columns:auto 34px auto 34px minmax(0,1fr);align-items:center;gap:0}
+.ar-br{display:flex;flex-direction:column;gap:10px}
+.ar-path{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.ar-path .arr svg{width:24px}
+.cd{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+@container (max-width:720px){
+  .ar{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .ar>.arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 08 · cache stack */
+.cs{border:1px solid var(--line)}
+.cs-row{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid var(--line)}
+.cs-row:first-child{border-top:0}
+.cs-l{padding:9px 10px;font-size:12.5px;color:var(--mg-65);border-right:1px solid var(--line)}
+.cs-cells{display:flex;flex-wrap:wrap;gap:5px;padding:8px}
+.cs-c{display:inline-grid;place-items:center;min-height:28px;padding:2px 9px;border:1px solid var(--line-2);font-size:12px;line-height:1.4;transition:background .2s,color .2s,border-color .2s}
+.cs-c.hit{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-c.miss{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red);color:var(--red)}
+.cs-c.new{border-style:dashed;border-color:var(--midground);animation:pop .25s ease both}
+.cs-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mg-65)}
+.cs-leg span::before{content:'';display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;border:1px solid}
+.cs-leg .h::before{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-leg .m::before{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red)}
+@container (max-width:520px){.cs-row{grid-template-columns:minmax(0,1fr)}.cs-l{border-right:0;border-bottom:1px dashed var(--line);padding:6px 10px}}
+
+/* 09 · timeline + memory */
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.tl .box{position:relative}
+.tl .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.tl .box.hot i{color:inherit}
+@container (max-width:620px){.tl{grid-template-columns:minmax(0,1fr)}}
+.mem{display:flex;flex-direction:column;gap:6px}
+.mem-l{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 12px;border:1px solid var(--line-2)}
+.mem-l b{font-family:var(--font-mono);font-size:13px}
+.mem-l span{font-size:13.5px}
+.mem-l.l1{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.mem-l.l2{background:color-mix(in srgb,var(--midground-base) 16%,transparent)}
+.mem-l.l3{background:linear-gradient(90deg,color-mix(in srgb,var(--midground-base) 10%,transparent),transparent)}
+.mem-l.l4{border-style:dashed;color:var(--mg-80)}
+
+/* 10 · double loop */
+.loops{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.loop{border:1px solid var(--line-2);border-radius:18px;padding:12px}
+.loop>b{display:block;margin-bottom:8px;font-size:14px}
+.loop ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.loop li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;padding:5px 8px;border:1px solid var(--line);font-size:13px;transition:background .2s,color .2s}
+.loop li i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.loop li.hot{background:var(--midground);color:var(--background-base)}
+.loop li.hot i{color:inherit}
+.loop .ret{margin-top:6px;text-align:right;font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--amber)}
+@container (max-width:700px){.loops{grid-template-columns:minmax(0,1fr)}.bridge{flex-direction:row}}
+
+/* 11 · building blocks */
+.bb{display:grid;grid-template-columns:minmax(0,.8fr) 40px minmax(0,1.6fr);gap:10px;align-items:start}
+.bb-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.bb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.bb-l .bb-grid{grid-template-columns:minmax(0,1fr)}
+.bb-b{display:block;width:100%;padding:8px 10px;border:1px solid var(--line-2);background:var(--background-base);text-align:left;font-size:13px;line-height:1.4}
+button.bb-b{cursor:pointer}
+button.bb-b:hover,button.bb-b[aria-pressed="true"]{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.bb-read{font-size:13px;color:var(--mg-65)}
+.bb-read .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:middle}
+@container (max-width:640px){.bb{grid-template-columns:minmax(0,1fr)}.bb .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 12 · checklist */
+.chk{margin:0;padding:0;list-style:none;border:1px solid var(--line)}
+.chk li{border-top:1px solid var(--line)}
+.chk li:first-child{border-top:0}
+.chk label{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 12px;cursor:pointer;font-size:14px}
+.chk input{width:16px;height:16px;margin:0;accent-color:#ffe6cb}
+.chk .n{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.chk li.done{background:var(--fill)}
+.chk li.done .t{text-decoration:line-through;color:var(--mg-65)}
+.prog{font-family:var(--font-mono);font-size:12px;color:var(--mg-65)}
+.prog b{color:var(--midground)}
+
+/* slides strip + transcript */
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.slide{flex:0 0 184px;display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--panel);scroll-snap-align:start}
+.slide-frame{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:#000}
+.slide-frame img{display:block;width:100%;height:100%;object-fit:cover}
+.slide-frame::before,.slide-frame::after{content:'';position:absolute;inset:0;background:var(--img) center/cover no-repeat;opacity:0;pointer-events:none}
+.slide-frame .scan{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.35) 2px 3px)}
+.slide:hover .slide-frame::before,.slide:focus-visible .slide-frame::before{opacity:1;filter:drop-shadow(3px 0 0 rgba(255,40,90,.8));animation:tear-a .46s steps(1,end) 2 forwards}
+.slide:hover .slide-frame::after,.slide:focus-visible .slide-frame::after{opacity:1;filter:drop-shadow(-3px 0 0 rgba(0,230,255,.8));animation:tear-b .46s steps(1,end) 2 forwards}
+.slide:hover .scan{opacity:.55;animation:scan-roll 1.4s linear infinite}
+@keyframes tear-a{0%{clip-path:inset(8% 0 80% 0);transform:translateX(-8px)}25%{clip-path:inset(44% 0 40% 0);transform:translateX(10px)}50%{clip-path:inset(70% 0 16% 0);transform:translateX(-5px)}75%{clip-path:inset(22% 0 68% 0);transform:translateX(7px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes tear-b{0%{clip-path:inset(60% 0 28% 0);transform:translateX(9px)}25%{clip-path:inset(14% 0 74% 0);transform:translateX(-7px)}50%{clip-path:inset(34% 0 52% 0);transform:translateX(6px)}75%{clip-path:inset(82% 0 6% 0);transform:translateX(-9px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes scan-roll{to{background-position:0 12px}}
+.slide-cap{display:flex;align-items:baseline;gap:8px;padding:6px 8px;font-family:var(--font-mono);font-size:11px;border-top:1px solid var(--line)}
+.slide-cap span{color:var(--mg-65)}
+.slide:hover{border-color:var(--line-2)}
+.transcript summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 14px;cursor:pointer;list-style:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary .k{color:var(--midground);font-weight:700}
+.transcript summary .tg2{margin-left:auto;padding:1px 8px;border:1px solid var(--line-2);color:var(--midground)}
+.transcript summary .tg2::after{content:'+'}
+.transcript[open] summary .tg2::after{content:'−'}
+.transcript[open] summary{border-bottom:1px solid var(--line)}
+.transcript summary:hover{background:var(--fill)}
+.tr-body{padding:4px 16px 14px}
+.tr-seg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-seg:last-child{border-bottom:0}
+.tr-meta{font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.tr-meta b{display:block;color:var(--midground);font-size:12.5px}
+.tr-seg p{max-width:80ch;font-family:var(--font-sans);font-size:16px;line-height:1.6;color:var(--mg-80)}
+.gloss .tbl{min-width:620px}
+.gloss .tbl td:first-child{font-family:var(--font-mono);font-size:13px;color:var(--midground);white-space:nowrap}
+
+.foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--mg-45)}
+.foot .legend{font-family:var(--font-zh);font-size:12px;letter-spacing:0;color:var(--mg-65)}
+.foot .legend .pipx{color:var(--amber);margin-right:4px}
+.foot div:nth-child(2){text-align:center}.foot div:nth-child(3){text-align:right}
+
+@media (max-width:1180px){.kv-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.wrap{padding:32px 190px 110px 28px}}
+@media (max-width:760px){
+  body{font-size:15px}
+  .wrap{padding:48px 34px 100px 12px}
+  .lang-switch{top:8px;right:4px}.lang-switch a{min-width:30px;height:26px;padding:0 7px}
+  .top-row{flex-wrap:wrap}.top-row .src-top{flex:1 1 100%}
+  .wrap>*+*{margin-top:44px}
+  .ch-head-body{grid-template-columns:minmax(0,1fr)}
+  .ch-no{justify-self:start}
+  .tr-seg{grid-template-columns:minmax(0,1fr);gap:4px}
+  .slide{flex-basis:150px}
+  .spectrum{height:18px}.spectrum a{font-size:0}
+  .foot{grid-template-columns:minmax(0,1fr)}.foot div:nth-child(2),.foot div:nth-child(3){text-align:left}
+  :root{--rail-top:max(44px,calc(50vh - 170px))}
+  #toc-fab{right:4px;height:24px;width:24px;padding:0;justify-content:center}
+  #toc-fab .fab-zh{display:none}
+  .rail{right:4px;top:calc(var(--rail-top) + 30px);padding:2px 0;border:0;background:none !important}
+  .rail a{width:24px;height:20px;justify-content:center}
+  .rail .lb{display:none}
+  .rail .no{min-width:0;width:24px;height:18px;padding:0;font-size:10px;border:0}
+  .rail a.on .no{background:var(--midground);color:var(--background-base)}
+  .rail .sep{width:10px;margin:2px auto}
+}
+@media (max-width:560px){.kv-4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .bg-l201{display:none}
+}
+
+/* 00 · before → after */
+.vs{display:grid;gap:6px}
+.vs-head,.vs-row{display:grid;grid-template-columns:5em minmax(0,1fr) 26px minmax(0,1.45fr);gap:8px;align-items:stretch}
+.vs-head span{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--mg-65);align-self:end}
+.vs-head small{display:block;margin-top:2px;font-family:var(--font-zh);font-size:12px;letter-spacing:0}
+.vs-head .vs-a{color:var(--midground)}
+.vs-k{align-self:center;font-weight:700;font-size:13px;color:var(--mg-80)}
+.vs-row .vs-w{padding:9px 12px;border:1px dashed var(--line-2);color:var(--mg-65);font-size:13px;line-height:1.5}
+.vs-row .vs-a{padding:9px 12px;border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);color:var(--midground);font-size:14px;line-height:1.5}
+.vs-arr{display:grid;place-items:center;font-family:var(--font-mono);color:var(--midground)}
+@media (max-width:760px){.vs-head{display:none}.vs-row{grid-template-columns:minmax(0,1fr) 20px minmax(0,1.35fr);gap:6px}.vs-k{grid-column:1/-1;margin-top:6px}}
+/* 02 · file tree, all visible */
+.ft2{display:grid;gap:6px}
+.ft2-row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:14px;align-items:baseline;padding:8px 12px;border-left:2px solid var(--midground);background:color-mix(in srgb,var(--midground) 6%,transparent);font-size:14px}
+.ft2-row code{font-family:var(--font-mono);font-size:12.5px;color:var(--midground);overflow-wrap:anywhere}
+@media (max-width:760px){.ft2-row{grid-template-columns:minmax(0,1fr);gap:2px}}
+/* 06 · context grids */
+.cg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.cg2 figure{margin:0}.cg2 figcaption{font-size:13px;margin-bottom:8px;color:var(--mg-80)}
+.cg{display:grid;grid-template-columns:repeat(25,minmax(0,1fr));gap:2px}
+.cg span,.cg-legend i{aspect-ratio:1;display:block}
+.cg .s,.cg-legend .s{background:repeating-linear-gradient(45deg,var(--mg-65) 0 2px,transparent 2px 4px)}
+.cg .d,.cg-legend .d{background:var(--midground)}
+.cg .n,.cg-legend .n{background:color-mix(in srgb,var(--midground) 45%,transparent)}
+.cg .c,.cg-legend .c{background:color-mix(in srgb,var(--midground) 16%,transparent)}
+.cg .f,.cg-legend .f{border:1px solid var(--line)}
+.cg-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.cg-legend span{display:inline-flex;align-items:center;gap:6px}.cg-legend i{width:10px}
+@media (max-width:760px){.cg2{grid-template-columns:minmax(0,1fr)}}
+/* 11 · chips on blocks */
+.bb-b .bb-ch{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.bb-b .bb-ch .chip{font-size:11px;padding:0 6px}
+/* in-page slide viewer */
+.slide{cursor:zoom-in}
+html.sv-open{overflow:hidden}
+.sv{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:56px 72px}
+.sv[hidden]{display:none}
+.sv:focus{outline:none}
+.sv-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88)}
+.sv-fig{position:relative;margin:0;display:grid;gap:10px;justify-items:center;max-width:min(100%,1600px)}
+.sv-fig img{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;border:1px solid var(--line-2);background:#000;cursor:pointer;user-select:none}
+.sv-cap{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-80)}
+.sv-cap b{color:var(--midground)}
+.sv-hint{color:var(--mg-65);font-family:var(--font-zh)}.sv-hint-touch{display:none}
+.sv-btn,.sv-close{position:fixed;z-index:101;display:grid;place-items:center;border:1px solid var(--line-2);background:color-mix(in srgb,var(--background-base) 85%,transparent);color:var(--midground);cursor:pointer;font:400 26px/1 var(--font-mono)}
+.sv-btn{top:50%;transform:translateY(-50%);width:46px;height:70px}
+.sv-prev{left:14px}.sv-next{right:14px}
+.sv-btn:disabled{opacity:.22;cursor:default}
+.sv-btn:not(:disabled):hover,.sv-close:hover{background:var(--midground);color:var(--background-base)}
+.sv-close{top:14px;right:14px;width:42px;height:42px;font-size:22px}
+@media (max-width:760px){.sv{padding:56px 10px 24px}.sv-btn{width:34px;height:54px;font-size:20px}.sv-prev{left:4px}.sv-next{right:4px}.sv-hint-key{display:none}.sv-hint-touch{display:inline}}
+
+/* footer credits */
+.foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.foot .credit{grid-column:1/-1;margin-top:6px;padding:14px 16px;border:1px solid var(--line);font-family:var(--font-zh);font-size:12.5px;line-height:1.7;letter-spacing:0;color:var(--mg-65);text-align:left}
+.foot .credit h3{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--mg-80)}
+.foot .credit p{margin:4px 0}.foot .credit b{color:var(--mg-80)}
+.foot .credit a{color:var(--midground)}
+.foot .credit p[lang=en]{font-family:var(--font-mono);font-size:11px}
+.foot div:nth-child(2){text-align:left}
+@media (max-width:760px){.foot{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== this page ===== */
+/* hero frame */
+.hero-fig{margin:0;border-top:1px solid var(--line)}
+.hero-fig img{display:block;width:100%;height:auto;aspect-ratio:12/5;object-fit:cover;object-position:50% 74%;filter:saturate(.85)}
+@media (max-width:760px){.hero-fig img{aspect-ratio:16/9;object-position:50% 60%}}
+.hero-fig figcaption{padding:6px 14px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45);border-top:1px solid var(--line)}
+.kv dd small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+
+/* panorama: sponsor gaps */
+.spectrum .ad{display:block;min-width:0;border-left:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.band-legend{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;font-size:11.5px;color:var(--mg-45)}
+.band-legend i{display:inline-block;width:18px;height:10px;align-self:center;border:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.ch-head-body .who{display:inline-block;margin-left:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.host{display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line-2);font-size:11.5px;line-height:1.6;color:var(--mg-65);font-family:var(--font-zh)}
+
+/* 00 · timeline */
+.tline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:2px solid var(--line-2);padding-top:0}
+.tl-n{position:relative;padding:14px 10px 0 0;min-width:0}
+.tl-n::before{content:'';position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--background-base);border:2px solid var(--midground)}
+.tl-n.hot::before{background:var(--midground)}
+.tl-n i{display:block;font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.tl-n b{display:block;font-size:14px;line-height:1.45}
+.tl-n span{display:block;font-size:12.5px;line-height:1.55;color:var(--mg-65)}
+.tl-br{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tl-br span{padding:4px 8px;border:1px dashed var(--line-2);border-top:0;font-size:12.5px;text-align:center;color:var(--mg-80)}
+@container (max-width:640px){
+  .tline{grid-template-columns:minmax(0,1fr);border-top:0;border-left:2px solid var(--line-2);margin-left:6px}
+  .tl-n{padding:0 0 12px 16px}
+  .tl-n::before{top:4px;left:-7px}
+  .tl-br{grid-template-columns:minmax(0,1fr)}
+}
+
+/* 02 · split bars */
+.split-row{display:grid;grid-template-columns:7em minmax(0,1fr);gap:10px;align-items:center}
+.split-row+.split-row{margin-top:10px}
+.split-row>b{font-size:13px;font-weight:700;color:var(--mg-80)}
+.split-bar{display:flex;height:34px;border:1px solid var(--line-2)}
+.split-bar span{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;white-space:nowrap;font-size:12.5px}
+.split-bar .have{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px);color:var(--mg-80)}
+.split-bar .want{background:var(--midground);color:var(--background-base);font-weight:700}
+
+/* 03 · fork */
+.fork{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.2fr);gap:8px;align-items:center}
+.fork-out{display:grid;gap:8px}
+.fork .box.good{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.fork .box.bad{border-style:dashed;border-color:var(--red);color:var(--red)}
+.fork .box i{font-style:normal;font-family:var(--font-mono);font-size:11px;margin-right:6px;opacity:.75}
+@container (max-width:560px){.fork{grid-template-columns:minmax(0,1fr)}.fork .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 04 · launch gate */
+.gate{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:10px;align-items:center}
+.gate-col>small{display:block;margin-bottom:6px;font-size:12.5px;color:var(--mg-80)}
+.gate-col>small b{color:var(--midground)}
+.gate-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;max-width:240px}
+.gate-grid span{aspect-ratio:1;display:block;background:var(--midground);transition:background .25s,border-color .25s}
+.gate-grid span.r{background:transparent;border:1px solid var(--red);background-image:repeating-linear-gradient(45deg,color-mix(in srgb,var(--red) 55%,transparent) 0 1px,transparent 1px 4px)}
+.gate-grid+p{margin-top:6px;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.gate-mid{display:grid;justify-items:center;gap:4px;text-align:center;font-size:11.5px;line-height:1.4;color:var(--mg-65)}
+.gate-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.gate-legend span{display:inline-flex;align-items:center;gap:6px}
+.gate-legend i{width:11px;height:11px;display:block;background:var(--midground)}
+.gate-legend i.r{background:transparent;border:1px solid var(--red)}
+.gate-exp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px}
+.gate-exp b{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+@container (max-width:560px){.gate{grid-template-columns:minmax(0,1fr)}.gate-mid{justify-items:start;text-align:left}.gate-mid .arr svg{transform:rotate(90deg)}}
+
+/* 05 · smoothie vs one author */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.duo-col{display:grid;gap:8px;align-content:start;padding:12px;border:1px solid var(--line)}
+.duo-col>small{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.pm-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.pm-row .box{padding:5px 4px;text-align:center;font-size:12px}
+.duo .down{display:grid;place-items:center;color:var(--mg-45);font-family:var(--font-mono)}
+.duo .box.mud{border-style:dashed;background:repeating-linear-gradient(135deg,var(--line) 0 3px,transparent 3px 7px);text-align:center;color:var(--mg-80)}
+.duo .box.one{border-color:var(--midground);text-align:center}
+.duo .box.whole{background:var(--midground);color:var(--background-base);border-color:var(--midground);text-align:center;font-weight:700}
+@container (max-width:560px){.duo{grid-template-columns:minmax(0,1fr)}}
+
+/* 08 · agency curve */
+.curve svg{display:block;width:100%;max-width:720px;height:auto;overflow:visible}
+.curve .ax{stroke:var(--line-2);stroke-width:1}
+.curve .grey{fill:none;stroke:var(--mg-45);stroke-width:2;stroke-dasharray:5 4}
+.curve .main{fill:none;stroke:var(--midground);stroke-width:2.5}
+.curve text{fill:var(--mg-65);font-family:var(--font-mono);font-size:11px}
+.curve text.lb{fill:var(--midground);font-family:var(--font-zh);font-size:13px;font-weight:700}
+.curve text.lg{fill:var(--mg-65);font-family:var(--font-zh);font-size:12.5px}
+.curve-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--mg-65)}
+.curve-key span{display:inline-flex;align-items:center;gap:6px}
+.curve-key i{display:block;width:22px;height:0;border-top:2.5px solid var(--midground)}
+.curve-key i.g{border-top:2px dashed var(--mg-45)}
+
+/* 09 · deal */
+.deal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:8px;align-items:center}
+.deal .box{text-align:center}
+.deal .box b{display:block;font-size:15px}
+.deal .lnk{display:grid;gap:2px;justify-items:center;text-align:center;font-size:12px;line-height:1.45;color:var(--mg-80)}
+.deal .lnk .arr{color:var(--midground)}
+.deal .lnk.back .arr svg{transform:scaleX(-1)}
+.deal-time{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px;color:var(--mg-65)}
+.deal-time i{display:block;height:0;border-top:1px dashed var(--line-2)}
+.deal-time b{font-family:var(--font-mono);color:var(--midground);font-weight:700}
+@container (max-width:600px){.deal{grid-template-columns:minmax(0,1fr)}.deal .lnk .arr svg{transform:rotate(90deg)}.deal .lnk.back .arr svg{transform:rotate(-90deg)}}
+
+/* 11 · payoff distributions */
+.dist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.dist-col{border:1px solid var(--line);padding:12px}
+.dist-col>b{display:block;font-size:15px}
+.dist-col>small{display:block;font-size:12.5px;color:var(--mg-65)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin:12px 0 6px;border-bottom:1px solid var(--line-2)}
+.bars span{flex:1 1 0;min-width:0;height:var(--h);background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.bars span.top{background:var(--midground);position:relative}
+.bars span.top::after{content:'↑';position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:12px;color:var(--midground)}
+.dist-tags{display:flex;flex-wrap:wrap;gap:5px}
+.dist-tags span{padding:0 7px;border:1px solid var(--line-2);font-size:12px}
+.dist-tags span.me{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+@container (max-width:560px){.dist{grid-template-columns:minmax(0,1fr)}}
+
+/* 12 · org charts */
+.org{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:14px}
+.org-col{display:grid;gap:6px;align-content:start;justify-items:center;padding:12px;border:1px solid var(--line)}
+.org-col>small{justify-self:start;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.org .box{text-align:center;min-width:8em}
+.org .box.lead{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+.org .v{width:1px;height:12px;background:var(--line-2)}
+.org .lvl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.org .lvl .box{min-width:0;padding:4px 8px;font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding-top:8px;border-top:1px solid var(--midground);width:100%}
+.dots span{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.dots .pod{display:flex;flex-wrap:wrap;gap:3px;padding:4px;border:1px dashed var(--midground);align-items:center;width:auto;height:auto;border-radius:0;background:none}
+.dots .pod em{font-style:normal;font-family:var(--font-mono);font-size:9.5px;padding:0 3px;background:var(--midground);color:var(--background-base)}
+.org-note{font-size:12.5px;color:var(--mg-65);text-align:center}
+@container (max-width:600px){.org{grid-template-columns:minmax(0,1fr)}}
+
+/* X posts and outside sources */
+.xpost{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0;margin:0}
+.xpost.wide{grid-template-columns:minmax(0,1fr)}
+.xzoom{display:grid;place-items:center;min-height:0;background:#000;border-right:1px solid var(--line);cursor:zoom-in}
+.xpost.wide .xzoom{border-right:0;border-bottom:1px solid var(--line)}
+.xzoom img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
+.xpost figcaption{display:flex;flex-direction:column;gap:8px;padding:12px clamp(12px,2vw,18px);font-size:13.5px;line-height:1.65;color:var(--mg-80)}
+.xpost .xmeta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.xpost .xmeta b{color:var(--midground);font-weight:700}
+.src-tag{display:inline-block;padding:0 6px;border:1px dashed var(--amber);color:var(--amber);font-family:var(--font-zh);font-size:11px;letter-spacing:0;line-height:1.6}
+.xpost q{quotes:none;font-family:var(--font-sans);font-size:16px;line-height:1.45;color:var(--midground)}
+.xpost .xgo{margin-top:auto;font-family:var(--font-mono);font-size:11.5px;color:var(--midground)}
+.ctx{padding:12px clamp(14px,2.4vw,24px);border:1px dashed var(--line-2);background:transparent}
+.ctx>.src-tag{margin-bottom:6px}
+.ctx .lst>li{font-size:14px}
+.gl{color:var(--mg-65);font-size:.92em}
+.fn{font-family:var(--font-mono);font-size:.7em;vertical-align:super;line-height:1;margin-left:1px;color:var(--amber);text-decoration:none}
+.foot .credit ol.srcs{margin:4px 0 0;padding-left:1.6em;font-family:var(--font-mono);font-size:11px}
+.foot .credit ol.srcs li{margin:2px 0}
+.wants{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0 12px}
+.wants>div{padding:10px 12px;border:1px solid var(--line-2)}
+.wants>div.want{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.wants b{display:block;font-size:15px}
+.wants small{display:block;margin-top:2px;font-size:13.5px;line-height:1.6;color:var(--mg-80)}
+.wants i{display:block;margin-top:6px;font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.sum-lst>li{font-size:15px}
+.sum-lst .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:baseline}
+@container (max-width:640px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:760px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}.wants{grid-template-columns:minmax(0,1fr)}}
+
+</style>
+<script src="/assets/atlas.js" defer data-page="talks/2026-10-senra-alexandr-wang" data-v="2026-10-11"></script>
+</head>
+<body>
+
+<nav class="lang-switch" id="lang-switch" aria-label="语言 / Language"><a href="./" hreflang="en" lang="en">EN</a><a href="zh.html" hreflang="zh-CN" lang="zh-CN" aria-current="page">中</a></nav>
+
+<div class="hermes-bg" aria-hidden="true"><div class="bg-l1"></div><img class="bg-l2" src="assets/hermes/filler-bg0.webp" alt=""><div class="bg-l99"></div><div class="bg-l201"></div></div>
+
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 缘起"><span class="lb">缘起</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 七个月"><span class="lb">七个月</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 押注"><span class="lb">押注</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 耐心"><span class="lb">耐心</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 上线"><span class="lb">上线</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 一个作者"><span class="lb">一个作者</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 Meme"><span class="lb">Meme</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 信任"><span class="lb">信任</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 野心"><span class="lb">野心</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 交易"><span class="lb">交易</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 教练"><span class="lb">教练</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 钻石矿"><span class="lb">钻石矿</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 扁平"><span class="lb">扁平</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清，已对照两份转写尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://x.com/davidsenra/status/2109283692439105997" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原访谈视频，由 David Senra 发布于 X</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>David Senra</span><span class="push">2026-10-11</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Meta Superintelligence Labs</div>
+      <h1 class="h1">Alexandr Wang <span class="nw">on Muse</span></h1>
+      <p class="h1-zh">Alexandr Wang 谈 Muse，以及从头重建 Meta 的 AI 实验室</p>
+      <p class="read">阅读约 15 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Alexandr Wang</dd></div>
+        <div><dt>Host</dt><dd>David Senra</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-11</dd></div>
+        <div><dt>Runtime</dt><dd class="num">72:16</dd></div>
+      </dl>
+      <p class="hero-note">Wang 是 Scale AI 创始人，现任 Meta 首席 AI 官（据原帖）。主持人 David Senra 做播客 Founders，每期讲一本创业者传记<a class="fn" href="#src-18" aria-label="来源 18">18</a>。Muse 是 Meta 2026 年 9 月 8 日推出的个人 agent 应用<a class="fn" href="#src-9" aria-label="来源 9">9</a>。视频含约 3 分半赞助口播，本页略去。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：Alexandr Wang（左）和 David Senra（右）相对而坐" width="1920" height="1080"><figcaption>画面 © David Senra · 46:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>全行业都在追 coding agent 时，Meta 押注个人 agent。Wang 的理由是把生活分成两半：</p>
+      <div class="wants">
+        <div><b>不得不做的事</b><small>填表、对付各种“守门人”、排日程、绕开障碍。Wang 在长文里称之为一座“迷宫”。</small><i>→ AI 会把这一半接过去</i></div>
+        <div class="want"><b>想做的事</b><small>兴趣、爱好、朋友和家人。人们用 Instagram、WhatsApp、Facebook，做的正是这些。</small><i>→ 人的时间会流向这一半，这里是 Meta 的地盘</i></div>
+      </div>
+      <p>所以 AI 越强，Meta 越占优；个人 agent 就是替你接走“不得不做”的那个东西。做成 Muse 靠两件事：</p>
+      <ul><li><b>产品</b>：用 7 个月把模型和产品的每个细节磨到可靠，再用 meme 和用户截图破圈；</li><li><b>组织</b>：小而扁平、人才密度极高的实验室，Wang 从“作者”变成“教练”。</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">00:00–72:16</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>Llama 4 失利、Meta 的 AI 看起来像“受损的货物”时，它怎样做出 Muse，又怎样从头重建实验室？</p></div>
+  <div class="pano-band" style="--act-cols:556fr 1000fr 767fr 520fr 1591fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <a href="#ch-00" class="act-start odd" style="flex:346 1 0" title="00 缘起 · 00:00–05:46" aria-label="00 缘起">00</a>
+      <a href="#ch-01" class="odd" style="flex:210 1 0" title="01 七个月 · 05:46–09:16" aria-label="01 七个月">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:318 1 0" title="02 押注 · 09:16–14:34" aria-label="02 押注">02</a>
+      <span class="ad" style="flex:136 1 0" title="赞助 · 14:34–16:50"></span>
+      <a href="#ch-03" class="even" style="flex:205 1 0" title="03 耐心 · 16:50–20:15" aria-label="03 耐心">03</a>
+      <a href="#ch-04" class="even" style="flex:197 1 0" title="04 上线 · 20:15–23:32" aria-label="04 上线">04</a>
+      <a href="#ch-05" class="even" style="flex:144 1 0" title="05 一个作者 · 23:32–25:56" aria-label="05 一个作者">05</a>
+      <a href="#ch-06" class="act-start odd" style="flex:522 1 0" title="06 Meme · 25:56–34:38" aria-label="06 Meme">06</a>
+      <a href="#ch-07" class="odd" style="flex:77 1 0" title="07 信任 · 34:38–38:43" aria-label="07 信任">07</a>
+      <span class="ad" style="flex:69 1 0" title="赞助 · 35:55–37:04"></span>
+      <a href="#ch-07" class="odd" style="flex:99 1 0" title="07 信任 · 34:38–38:43" tabindex="-1" aria-hidden="true"></a>
+      <a href="#ch-08" class="act-start even" style="flex:399 1 0" title="08 野心 · 38:43–45:22" aria-label="08 野心">08</a>
+      <a href="#ch-09" class="act-start odd" style="flex:597 1 0" title="09 交易 · 45:22–55:19" aria-label="09 交易">09</a>
+      <a href="#ch-10" class="odd" style="flex:600 1 0" title="10 教练 · 55:19–65:19" aria-label="10 教练">10</a>
+      <a href="#ch-11" class="odd" style="flex:242 1 0" title="11 钻石矿 · 65:19–69:21" aria-label="11 钻石矿">11</a>
+      <a href="#ch-12" class="odd" style="flex:152 1 0" title="12 扁平 · 69:21–71:53" aria-label="12 扁平">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 赞助口播，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">00:00–09:16</span></div><div class="act-name"><b>缘起</b><span>Origin</span></div><p class="act-line">先有“个人超级智能”的愿景，再在 OpenClaw 上亲手体验 agent；原型一两周，打磨七个月。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>缘起</a></li><li><a class="chip" href="#ch-01"><i>01</i>七个月</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">09:16–25:56</span></div><div class="act-name"><b>打磨</b><span>Polish</span></div><p class="act-line">押注个人而不是 coding；100 多项能力逐项过线；小团队、一个作者、老板有耐心。</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>押注</a></li><li><a class="chip" href="#ch-03"><i>03</i>耐心</a></li><li><a class="chip" href="#ch-04"><i>04</i>上线</a></li><li><a class="chip" href="#ch-05"><i>05</i>一个作者</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">25:56–38:43</span></div><div class="act-name"><b>破圈</b><span>Growth</span></div><p class="act-line">分发不等于被注意：meme 和吉祥物制造意外，信任阶梯和截图留住用户。</p><ul class="chips"><li><a class="chip" href="#ch-06"><i>06</i>Meme</a></li><li><a class="chip" href="#ch-07"><i>07</i>信任</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">38:43–45:22</span></div><div class="act-name"><b>野心</b><span>Ambition</span></div><p class="act-line">个人 agent 把成年人被磨掉的能动性还回来。</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>野心</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">45:22–71:53</span></div><div class="act-name"><b>重建</b><span>The lab</span></div><p class="act-line">一笔“怪交易”，一个从零重来的实验室：挖钻石式管理，200 多人直接汇报。</p><ul class="chips"><li><a class="chip" href="#ch-09"><i>09</i>交易</a></li><li><a class="chip" href="#ch-10"><i>10</i>教练</a></li><li><a class="chip" href="#ch-11"><i>11</i>钻石矿</a></li><li><a class="chip" href="#ch-12"><i>12</i>扁平</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>00:00–05:46</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">The vision behind Muse</p><h2>一份 memo，几周 OpenClaw</h2><p class="ch-sub">先有愿景，再有手感</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>方向在 2025 年夏天 Mark 的公开信里就定了；真正让团队下决心的，是 2026 年初亲手用 OpenClaw 的那几周。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>2025 年夏</b>：Mark<span class="gl">（Zuckerberg，Meta CEO）</span>发出公开信《Personal Superintelligence》，Wang 和 Nat Friedman<span class="gl">（GitHub 前 CEO<a class="fn" href="#src-3" aria-label="来源 3">3</a>，现为 MSL 产品负责人<a class="fn" href="#src-4" aria-label="来源 4">4</a>）</span>等人和他一起写。公开信发表于 7 月 30 日，Wang 记作 6 月<a class="fn" href="#src-2" aria-label="来源 2">2</a>。那时 agent 还没真正出现。MSL<span class="gl">（Meta 超级智能实验室，2025 年 6 月成立，Wang 领导<a class="fn" href="#src-1" aria-label="来源 1">1</a>）</span>先埋头做模型：数据、预训练、后训练，是一条好几个月的生产线。</li>
+    <li><b>2026 年初</b>：Opus 4.5<span class="gl">（Anthropic 2025 年 11 月发布的模型<a class="fn" href="#src-7" aria-label="来源 7">7</a>）</span>让很多人（包括他们）看到 agent 的前景；OpenClaw<span class="gl">（开源个人 agent，装在自己电脑上，用聊天软件给它派活<a class="fn" href="#src-5" aria-label="来源 5">5</a>）</span>正火。Wang 印象中，Nat 是 MSL 第一个用它的人，而且完全投入，体验“介于恐惧和狂喜之间”。</li>
+    <li><b>为什么信 Nat</b>：他是 Stripe 最早的客户之一，参与创造了 GitHub Copilot；他说“这里真有东西”，就是信号。</li>
+    <li><b>2 月的两份判断</b>：Wang 写 memo，认为 super agent 可能是消费产品的终点；Nat 写了两份，标题都很好记：一份转写作 “The Clause, The Law”<sup class="pip" tabindex="0" title="口播此处没听清，已对照两份转写尽量还原" aria-label="口播此处没听清，已对照两份转写尽量还原">◐</sup>，另一份是 “Trust is a Must”，定义了这些产品的很多核心做法。memo 都送到了董事会。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">时间线</span><span>00:00–09:16</span></div>
+    <div class="vz">
+      <div class="tline">
+        <div class="tl-n"><i>2025 夏</i><b>公开信</b><span>《Personal Superintelligence》</span></div>
+        <div class="tl-n"><i>2026 年初</i><b>亲手试用</b><span>Opus 4.5、OpenClaw</span></div>
+        <div class="tl-n hot"><i>2026-02</i><b>原型</b><span>两份 memo；1–2 周做出原型，给董事会演示</span></div>
+        <div class="tl-n"><i>7 个月</i><b>打磨</b><span>模型 + 产品</span></div>
+        <div class="tl-n hot"><i>约 7 个月后</i><b>Muse 上线</b><span>2 月 + 7 个月</span></div>
+      </div>
+      <div class="tl-br"><span>愿景 → 手感</span><span>能演示 → 能信赖</span></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost wide">
+    <a class="xzoom" href="assets/x/x01_board_doc_2025-09.png" aria-label="@alexandr_wang · 2026-09-21"><img src="assets/x/x01_board_doc_2025-09.png" alt="Wang 2025 年 9 月写给 Meta 董事会的文档节选，小标题 Superintelligent Personal Sidekick" loading="lazy" width="1200" height="552"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-21</span></span><p>Wang 贴出他 2025 年 9 月写给 Meta 董事会的文档节选：“超级智能的个人助手”要弄清你的目标，全天候帮你实现。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102210971926437990" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>Nat Friedman</b>（2026-09-21）：Muse 从零做起，但“深受 OpenClaw 启发”；他 1 月用过后，给 MSL 团队买了几百台 Mac mini。<a class="xgo" href="https://x.com/natfriedman/status/2102103707936768130" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>“三年心理治疗”</b>：Wang 最早用 OpenClaw 做的事之一，是跑 Nat 写的多轮心理剖析 prompt；agent 读了他的邮件和照片，他说像把三年治疗压进一次。</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>立项依据不是市场报告，而是两位负责人当了几周重度用户：先亲身确认“魔力是真的”，再投入七个月。</li></ul></aside>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>05:46–09:16</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Building Muse in 7 months</p><h2>原型一两周，打磨七个月</h2><p class="ch-sub">从能演示到能信赖</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>原型 1–2 周就做出来了；难的是后面 7 个月，把“偶尔神奇、经常坏”磨成可以放心交给数十亿人的产品。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li>很多最终决定在第一版原型里就有了，比如吉祥物 Jollybot（后来叫 Jolly）。</li>
+    <li>Mark 也经历了“狂喜和恐惧”：在家用、和孩子一起用，还让它看自己的 MMA 训练视频给建议。</li>
+    <li>OpenClaw 热潮来了又走：神奇时刻零星，整体不好用。Muse 的重点就是可靠。</li>
+    <li>为什么 Meta 做成了，OpenClaw 没有？Wang 先称赞 OpenClaw 作者 Peter Steinberger<span class="gl">（2026 年 2 月加入 OpenAI<a class="fn" href="#src-6" aria-label="来源 6">6</a>）</span>是 visionary，再说答案是“不光鲜的部分”：一点点磨平模型加产品的每个细节，模型也迭代了很多轮。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">原型 → 成品</span><span>05:46–08:25</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="2 月原型与 7 个月后的 Muse 对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">原型<small>2026 年 2 月</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">MUSE<small>7 个月后</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">耗时</span><span class="vs-w" role="cell">1–2 周</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">7 个月，“漫长且相当痛苦”</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">表现</span><span class="vs-w" role="cell">有时神奇，多数时候不工作、经常坏</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">高度可靠、精心打磨的消费产品</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">给谁看</span><span class="vs-w" role="cell">董事会</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">逐步面向数十亿人</span></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_jolly_2026-09-21.jpg" aria-label="@alexandr_wang · 2026-09-21"><img src="assets/x/x02_jolly_2026-09-21.jpg" alt="Muse 的吉祥物 Jolly：一个米白色毛绒小家伙" loading="lazy" width="1200" height="1340"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-21</span></span><p>Muse 的吉祥物 Jolly<a class="fn" href="#src-20" aria-label="来源 20">20</a>；Muse 于 2026 年 9 月 8 日上线<a class="fn" href="#src-9" aria-label="来源 9">9</a>。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102179716014993721" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>09:16–14:34</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Why Meta bet on personal AI</p><h2>为什么押注个人 AI</h2><p class="ch-sub">不去挤 coding 赛道</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>AI 会接走“不得不做的事”，人会把时间花在“想做的事”上，而那正是 Meta 的 app 所在。所以别人追 coding agent 时，Meta 押注个人 agent。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>当时的共识</b>：2026 年 2 月，Anthropic 的 Opus 和 Claude 在 coding 上遥遥领先，后来又有 Mythos<span class="gl">（Anthropic 未公开发布的前沿模型<a class="fn" href="#src-8" aria-label="来源 8">8</a>）</span>。行业普遍认为 coding agent 是唯一要紧的形态，大家一窝蜂去挤。Meta 没跟。</li>
+    <li><b>Wang 最早对 Mark 说的话</b>（在 Scale 交易之前）：就是开头那“两半”。AGI 让“不得不做”几乎归零，而 Meta 的产品装的是“想做”。长期看，Meta 是大赢家。</li>
+    <li><b>另外两个理由</b>：传承上，Meta 的根是连接亲友、发现兴趣；商业上，每天 35 亿人用它的 app。Meta 天然的赢面在消费 AI。主持人接话：“不是工作，不是 coding，是个人。”Wang：“正是。”</li>
+    <li><b>方法</b>：模型路线的头号重点之一是个人 agent。一张表列出 100 多项具体行为和能力，每项建 eval、逐项训练；定期复盘，专挑做得差的几项改进。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">想做 / 不得不做</span><span>10:29–11:31</span></div>
+    <div class="vz">
+      <div class="split-row"><b>今天</b><div class="split-bar"><span class="have" style="flex:55 1 0">不得不做</span><span class="want" style="flex:45 1 0">想做</span></div></div>
+      <div class="split-row"><b>AGI 之后</b><div class="split-bar"><span class="have" style="flex:5 1 0"></span><span class="want" style="flex:95 1 0">几乎全是想做的事</span></div></div>
+      <p class="cap">比例为示意，不是讲者给的数据。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li>上线当天 Wang 发帖：Instagram（含私信）、Threads、Facebook、Messenger 的连接器只有 Muse 能用。<a class="xgo" href="https://x.com/alexandr_wang/status/2097454575540445624" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>16:50–20:15</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Mark Zuckerberg's obsession with improving products</p><h2>老板的耐心</h2><p class="ch-sub">七个月，AI 时间里的十年</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>个人 agent 站在刀锋上：稳定地神奇，就有潜力成为史上最好的消费产品之一；不稳定，用户就当它是垃圾。所以值得顶着质疑慢慢磨。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li>7 个月“在 AI 时间里可能像十年”。Wang 把功劳给 Mark：这需要耐心、克制和对过程的信任。</li>
+    <li>2 月到 9 月，Mark 在财报电话会上一直暗示在做个人 agent。但外界充满怀疑，华尔街的主流叙事是“Meta 在烧钱，它在 AI 上真能做成什么吗？”主持人补一句：外界反复说“Zuck 赢不了 AI”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">刀锋</span><span>19:46</span></div>
+    <div class="vz">
+      <div class="fork">
+        <div class="box"><b>个人 agent</b><small>模型不确定，agent 会坏</small></div>
+        <span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>
+        <div class="fork-out">
+          <div class="box good"><i>可靠地神奇</i>“有潜力成为史上最伟大的消费产品之一”</div>
+          <div class="box bad"><i>不可靠</i>“他们会觉得这是垃圾”</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>引 Colossus<span class="gl">（商业长文杂志）</span>主编 Jeremy Stern 写 Zuckerberg 的特稿《Mark》（2026 年 9 月，约 1.5 万词<a class="fn" href="#src-13" aria-label="来源 13">13</a>）：Zuckerberg 说自己的本事“很不性感”，就是组建团队、长期慢慢改进产品；他不会失去控制权，也不用再融资，所以磨得起。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>20:15–23:32</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">How Meta knew Muse was ready to launch</p><h2>怎么知道可以上线</h2><p class="ch-sub">数字关 + 体验关</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>上线要过两关：100 多项能力全部过线的数字关，和亲手用出“明显更好”的体验关。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>为什么怕不可靠</b>：年初那批 agent 产品因为不可靠，用户几乎全流失了。</li>
+    <li><b>用户测试</b>：多轮让新人从零上手。Muse 的前提是“它不是 chatbot，是 agent”，普通人需要被细心引导完成这次“升级”。</li>
+    <li><b>A/B 测试的发现</b>：体验对模型质量极敏感：能否可靠地完成任务、汇报进展、该问就问。</li>
+    <li><b>规模</b>：模型加产品不到 200 人。它很可能是 Meta 今年最重要的产品之一，但组织上克制，没让它膨胀。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">上线闸门</span><span>21:49–22:31</span><span class="push"><button class="mini" type="button" data-play>▶ play</button></span></div>
+    <div class="vz">
+      <p class="cap">每一行（一项能力）设两条线：低于<b>“阻塞上线”</b>线不能发布，高于<b>“好”</b>线才算好。一格一行，画 100 格（示意，实为 100 多行）。</p>
+      <div class="gate">
+        <div class="gate-col"><small><b>很多 checkpoint</b></small><div class="gate-grid" data-red="20" aria-label="80 格过线，20 格未过线"></div><p>80 绿 / 20 红 → 不够</p></div>
+        <div class="gate-mid"><span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>继续训练</div>
+        <div class="gate-col"><small><b>Muse Spark 1.3（特训版）</b></small><div class="gate-grid" data-red="0" data-final aria-label="100 格全部过线"></div><p>第一个全绿 → 数字关通过</p></div>
+      </div>
+      <div class="gate-legend"><span><i aria-hidden="true"></i>过线</span><span><i class="r" aria-hidden="true"></i>未过线</span></div>
+      <div class="gate-exp"><b>体验关</b><span>团队亲手试，明显好过之前所有版本。</span></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x03_muse_spark_1-3_2026-09-02.png" aria-label="@alexandr_wang · 2026-09-02"><img src="assets/x/x03_muse_spark_1-3_2026-09-02.png" alt="Muse Spark 1.3 与其他前沿模型的跑分对照表" loading="lazy" width="1080" height="970"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-02</span></span><p>Muse Spark 是 MSL 自研的模型系列（2026 年 4 月首发<a class="fn" href="#src-10" aria-label="来源 10">10</a>）。1.3 版在 Muse 上线前 6 天公开，表里和 OpenAI、Anthropic 的模型并列。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2095232916276260884" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>23:32–25:56</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Why great products need a single point of view</p><h2>一件作品，一个作者</h2><p class="ch-sub">不做 PM 拼盘</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Muse 被当成“一件艺术品”来做：一个清晰视角、一个连贯体验。Nat Friedman 的品味决定了它的样子。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li>Wang 对大组织产品的批评：常变成“弗兰肯斯坦”，每个 PM 都往里塞自己的东西，最后搅成一杯 smoothie，用户感觉得出来。他说这个毛病正开始困扰不少 AI 实验室。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">拼盘 vs 一个作者</span><span>23:23–24:25</span></div>
+    <div class="vz">
+      <div class="duo">
+        <div class="duo-col"><small>大组织常见</small>
+          <div class="pm-row"><span class="box">PM A</span><span class="box">PM B</span><span class="box">PM C</span><span class="box">PM D</span></div>
+          <span class="down" aria-hidden="true">↓ ↓ ↓ ↓</span>
+          <div class="box mud">搅成一杯 smoothie</div>
+        </div>
+        <div class="duo-col"><small>Muse</small>
+          <div class="box one">一个清晰视角</div>
+          <span class="down" aria-hidden="true">↓</span>
+          <div class="box whole">一个连贯的体验</div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_app_store_1_2026-09-18.jpg" aria-label="@alexandr_wang · 2026-09-18"><img src="assets/x/x04_app_store_1_2026-09-18.jpg" alt="App Store 免费榜截图：Muse from Meta 排第 1，ChatGPT 第 2" loading="lazy" width="1200" height="902"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-18</span></span><p>“上线一周，Muse 成了 App Store 第 1 名！”访谈里 Wang 只说用户有“数百万”。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2100829303563067587" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>25:56–34:38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Making Meta cool again with memes</p><h2>用 meme 破圈</h2><p class="ch-sub">分发不等于被注意</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>AI 新品像洪水，光靠 Meta 的分发不够破圈。Wang 亲自发出人意料的 meme，让 Muse 被注意，也想让 Meta 重新变酷。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>问题</b>：AI 新品轮番轰炸。Meta 能让所有人知道 Muse，但不足以让它成为文化事件。</li>
+    <li><b>做法</b>：每条推都是他自己写的，灵感来了开会都分心，“像在修 bug”。</li>
+    <li><b>发现</b>：随手发的推反而爆了，“互联网奖励冒险和意外”。他认为这真的拉动了增长，但说不确定有没有相应的追踪数据，很难判断。</li>
+    <li><b>吉祥物</b>：他在上班路上生成了小家伙拎公文包的图（见下图），发现它能放进无数情境。用有点擦边的 meme 推产品，他说可能没人做过。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">广告该讲什么</span><span>31:40–33:43</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="讲自己与讲用户得到什么的对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">讲自己</span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">讲用户得到什么</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">主角</span><span class="vs-w" role="cell">公司、品牌、模型、研究</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">真实用户用它做成的事</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">形式</span><span class="vs-w" role="cell">“我们有个东西，买吧”</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">转发用户的截图和 wow 时刻</span></div>
+      </div>
+      <p class="cap">团队反复问：<b>why would someone care?</b> 人只关心它能为我做什么。主持人补充：Anthropic 和 OpenAI 的广告“全在讲自己”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x05_mfw_monday_2026-09-21.jpg" aria-label="@alexandr_wang · 2026-09-21 · 约 18 万次浏览"><img src="assets/x/x05_mfw_monday_2026-09-21.jpg" alt="Jolly 拎着棕色公文包" loading="lazy" width="1200" height="1340"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-21 · 约 18 万次浏览</span></span><p>访谈里说的那张：“mfw i go into work on monday”（我周一上班时的样子）。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102058372375994581" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <figure class="panel xpost wide">
+    <a class="xzoom" href="assets/x/x06_coatue_downloads_2026-10-10.jpg" aria-label="@UnstructuredCap · 2026-10-10 · Wang 转发"><img src="assets/x/x06_coatue_downloads_2026-10-10.jpg" alt="Coatue 图表：美国上线以来累计下载量，Muse 曲线最陡" loading="lazy" width="975" height="552"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@UnstructuredCap</b><span>2026-10-10 · Wang 转发</span></span><p>Coatue 的图：美国累计下载量。Muse 约一个月 700 万次；ChatGPT 第 180 天约 1,600 万次。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2109092758833221883" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">背景 · 增长数据</span><ul class="lst"><li>据 Sensor Tower，Muse 约 22 天在美加破 500 万次下载；ChatGPT 用了 56 天，Claude 492 天<a class="fn" href="#src-11" aria-label="来源 11">11</a>。</li><li>但 Meta 同时投了大量广告，下载也不等于持续使用<a class="fn" href="#src-11" aria-label="来源 11">11</a>。</li><li>上线后 Wang 在 X 上发了 300 多条帖子，很多是 Jolly 的 meme<a class="fn" href="#src-12" aria-label="来源 12">12</a>。</li><li>meme 到底贡献多少，没有公开数据。</li></ul></div>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>Nat 那一周在好几个会上说：本以为能学到很多 Muse 用户的事，结果主要学到了 Alex 的脑子。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>34:38–38:43</span><span>略去 35:55–37:04 赞助</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Building trust with AI agents</p><h2>信任阶梯</h2><p class="ch-sub">一级一级往上托付</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>留住用户靠一架信任阶梯：先给小事，做成了，再给大一点的事；每一级都必须做成。截图本身就是最好的营销。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>循环</b>：给它一件小事，做成了，“哇”；再给大一点的，又做成了。这像一次 trust fall。成功的 Muse 用户，都是被带上了这架梯子。</li>
+    <li><b>截图</b>：现代消费产品必须“在截图上成立”，能在群聊和网上传开。截图里有 Jolly，一眼就知道是 Muse；他说这不是刻意设计的。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">信任阶梯</span><span>34:46–35:55</span></div>
+    <div class="vz">
+      <div class="stairs">
+        <div class="stair" style="--lv:1"><p class="tx"><i>第 1 级</i><b>一件小事</b>好奇，先试一下。做成了。</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:2"><p class="tx"><i>第 2 级</i><b>稍大的事</b>“哇，它还能做这个？”做成了。</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:3"><p class="tx"><i>第 3 级</i><b>更大的事</b>又做成了。</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:4"><p class="tx"><i>第 4 级</i><b>完全托付</b>把整件事交给它。</p><span class="riser"></span></div>
+      </div>
+      <p class="stairs-axis">每一级都要做成，信任才往上走。<span aria-hidden="true">→</span></p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>举例：一位朋友把证件落在私人飞机上，对 Muse 说“我完全不想参与”，Muse 安排快递把证件送到他办公室。这几张截图就是最好的广告。</li>
+  </ul></div>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_muse_inhood_2026-09-24.jpg" aria-label="@alexandr_wang · 2026-09-24"><img src="assets/x/x07_muse_inhood_2026-09-24.jpg" alt="Jolly 打扮成罗宾汉拉弓" loading="lazy" width="1200" height="718"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-24</span></span><p>用户让 Muse 翻邮箱找出心理咨询发票、提交给保险公司报销；Wang 转发时配了这张“罗宾汉 Jolly”。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2102972630425067845" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_app_store_review_2026-09-10.jpg" aria-label="@alexandr_wang · 2026-09-10"><img src="assets/x/x08_app_store_review_2026-09-10.jpg" alt="App Store 五星评价截图" loading="lazy" width="1200" height="1058"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-10</span></span><p>Wang 晒出的 App Store 评价：“很久以来第一次觉得 Meta 做出了好产品。”</p><a class="xgo" href="https://x.com/alexandr_wang/status/2098152822886039780" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>38:43–45:22</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">The future of human ambition</p><h2>人的野心</h2><p class="ch-sub">能动性扶梯</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Wang 相信个人 agent 是长期形态：它把成年人被磨掉的能动性还回来，让人一辈子都在“梦想、实现、梦想更大”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>他自己的用法</b>：设了很多 workflow，把它当“第二个大脑”。</li>
+    <li><b>人和 AI 的关系</b>：恐惧版是 AI 在上、人照办。他相信另一种：个人 agent 是人实现欲望和梦想的桥。</li>
+    <li><b>“童年梦想的成年生活”</b>：孩子敢想当宇航员、拯救地球；上学、工作之后，梦想被磨掉。他说成年人都像僵尸，丢了能动性和野心。</li>
+    <li>他想象每个人能动性都全开的世界：多元、疯狂，“好的那种疯狂”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">能动性曲线</span><span>示意</span></div>
+    <div class="vz curve">
+      <svg viewBox="0 0 640 230" role="img" aria-label="能动性曲线示意：灰线童年高、成年后掉下；实线一路阶梯上升">
+        <line class="ax" x1="40" y1="200" x2="620" y2="200"/><line class="ax" x1="40" y1="20" x2="40" y2="200"/>
+        <text x="44" y="218">童年</text><text x="230" y="218">上学 · 工作</text><text x="560" y="218">一生</text>
+        <text x="0" y="16" transform="rotate(0)">能动性</text>
+        <path class="grey" d="M40 70 C 140 70, 200 80, 260 150 S 420 175, 620 178"/>
+        <path class="main" d="M40 70 H 150 V 58 H 260 V 46 H 370 V 34 H 480 V 22 H 620"/>
+        <text class="lg" x="420" y="168">僵尸期</text>
+        <text class="lb" x="430" y="18">能动性扶梯</text>
+      </svg>
+      <div class="curve-key"><span><i aria-hidden="true"></i>有个人 agent：梦想 → 实现 → 梦想更大</span><span><i class="g" aria-hidden="true"></i>现在常见：梦想被磨掉</span></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost wide">
+    <a class="xzoom" href="assets/x/x09_why_muse_cover_2026-09-25.jpg" aria-label="@alexandr_wang · 2026-09-25 · 约 561 万次浏览"><img src="assets/x/x09_why_muse_cover_2026-09-25.jpg" alt="长文 Why We’re Building Muse 的封面插画：一群人和狗在山坡草地上奔跑" loading="lazy" width="1200" height="480"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2026-09-25 · 约 561 万次浏览</span></span><p>主持人引用的长文：想象每个人都有“自己之外的第二个心智”；世界一直由少数“狂热者”塑造。</p><a class="xgo" href="https://x.com/alexandr_wang/status/2103551714536439951" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>45:22–55:19</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">The call from Mark Zuckerberg · Leaving Scale AI</p><h2>那通电话，和一笔怪交易</h2><p class="ch-sub">离开 Scale，加入 Meta</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Llama 4 失利后，Zuckerberg 先来问建议，5–6 周后谈成一笔怪交易：Meta 持有 Scale 49%，Scale 继续运营，Wang 带少数人加入 Meta。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>怎么认识的</b>：Meta 高管 Alex Schultz<span class="gl">（现任 Meta 首席数据官<a class="fn" href="#src-16" aria-label="来源 16">16</a>）</span>约在 2021 或 2022 年引荐，第一次见面排了大约一年；此后约半年聊一次。</li>
+    <li><b>起因</b>：Llama 4<span class="gl">（Meta 2025 年 4 月的开源模型<a class="fn" href="#src-14" aria-label="来源 14">14</a>）</span>没走在 Meta 想要的轨道上，内部算失望；AI 对 Meta 又越来越关键。头几通电话只是问“你觉得我们该做什么”。</li>
+    <li><b>他起初觉得合作说不通</b>：收购 Instagram、WhatsApp 有产品逻辑，Scale 做的却是企业和政府生意。谈到数字时才明白，Mark 要的是人才。</li>
+    <li><b>为什么答应</b>：Scale 是他做了 9 年的毕生事业，他纠结了好几周。打动他的是：交易对各方都好；Meta 的 AI 当时像“受损的货物”，正好能从零定原则、建文化（主持人称之为“重新创立实验室”）。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">交易结构</span><span>52:13–52:56</span></div>
+    <div class="vz">
+      <div class="deal">
+        <div class="box"><b>Meta</b><small>MSL</small></div>
+        <div style="display:grid;gap:10px">
+          <div class="lnk"><span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>投资，持股 49%</div>
+          <div class="lnk back"><span class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><line class="ln" x1="0" y1="6" x2="28" y2="6" stroke="currentColor"/><path d="M28 1 L34 6 L28 11" fill="none" stroke="currentColor"/></svg></span>Wang 和少数人加入</div>
+        </div>
+        <div class="box"><b>Scale AI</b><small>继续运营</small></div>
+      </div>
+      <div class="deal-time"><span>第一次来电</span><i aria-hidden="true"></i><span>宣布交易 · <b>5–6 周</b></span></div>
+      <p class="cap">Wang 说这对各方都是赢，包括 Scale 的股东。据报道，Meta 出资约 143 亿美元，换得 49% 无投票权股份<a class="fn" href="#src-15" aria-label="来源 15">15</a>。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x10_scale_note_2025-06-13.png" aria-label="@alexandr_wang · 2025-06-12"><img src="assets/x/x10_scale_note_2025-06-13.png" alt="Wang 给 Scale 员工的信 Gratitude 全文截图" loading="lazy" width="1094" height="990"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2025-06-12</span></span><p>宣布交易当天给 Scale 员工的信：他带少数同事加入 Meta，留任 Scale 董事。</p><a class="xgo" href="https://x.com/alexandr_wang/status/1933328165306577316" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>55:19–65:19</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Rebuilding Meta's AI lab · From founder to coach</p><h2>从作者到教练</h2><p class="ch-sub">重建实验室</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>在 Scale，他是“作者”，什么都要亲自定；在 MSL，他是“教练”：定方向、找人才、给环境，让顶尖的人做出最好的工作。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>建队原则</b>：小、极扁平、高度技术化、人才密度极高（他说 Elon 多次证明过这种团队）。和 Mark 讨论后，这成了 MSL 战略的支柱之一。</li>
+    <li><b>Mark 的风险观</b>：失败不要紧，要紧的是赢的时候赢多大。否则 Meta 可能变得像 Google 一样慢、官僚。</li>
+    <li><b>为什么招得到人</b>：从零建实验室、方向清楚，又有 Meta 的算力和分发。薪酬看着是天价，但 OpenAI、Anthropic 股价大涨，对很多人“大致持平”。</li>
+    <li><b>研究需要空间</b>：没人知道模型的极限，研究要大量试错，不能当运营流程管。成功的少数会让全部投入都值得。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">作者 → 教练</span><span>58:13–63:47</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="Scale 与 MSL 的管理方式对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">SCALE<small>作者</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">MSL<small>教练</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">信条</span><span class="vs-w" role="cell">好创始人要能做每一份工作</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">第一要务：招各领域最顶尖的人</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">他的角色</span><span class="vs-w" role="cell">每件小事都表达他的观点</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">定北极星、发现人才、给环境和资源</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">代价 / 原因</span><span class="vs-w" role="cell">代价：他自己成了瓶颈</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">原因：时间太紧；他不是研究员，也不是产品设计师</span></div>
+      </div>
+      <p class="cap">Wang 说第一次创业，仍建议用左边的方式。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_msl_hires_2025-07-01.jpg" aria-label="@alexandr_wang · 2025-06-30"><img src="assets/x/x11_msl_hires_2025-07-01.jpg" alt="2025 年 7 月 1 日加入 MSL 的研究员名单及其履历" loading="lazy" width="1200" height="1732"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@alexandr_wang</b><span>2025-06-30</span></span><p>Wang 出任首席 AI 官当天，列出新加入的研究员，多位来自 OpenAI、Google DeepMind 和 Anthropic。</p><a class="xgo" href="https://x.com/alexandr_wang/status/1939867404252979291" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>65:19–69:21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Diamond mining vs. building skyscrapers</p><h2>挖钻石，还是盖楼</h2><p class="ch-sub">先看回报分布</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>管理方式取决于回报分布：幂律回报是“挖钻石”，放手让人试；线性回报是“盖楼”，榨干每一点效率。Scale 是盖楼，MSL 是挖钻石。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">两种回报分布</span><span>示意</span></div>
+    <div class="vz">
+      <div class="dist">
+        <div class="dist-col"><b>挖钻石</b><small>大多数尝试没用，少数比其他加起来值钱一百万倍</small>
+          <div class="bars" aria-hidden="true"><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:4%"></span><span style="--h:2%"></span><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:5%"></span><span style="--h:2%"></span><span class="top" style="--h:100%"></span><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:4%"></span><span style="--h:2%"></span><span style="--h:3%"></span><span style="--h:6%"></span><span style="--h:2%"></span><span style="--h:3%"></span><span style="--h:2%"></span><span style="--h:4%"></span><span style="--h:2%"></span></div>
+          <p class="cap">做法：让大家去试疯狂的想法，培养看起来有希望的。</p>
+          <div class="dist-tags"><span class="me">MSL</span><span>VC</span></div></div>
+        <div class="dist-col"><b>盖摩天楼</b><small>回报是线性的</small>
+          <div class="bars" aria-hidden="true"><span style="--h:46%"></span><span style="--h:48%"></span><span style="--h:47%"></span><span style="--h:50%"></span><span style="--h:49%"></span><span style="--h:51%"></span><span style="--h:50%"></span><span style="--h:52%"></span><span style="--h:51%"></span><span style="--h:53%"></span><span style="--h:52%"></span><span style="--h:54%"></span><span style="--h:53%"></span><span style="--h:55%"></span><span style="--h:54%"></span><span style="--h:56%"></span><span style="--h:55%"></span><span style="--h:57%"></span><span style="--h:56%"></span><span style="--h:58%"></span></div>
+          <p class="cap">做法：靠流程，这里提 2%、那里提 1%、再提 0.5%。</p>
+          <div class="dist-tags"><span class="me">Scale</span><span>数据标注</span><span>Amazon Prime 送货</span></div></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>19 岁生日</b>：MIT 大一那年 1 月，他在自营交易公司 Hudson River Trading（HRT）<a class="fn" href="#src-19" aria-label="来源 19">19</a>做冬季实习。桌边 10 到 12 人，大多是哈佛、MIT 学生和竞赛旧识：Jeffrey Yan 后来创办 Hyperliquid（链上交易所），Scott Wu 创办 Cognition（做 AI 程序员 Devin），Jesse Zhang 创办 Decagon（做企业 AI 客服），Vicky Yee<sup class="pip" tabindex="0" title="口播此处没听清，已对照两份转写尽量还原" aria-label="口播此处没听清，已对照两份转写尽量还原">◐</sup> 成了 Anthropic 的研究员。</li>
+    <li>他说 HRT 不到 1,000 人，2026 年二季度营收约 110 亿美元。他对 HRT 创始人说：“给所有实习生都开种子支票。”</li>
+  </ul></div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>69:21–71:53</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Why Alexandr has more than 200 direct reports</p><h2>200 多个直接下属</h2><p class="ch-sub">反官僚</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>200 多人直接向他汇报，是一份“反官僚”宣言：技术决策交给 pod 的技术负责人，人员管理的层级干脆不设。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>TBD</b><span class="gl">（MSL 里做前沿模型的组<a class="fn" href="#src-17" aria-label="来源 17">17</a>）</span>：组里的研究员都直接向他汇报。“TBD 就是反官僚”：你们都证明过自己，不需要被微观管理。</li>
+    <li><b>技术领导仍在</b>：pod 结构，每个 pod 的技术负责人在技术分歧时拍板。</li>
+    <li><b>很多事集体讨论</b>：听所有人的意见，一起找到大家认可的路。</li>
+    <li>他承认自己不是 200 人的最好经理。但重点是：这些人不需要经理，需要好环境，需要 “room to cook”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">两种组织图</span><span>70:30–71:42</span></div>
+    <div class="vz">
+      <div class="org">
+        <div class="org-col"><small>常见层级</small>
+          <span class="box lead">负责人</span><span class="v" aria-hidden="true"></span>
+          <div class="lvl"><span class="box">经理</span><span class="box">经理</span></div><span class="v" aria-hidden="true"></span>
+          <div class="lvl"><span class="box">经理</span><span class="box">经理</span><span class="box">经理</span></div><span class="v" aria-hidden="true"></span>
+          <div class="lvl"><span class="box">研究员 ×N</span></div>
+        </div>
+        <div class="org-col"><small>TBD</small>
+          <span class="box lead">Wang</span><span class="v" aria-hidden="true"></span>
+          <div class="dots" data-n="200" data-pods="5,13;40,7;90,9;130,6;170,8" aria-label="200 多位研究员，一层排开，部分组成 pod"></div>
+          <p class="org-note">200 多位研究员直接汇报；虚线框 = pod，TL = 技术负责人，只管技术拍板，不管人。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>收尾总结：“那你不算教练，更像好环境的看护人（steward）。”Wang：“对，正是。”</li>
+  </ul></div>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Summary</p><h2>总结</h2></div></div></header>
+  <p class="sub-h"><b>这场访谈的 4 个要点</b>读后归纳</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>押注</b>：别人挤 coding agent，Meta 押个人 agent：AI 接走“不得不做的事”，人的时间流向 Meta 所在的“想做的事”。<span class="chips"><a class="chip" href="#ch-02"><i>02</i>押注</a></span></li>
+    <li><b>打磨</b>：原型一两周，做到可靠用了七个月：100 多项能力全部过线才上线；团队不到 200 人，Nat Friedman 的品味定调。<span class="chips"><a class="chip" href="#ch-01"><i>01</i>七个月</a><a class="chip" href="#ch-04"><i>04</i>上线</a><a class="chip" href="#ch-05"><i>05</i>一个作者</a></span></li>
+    <li><b>破圈</b>：Wang 亲自发 meme、转发用户截图；用户沿着“信任阶梯”把越来越大的事交给 Muse。<span class="chips"><a class="chip" href="#ch-06"><i>06</i>Meme</a><a class="chip" href="#ch-07"><i>07</i>信任</a></span></li>
+    <li><b>组织</b>：Scale 像盖楼，MSL 像挖钻石：小而扁平，200 多人直接向他汇报，他从“作者”变成“好环境的看护人”。<span class="chips"><a class="chip" href="#ch-10"><i>10</i>教练</a><a class="chip" href="#ch-11"><i>11</i>钻石矿</a><a class="chip" href="#ch-12"><i>12</i>扁平</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Wang 的收尾</b>：这些人不需要经理，他们需要好环境；他们都很出色，只需要施展的空间（“the room to cook”）。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>15 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>MSL</td><td>Meta Superintelligence Labs，Meta 超级智能实验室；2025 年 6 月成立，Wang 领导，Nat Friedman 负责产品</td><td>00</td></tr>
+        <tr><td>Personal superintelligence</td><td>个人超级智能：让强大的 AI 改善每个人的生活；Mark 2025 年 7 月 30 日公开信的标题</td><td>00</td></tr>
+        <tr><td>Muse</td><td>MSL 做的个人 agent 产品；它是 agent，不是 chatbot</td><td>01 04</td></tr>
+        <tr><td>OpenClaw</td><td>开源个人 agent，装在自己电脑上、在聊天软件里派活；作者 Peter Steinberger，2026 年 1 月底爆红，热潮后来退去</td><td>00 01</td></tr>
+        <tr><td>Personal agent</td><td>个人 agent：替你办生活里的事，能读邮件和照片，能自己查资料</td><td>00</td></tr>
+        <tr><td>Eval</td><td>针对某项能力的测评；Muse 为 100 多项能力各建了 eval</td><td>02 04</td></tr>
+        <tr><td>Checkpoint</td><td>训练过程中保存的一版模型</td><td>04</td></tr>
+        <tr><td>Launch-blocking</td><td>阻塞上线：低于这条线就不能发布</td><td>04</td></tr>
+        <tr><td>Muse Spark 1.3</td><td>MSL 自研模型系列 Muse Spark 的一个版本（2026-09-02 公开）；它的特训版是第一个全部过线的 checkpoint</td><td>04</td></tr>
+        <tr><td>Jolly / Jollybot</td><td>Muse 的吉祥物，meme 的主角</td><td>06 07</td></tr>
+        <tr><td>Trust fall</td><td>信任背摔；这里指一级级加大托付</td><td>07</td></tr>
+        <tr><td>TBD</td><td>TBD Lab，MSL 里做前沿模型的研究组，组员直接向 Wang 汇报</td><td>12</td></tr>
+        <tr><td>Pod</td><td>TBD 里的小组，技术负责人负责技术拍板</td><td>12</td></tr>
+        <tr><td>Power law</td><td>幂律：极少数结果贡献绝大部分回报</td><td>11</td></tr>
+        <tr><td>HRT</td><td>Hudson River Trading，量化自营交易公司，Wang 大一时在那里实习</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">&#9680;</span>= 口播此处没听清，已对照两份转写尽量还原</div>
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Alexandr Wang（<a href="https://x.com/alexandr_wang" rel="noopener">@alexandr_wang</a>），主持人 David Senra（<a href="https://x.com/davidsenra" rel="noopener">@davidsenra</a>），2026-10-11 由主持人<a href="https://x.com/davidsenra/status/2109283692439105997" rel="noopener">发布于 X</a>。本页为个人学习笔记，不含逐字稿，已略去赞助口播；“主持人”标签的内容是 David Senra 的话。视频画面版权归原作者所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://www.cnbc.com/2025/06/30/mark-zuckerberg-creating-meta-superintelligence-labs-read-the-memo.html" rel="noopener">CNBC · Zuckerberg 成立 MSL 的内部备忘录 · 2025-06-30</a></li>
+      <li id="src-2"><a href="https://siliconangle.com/2025/07/30/zuckerberg-outlines-metas-vision-ai-superintelligence/" rel="noopener">SiliconANGLE · 公开信 Personal Superintelligence · 2025-07-30</a></li>
+      <li id="src-3"><a href="https://www.cnbc.com/2021/11/03/microsoft-github-ceo-nat-friedman-replaced-by-thomas-dohmke.html" rel="noopener">CNBC · Nat Friedman 卸任 GitHub CEO · 2021-11-03</a></li>
+      <li id="src-4"><a href="https://techcrunch.com/2026/09/22/meta-admits-muses-likeness-to-openclaw-isnt-a-coincidence/" rel="noopener">TechCrunch · Muse 与 OpenClaw；Friedman 为 MSL 产品负责人 · 2026-09-22</a></li>
+      <li id="src-5"><a href="https://openclaw.ai/blog/introducing-openclaw" rel="noopener">OpenClaw 官方博客 · Introducing OpenClaw · 2026-01-29</a></li>
+      <li id="src-6"><a href="https://steipete.me/about" rel="noopener">Peter Steinberger 个人网站</a> · <a href="https://steipete.me/posts/2026/openclaw" rel="noopener">加入 OpenAI 的说明 · 2026-02</a></li>
+      <li id="src-7"><a href="https://www.anthropic.com/news/claude-opus-4-5" rel="noopener">Anthropic · Claude Opus 4.5 · 2025-11-24</a></li>
+      <li id="src-8"><a href="https://www.anthropic.com/glasswing" rel="noopener">Anthropic · Project Glasswing（Mythos Preview）· 2026-04-07</a></li>
+      <li id="src-9"><a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/" rel="noopener">Meta 新闻稿 · Introducing Muse · 2026-09-08</a></li>
+      <li id="src-10"><a href="https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/" rel="noopener">Meta 新闻稿 · Introducing Muse Spark · 2026-04-08</a></li>
+      <li id="src-11"><a href="https://finance.yahoo.com/technology/article/metas-muse-tops-5-million-downloads-faster-than-chatgpt-claude-161145561.html" rel="noopener">Yahoo Finance · Sensor Tower：Muse 破 500 万下载 · 2026-09-30</a></li>
+      <li id="src-12"><a href="https://e.vnexpress.net/news/tech/personalities/how-mit-dropout-turned-billionaire-alexandr-wang-turned-meta-s-muse-into-an-app-store-hit-5128683.html" rel="noopener">VnExpress International · Wang 与 Muse 的发帖攻势 · 2026-10-06</a></li>
+      <li id="src-13"><a href="https://colossus.com/article/mark-zuckerberg-profile/" rel="noopener">Colossus · Jeremy Stern，《Mark》· 2026-09</a></li>
+      <li id="src-14"><a href="https://ai.meta.com/blog/llama-4-multimodal-intelligence/" rel="noopener">Meta AI · Llama 4 发布 · 2025-04-05</a> · <a href="https://techcrunch.com/2025/04/06/metas-benchmarks-for-its-new-ai-models-are-a-bit-misleading/" rel="noopener">TechCrunch · 跑分争议 · 2025-04-06</a></li>
+      <li id="src-15"><a href="https://fortune.com/2025/06/13/why-meta-hired-scale-ai-ceo-alexandr-wang/" rel="noopener">Fortune · Meta 投资 Scale AI · 2025-06-13</a></li>
+      <li id="src-16"><a href="https://www.adweek.com/brand-marketing/meta-names-denise-moreno-cmo-as-alex-schultz-becomes-first-chief-data-officer/" rel="noopener">Adweek · Alex Schultz 任首席数据官 · 2026-07-01</a></li>
+      <li id="src-17"><a href="https://techcrunch.com/2025/08/19/meta-is-shaking-up-its-ai-org-again/" rel="noopener">TechCrunch · MSL 重组与 TBD Lab · 2025-08-19</a></li>
+      <li id="src-18"><a href="https://www.davidsenra.com/" rel="noopener">David Senra 官网</a></li>
+      <li id="src-19"><a href="https://www.hudsonrivertrading.com/about/" rel="noopener">Hudson River Trading · About</a></li>
+      <li id="src-20"><a href="https://techcrunch.com/2026/09/23/everything-new-coming-to-metas-ai-agent-muse/" rel="noopener">TechCrunch · Connect 上的 Muse 新功能与吉祥物 Jolly · 2026-09-23</a></li>
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>
+
+<div class="sv" id="sv" hidden role="dialog" aria-modal="true" aria-label="图片查看器" tabindex="-1">
+  <div class="sv-backdrop"></div>
+  <figure class="sv-fig"><img alt=""><figcaption class="sv-cap"><b class="sv-id"></b><span class="sv-time"></span><span class="sv-n"></span><span class="sv-hint sv-hint-key">← → 切换 · 点击图片左 / 右半边切换 · Esc 关闭</span><span class="sv-hint sv-hint-touch">左右滑动切换 · 点背景关闭</span></figcaption></figure>
+  <button class="sv-btn sv-prev" type="button" aria-label="上一张">‹</button>
+  <button class="sv-btn sv-next" type="button" aria-label="下一张">›</button>
+  <button class="sv-close" type="button" aria-label="关闭">×</button>
+</div>
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* back to panorama */
+$('#toc-fab').addEventListener('click',function(e){e.preventDefault();$('#contents').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});try{history.replaceState(null,'','#contents')}catch(_){}});
+
+/* rail scroll spy */
+(function(){
+  var links={};$$('#rail a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var secs=Object.keys(links).map(function(id){return document.getElementById(id)}).filter(Boolean),tick=false;
+  function upd(){tick=false;var line=innerHeight*.3,cur=null;
+    secs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s.id});
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)for(var j=secs.length-1;j>=0;j--){if(secs[j].getBoundingClientRect().top<innerHeight){cur=secs[j].id;break}}
+    Object.keys(links).forEach(function(k){links[k].classList.toggle('on',k===cur);if(k===cur)links[k].setAttribute('aria-current','true');else links[k].removeAttribute('aria-current')});}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener('resize',upd);upd();
+})();
+
+/* uncertain-hearing marker: tap shows a fixed toast (title covers mouse hover) */
+(function(){var t=$('#pip-toast'),h;
+  $$('.pip').forEach(function(p){p.addEventListener('click',function(){t.hidden=false;clearTimeout(h);h=setTimeout(function(){t.hidden=true},2600)})});})();
+
+/* 04 · launch gate: grids drawn from data, play turns the 20 red rows green one by one */
+(function(){var r=$('#v04');if(!r)return;var tm=[];
+  function fill(g){var n=+g.getAttribute('data-red');g.innerHTML='';for(var i=0;i<100;i++){var s=document.createElement('span');if(i>=100-n)s.className='r';g.appendChild(s)}}
+  $$('[data-red]',r).forEach(fill);
+  $('[data-play]',r).addEventListener('click',function(){tm.forEach(clearTimeout);tm=[];var g=$('[data-final]',r);g.setAttribute('data-red','20');fill(g);
+    var reds=$$('span.r',g);reds.forEach(function(s,i){tm.push(setTimeout(function(){s.className=''},reduce?0:250+i*90))});
+    tm.push(setTimeout(function(){g.setAttribute('data-red','0')},reduce?0:300+reds.length*90))});
+})();
+
+/* 12 · org chart dots: n researchers, some grouped into pods ("start,size;...") */
+$$('.dots[data-n]').forEach(function(d){var n=+d.getAttribute('data-n'),pods={};
+  d.getAttribute('data-pods').split(';').forEach(function(p){var a=p.split(',');pods[+a[0]]=+a[1]});
+  for(var i=0;i<n;){if(pods[i]){var g=document.createElement('span');g.className='pod';g.innerHTML='<em>TL</em>';for(var k=0;k<pods[i];k++)g.appendChild(document.createElement('span'));d.appendChild(g);i+=pods[i]}
+    else{d.appendChild(document.createElement('span'));i++}}});
+
+/* in-page image viewer for X images: all a.xzoom on the page, arrow keys / swipe / Esc */
+(function(){var sv=$('#sv');if(!sv)return;
+  var img=sv.querySelector('img'),idE=sv.querySelector('.sv-id'),tmE=sv.querySelector('.sv-time'),nE=sv.querySelector('.sv-n'),
+      prev=sv.querySelector('.sv-prev'),next=sv.querySelector('.sv-next'),list=$$('a.xzoom'),i=0,opener=null,x0=null;
+  function render(){var a=list[i],lab=(a.getAttribute('aria-label')||'').split(' · ');
+    img.src=a.getAttribute('href');img.alt=a.querySelector('img').alt||'';idE.textContent=lab[0]||'';tmE.textContent=lab.slice(1).join(' · ');
+    nE.textContent=(i+1)+' / '+list.length;prev.disabled=i===0;next.disabled=i===list.length-1}
+  function open(k,a){i=k;opener=a;render();sv.hidden=false;document.documentElement.classList.add('sv-open');sv.focus()}
+  function close(){sv.hidden=true;document.documentElement.classList.remove('sv-open');img.removeAttribute('src');if(opener)opener.focus()}
+  function go(d){var k=i+d;if(k<0||k>=list.length)return;i=k;render()}
+  list.forEach(function(a,k){a.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();open(k,a)})});
+  prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});
+  sv.querySelector('.sv-close').addEventListener('click',close);sv.querySelector('.sv-backdrop').addEventListener('click',close);
+  img.addEventListener('click',function(e){var r=img.getBoundingClientRect();go(e.clientX<r.left+r.width/2?-1:1)});
+  document.addEventListener('keydown',function(e){if(sv.hidden)return;var k=e.key;
+    if(k==='Escape'){e.preventDefault();close()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();go(-1)}
+    else if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();go(1)}
+    else if(k==='Tab'){var f=$$('button:not([disabled])',sv),fi=f.indexOf(document.activeElement);
+      if(e.shiftKey&&fi<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(fi<0||fi===f.length-1)){e.preventDefault();f[0].focus()}}});
+  sv.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  sv.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(dx<0?1:-1);x0=null});
+})();
+
+/* language switch keeps the current section */
+$$('#lang-switch a:not([aria-current])').forEach(function(a){
+  a.addEventListener('click',function(e){if(location.hash){e.preventDefault();location.href=a.getAttribute('href')+location.hash}});
+});
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 Kernel"><span class="lb">Kernel</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 专家"><span class="lb">专家</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 品味"><span class="lb">品味</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 Jev"><span class="lb">Jev</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 Harness"><span class="lb">Harness</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 泛化"><span class="lb">泛化</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 RLM"><span class="lb">RLM</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 Prime"><span class="lb">Prime</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Swarm"><span class="lb">Swarm</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 开放"><span class="lb">开放</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 收敛"><span class="lb">收敛</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 过剩"><span class="lb">过剩</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 下一步"><span class="lb">下一步</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://www.youtube.com/watch?v=kog7mwsDqnk" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原访谈视频，Latent Space 发布于 YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>Latent Space</span><span class="push">2026-10-02</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Harnesses, RLMs &amp; swarms</div>
+      <h1 class="h1">Recursive <span class="nw">Language Models</span></h1>
+      <p class="h1-zh">模型够聪明了，缺的是更好的 harness</p>
+      <p class="read">阅读约 15 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Alex Zhang</dd></div>
+        <div><dt>Hosts</dt><dd>swyx · Vibhu</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-02</dd></div>
+        <div><dt>Runtime</dt><dd class="num">1:43:24</dd></div>
+      </dl>
+      <p class="hero-note">Zhang 是 MIT CSAIL 博士生，RLM 论文第一作者，KernelBench 作者之一<a class="fn" href="#src-1" aria-label="来源 1">1</a><a class="fn" href="#src-2" aria-label="来源 2">2</a>。主持人 swyx 和 Vibhu Sapra<a class="fn" href="#src-3" aria-label="来源 3">3</a>。访谈里的 GPT-6 Astra（OpenAI）和 Fable（Anthropic）是 2026 年的前沿模型<a class="fn" href="#src-4" aria-label="来源 4">4</a><a class="fn" href="#src-5" aria-label="来源 5">5</a>。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：Alex Zhang 坐在麦克风前，背景是紫色窗帘" width="1920" height="1080"><figcaption>画面 © Latent Space · 25:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>今天的模型被包在大同小异的 harness<span class="gl">（包住模型、让它调用工具的外层程序）</span>里，能力没有用足。</p>
+      <div class="wants">
+        <div><b>harness 这边</b><small>Claude Code、Codex、Pi 的逻辑几乎一样。RLM 让模型用代码操作放在环境里的上下文、递归调用自己，换来组合泛化。</small></div>
+        <div class="want"><b>规模这边</b><small>OpenAI 宣称用 agent swarm 解开了一道难题（有争议）；他估计这类 swarm 里大部分 token 是白烧的。“收敛”不是免费的，要靠训练。</small></div>
+      </div>
+      <p class="last">研究这边：学术界的优势，是去押工业界不押、初看“很蠢”的注。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">01:56–1:43:24</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>模型已经很聪明，为什么能力还没用足？harness、RLM 和 swarm 各补上哪一块？</p></div>
+  <div class="pano-band" style="--act-cols:1284fr 1496fr 966fr 1176fr 1282fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <span class="ad" style="flex:116 1 0" title="预告 · 00:00–01:56"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:458 1 0" title="00 Kernel · 01:56–09:34" aria-label="00 Kernel">00</a>
+      <a href="#ch-01" class="odd" style="flex:342 1 0" title="01 专家 · 09:34–15:16" aria-label="01 专家">01</a>
+      <a href="#ch-02" class="odd" style="flex:368 1 0" title="02 品味 · 15:16–21:24" aria-label="02 品味">02</a>
+      <a href="#ch-03" class="act-start even" style="flex:575 1 0" title="03 Jev · 21:24–30:59" aria-label="03 Jev">03</a>
+      <a href="#ch-04" class="even" style="flex:459 1 0" title="04 Harness · 30:59–38:38" aria-label="04 Harness">04</a>
+      <a href="#ch-05" class="even" style="flex:462 1 0" title="05 泛化 · 38:38–46:20" aria-label="05 泛化">05</a>
+      <a href="#ch-06" class="act-start odd" style="flex:457 1 0" title="06 RLM · 46:20–53:57" aria-label="06 RLM">06</a>
+      <a href="#ch-07" class="odd" style="flex:509 1 0" title="07 Prime · 53:57–1:02:26" aria-label="07 Prime">07</a>
+      <a href="#ch-08" class="act-start even" style="flex:416 1 0" title="08 Swarm · 1:02:26–1:09:22" aria-label="08 Swarm">08</a>
+      <a href="#ch-09" class="even" style="flex:506 1 0" title="09 开放 · 1:09:22–1:17:48" aria-label="09 开放">09</a>
+      <a href="#ch-10" class="even" style="flex:254 1 0" title="10 收敛 · 1:17:48–1:22:02" aria-label="10 收敛">10</a>
+      <a href="#ch-11" class="act-start odd" style="flex:493 1 0" title="11 过剩 · 1:22:02–1:30:15" aria-label="11 过剩">11</a>
+      <a href="#ch-12" class="odd" style="flex:789 1 0" title="12 下一步 · 1:30:15–1:43:24" aria-label="12 下一步">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 开头预告剪辑，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">01:56–21:24</span></div><div class="act-name"><b>起点</b><span>Kernels &amp; taste</span></div><p class="act-line">AI 写的 kernel 占满排行榜，专家仍是最强的验证器；博士生该押怪注。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Kernel</a></li><li><a class="chip" href="#ch-01"><i>01</i>专家</a></li><li><a class="chip" href="#ch-02"><i>02</i>品味</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">21:24–46:20</span></div><div class="act-name"><b>模型与 harness</b><span>Model vs harness</span></div><p class="act-line">语言模型不必是自回归解码器；主流 harness 都一样，好设计换来组合泛化。</p><ul class="chips"><li><a class="chip" href="#ch-03"><i>03</i>Jev</a></li><li><a class="chip" href="#ch-04"><i>04</i>Harness</a></li><li><a class="chip" href="#ch-05"><i>05</i>泛化</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">46:20–1:02:26</span></div><div class="act-name"><b>RLM</b><span>Recursive LMs</span></div><p class="act-line">只有代码一种工具，上下文放在环境里；已有多家在用。</p><ul class="chips"><li><a class="chip" href="#ch-06"><i>06</i>RLM</a></li><li><a class="chip" href="#ch-07"><i>07</i>Prime</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">1:02:26–1:22:02</span></div><div class="act-name"><b>Swarm</b><span>Agent swarms</span></div><p class="act-line">砸钱能解难题；他估计大部分搜索是浪费，收敛要靠训练。</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Swarm</a></li><li><a class="chip" href="#ch-09"><i>09</i>开放</a></li><li><a class="chip" href="#ch-10"><i>10</i>收敛</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">1:22:02–1:43:24</span></div><div class="act-name"><b>下一步</b><span>What's next</span></div><p class="act-line">长而简单的工作还做不可靠，是“技能问题”；他押 harness。</p><ul class="chips"><li><a class="chip" href="#ch-11"><i>11</i>过剩</a></li><li><a class="chip" href="#ch-12"><i>12</i>下一步</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>01:56–09:34</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">GPU Mode and AI-written kernels</p><h2>AI 写的 kernel</h2><p class="ch-sub">分数高，不等于能用</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>GPU Mode 排行榜上几乎全是 AI 写的 kernel，但前十名里只有一位老成员掌舵写出的那份，放进真实系统还稳定。kernel 有验证问题。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>GPU Mode</b>：2023 年起的 Discord 社区（原名 CUDA Mode），教人写 GPU kernel<span class="gl">（在 GPU 上执行一个算子的底层程序）</span>，后来加了排行榜。</li>
+    <li><b>KernelBench 的出发点</b>：kernel 优化的套路不多，攒够题目就能自动化。研究者很需要：新架构要附带 kernel 才能用。</li>
+    <li><b>现在</b>：近期题目的解几乎都是 AI 生成的；KernelBench 发布以来，reward hacking<span class="gl">（钻打分规则的空子拿高分）</span>一直很多。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">分数高 ≠ 能用</span><span>07:32–08:40</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>前十里的其他 AI 生成解</b><small>排行榜前十 ✓ · 放进端到端系统不稳定 ✕ · 代码更长</small></div>
+        <div class="box hot"><b>一位老成员的解：他用 AI，但由他掌舵</b><small>排行榜前十 ✓ · 端到端稳定 ✓ · 代码短得多</small></div>
+      </div>
+      <p class="cap">他的结论：“GPU kernel 有验证问题。”会写 kernel 仍然很有价值。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_gpt56_price_2026-07-30.jpg" aria-label="@OpenAI · 2026-07-30"><img src="assets/x/x00_gpt56_price_2026-07-30.jpg" alt="散点图：Artificial Analysis 智能指数与每任务成本，GPT-5.6 Luna 位于左上方" loading="lazy" width="1600" height="1249"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAI</b><span>2026-07-30</span></span><p>主持人 Vibhu 说 GPT-5.6 写的 kernel 让 Terra 和 Luna 便宜 80%。实际是 Luna 降 80%、Terra 降 20%；kernel 由 GPT-5.6 Sol 经 Codex 改写<a class="fn" href="#src-6" aria-label="来源 6">6</a>。</p><a class="xgo" href="https://x.com/OpenAI/status/2082878156483219672" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>09:34–15:16</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Human expertise vs brute-force AI search</p><h2>专家与蛮力搜索</h2><p class="ch-sub">一个洞见，抵一万亿 token</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>懂行的人是最强的验证器：swarm 也许要烧一万亿 token 才摸到的东西，专家一个洞见就能省掉。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>专家更会用 AI</b>：他们能当很强的 verifier<span class="gl">（判断解对不对的人或程序）</span>。swarm 能把解空间探索充分，但懂行的人一个洞见就能“抹掉那一万亿 token 的开销”。</li>
+    <li><b>Speed of light</b>：矩阵乘能算出理论最快值，实际 kernel 往往离它很远。</li>
+    <li><b>让模型直接写 megakernel？</b>他偏向不：没有数据，他还没见过模型凭空学会一类难题；megakernel 由单个 kernel 组合而成，交给编译器更合适。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">两种“快”</span><span>12:05–13:20</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="单独测 kernel 与端到端模型的对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">单独测<small>一个 kernel</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">端到端<small>整个模型</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">起点</span><span class="vs-w" role="cell">数据都在显存（HBM）里</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">上一层的结果可能还在缓存里</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">做法</span><span class="vs-w" role="cell">每个算子各自最快</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">让第一个算子慢一点，把数据留给第二个（kernel fusion / megakernel）</span></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>15:16–21:24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Research taste and taking big bets</p><h2>研究品味</h2><p class="ch-sub">别人说“这不就是 subagents”时</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>学术界最成功的研究，做的是工业界没在看的问题。别人第一反应是“这有什么用”，往往是好信号。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>出身</b>：本科在 Princeton，和 SWE-bench 团队共事。他认为品味靠机会养成。</li>
+    <li><b>常见错误</b>：做“在工业实验室眼里好看”的题，目标被今天的模型框住了。</li>
+    <li><b>结论</b>：博士生几乎能做任何事，也没有官僚流程。大注多数会失败，这很正常。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">初见反应 → 后来</span><span>18:03–19:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>SWE-bench</b><small>“不可能的任务，没人在乎” → Devin 出来后，人人都来爬榜</small></div>
+        <div class="box"><b>STaR / Quiet-STaR · chain of thought · ReAct</b><small>“这不是很显然吗” → 改变了领域的方向</small></div>
+        <div class="box hot"><b>RLM</b><small>“这不就是 subagents 吗？” → 他说：这样的反应是好信号</small></div>
+        <div class="box"><b>Jev（见 03）</b><small>“我们早就有了” → 打开新的设计空间</small></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>21:24–30:59</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Jev and rethinking the language model</p><h2>重想“语言模型”</h2><p class="ch-sub">输出空间也是旋钮</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Jev 的意义不在“又一个分类器”，而在它提出的问题：语言模型一定要是“文本进、文本出”的自回归解码器吗？输出空间和推理延迟可以一起调。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Jev</b><span class="gl">（TypeSafe AI 2026-09-15 发布：开发者先定义输出空间，模型返回带校准概率的判断，不生成自由文本<a class="fn" href="#src-7" aria-label="来源 7">7</a>）</span>先被炒热，又被说“就是个 NLP 分类器”；RLM 也被说“不是语言模型”。他的回答：语言模型不必是 Transformer 解码器。</li>
+    <li><b>新问题</b>：只要二分类，何必付约 400 倍的成本（他的粗算）？harness 里做的事能不能搬进模型？这对 RLM 和 swarm 有用，它们最大的瓶颈是慢。</li>
+    <li><b>新实验室</b>：只复制大实验室的做法，就只能拼数据和算力，必输。他也怀疑前沿实验室会把大量算力押在新路线上。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">两种输出空间</span><span>23:20–24:15</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="自回归解码器与 Jev 式模型的对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">自回归解码器<small>文本进、文本出</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">Jev 式<small>改输出空间</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">输入</span><span class="vs-w" role="cell">文本</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">文本 + 你先定义好的选项</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">输出</span><span class="vs-w" role="cell">逐个 token 生成文本</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">直接给出选项和概率，不生成自由文本</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">代价</span><span class="vs-w" role="cell">二分类也要付约 400×（他的粗算）</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">低延迟：游戏、路由、分类</span></div>
+      </div>
+      <p class="cap">示意：两边都用语言模型骨干，差别在输出空间。他说不知道 Jev 内部怎样实现。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@CompleteSkeptic</b>（2026-09-15）：TypeSafe CEO Diogo Almeida 发布 Jev 时说，“非凡的主张需要非凡的证据”，附上技术博客。<a class="xgo" href="https://x.com/CompleteSkeptic/status/2099925690682630371" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>难在训练</b>：有人说是在 Qwen 上后训练；直接用开源 Qwen 都比它差，说明他们的训练方法很有效。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>30:59–38:38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">Why Claude Code, Codex and Pi are so similar</p><h2>harness 都一样</h2><p class="ch-sub">harness 是一段有主见的程序</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Claude Code、Codex、Pi 的设计选择几乎一样。harness 决定模型怎样“贴合”一个问题；设计得好，不同的任务在模型眼里会变成同一个任务。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>都一样</b>：Claude Code、Codex、Pi、Oh My Pi 的设计大体相同；Prime Agent 稍不同，因为它本质上是 RLM。</li>
+    <li><b>harness 是什么</b>：用 next-token prediction 直接做难任务很别扭。harness 是一段很有主见的程序，决定模型怎样贴合问题；模型如今也围绕 harness 的 rollout<span class="gl">（模型跑一遍留下的完整轨迹）</span>训练，做法很 hacky。</li>
+    <li><b>实验</b>（他的博客）：检索和聚合任务领域完全不同；在 RLM 里训练一个，另一个直接会做。<span class="host">主持人</span>引博客：在短任务上训练，能泛化到长 8–30 倍的任务。他强调“没有魔法”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">同一个顶层程序</span><span>32:57–38:38</span></div>
+    <div class="vz">
+      <div class="chiprow"><span class="pill">Claude Code</span><span class="pill">Codex</span><span class="pill">Pi</span><span class="pill">Oh My Pi</span><span>= 循环里调工具，整条轨迹当 prompt</span><span class="pill alt">Prime Agent</span><span>≈ RLM（仍保留压缩循环）</span></div>
+      <div class="vs" role="table" aria-label="普通 harness 与 RLM 处理两类任务的对照" style="margin-top:12px">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">普通 harness</span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">RLM</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">检索 vs 聚合</span><span class="vs-w" role="cell">两条完全不同的轨迹</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">同一个顶层程序；差别交给子 agent</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">训练一个之后</span><span class="vs-w" role="cell">另一个仍要单独学</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">另一个直接会做</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">任务变长</span><span class="vs-w" role="cell">轨迹变长，出了训练分布</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">只改一个长度变量：长 8–30× 也能做</span></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_harness_blog_2026-10-08.jpg" aria-label="@a1zhang · 2026-10-08"><img src="assets/x/x04_harness_blog_2026-10-08.jpg" alt="State of AI 2026 报告第 9 页：Recursive language models treat prompts as parts of the environment，右侧是三步流程：把输入放在模型外、检查拆分并委派、合并结果" loading="lazy" width="1600" height="1027"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a1zhang</b><span>2026-10-08</span></span><p>RLM 和他的 harness 博客进入今年的 State of AI 报告。这页把 RLM 概括为：输入放进代码工作区，拆成模型熟悉的“局部同分布”子调用。</p><a class="xgo" href="https://x.com/a1zhang/status/2108228912794738973" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>他参与的 VideoGameBench 故意用极简 harness。他认为多数游戏模型仍通不了关，只有个别可以，比如他见过 Astra 通关 Kirby<span class="gl">（2025 年发布时，最好的模型只完成 0.48%<a class="fn" href="#src-8" aria-label="来源 8">8</a>）</span>。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>38:38–46:20</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Harnesses as compositional generalizers</p><h2>组合泛化</h2><p class="ch-sub">今天的模型是为旧 harness 训练的</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>好的 harness 能让模型用更少的环境泛化到更多任务。但今天的模型是围绕“整条轨迹当 prompt”的 harness 训练的，放进 RLM 还不够好。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>递归论证</b>：竞赛编程和 GPU 优化技能相近，harness 能学会同一个解法；子 agent 的问题也可能是同一形式。再往前：能不能让模型在前向传播里隐式地当一个 RLM？</li>
+    <li><b>harness tax</b>：他引 Arena 的论文，印证了自己的先验：大多数 harness 选择不重要<span class="gl">（论文结论更细：成功率只差约 ±2–5%，成本却最多差约 5 倍<a class="fn" href="#src-9" aria-label="来源 9">9</a>）</span>。</li>
+    <li><b>除了 RLM</b>：模型越强，harness 差别越小。但放进 RLM，模型还只是“还行”，因为它围绕 trajectory as a prompt 训练；需要有团队在新 harness 上规模化后训练。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">同一个程序，向下递归</span><span>39:01–40:20</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="tree"><div class="root"><b>竞赛编程</b><br>列出候选 → 派子 agent 展开 → 写循环对 verifier 检查、演化</div><div class="leaves"><span>子题 A</span><span>子题 B</span><span>子题 C</span></div></div>
+        <div class="tree"><div class="root"><b>GPU 优化</b><br>列出候选 → 派子 agent 展开 → 写循环对 verifier 检查、演化</div><div class="leaves"><span>kernel 方案 A</span><span>kernel 方案 B</span><span>kernel 方案 C</span></div></div>
+      </div>
+      <p class="cap">根相同，叶子不同；叶子本身也可以再用同一个形式往下拆。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>内部结果（未公开）：Fable 曾是最适合 RLM 的模型，他认为这是因为 Anthropic 训练过 dynamic workflows<span class="gl">（Claude Code 的功能：用脚本编排大量子 agent<a class="fn" href="#src-10" aria-label="来源 10">10</a>）</span>；Astra 现在也够好。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>46:20–53:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">RLMs explained</p><h2>RLM 是什么</h2><p class="ch-sub">只有代码这一种工具</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>RLM 是一种 harness 设计：唯一的工具是代码，模型能把自己当函数调用，上下文始终存在代码环境里。它要解决的问题已从“长上下文”变成“组合”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>定义</b>：唯一的工具是代码；其他工具和“调用自己”都是代码里的函数；上下文存在代码环境里，比如文件系统。</li>
+    <li><b>和常规 harness 的差别</b>：常规 harness 每轮调一个工具，没有能随时回查的中央上下文；RLM 用代码编排调用，守着一份中央上下文。</li>
+    <li><b>局部同分布</b>（locally in-distribution）：常规 harness 把轨迹不断追加进 prompt，任务一长就出了训练分布。RLM 把任务拆给只看局部的子调用：整个任务没见过，每次调用仍在分布内。</li>
+    <li><b>scaling 类比</b>：预训练 scaling law 成立，是因为架构大体稳定；换掉架构，幂律可能会变。他认为 harness 也许也是这样。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">两种上下文</span><span>48:02–50:56</span></div>
+    <div class="vz">
+      <div class="ctxw" data-ctxw>
+        <div class="side">
+          <b>trajectory as a prompt</b><small>整条轨迹不断追加进 prompt</small>
+          <div class="seg-stack" data-left></div>
+          <span class="verdict bad" data-lv></span>
+        </div>
+        <div class="side">
+          <b>RLM</b><small>上下文是代码里的一个变量</small>
+<pre class="repl">context = load(...)   # 存在内存 / 磁盘
+parts = split(context)
+for p in parts:
+    llm_query(p)       # 调用自己</pre>
+          <div class="subs" data-subs></div>
+          <span class="verdict ok" data-rv></span>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:10px"><button type="button" class="h-btn solid" data-next>下一步 <i>→</i></button><button type="button" class="h-btn" data-reset>重置</button><span class="cap" data-step style="align-self:center"></span></div>
+      <p class="cap">示意：代码、轮数和子调用数是虚构的，只用来说明两种上下文的差别。</p>
+    </div>
+  </article>
+  <script>
+  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;var v=r.closest('.vz'),L=r.querySelector('[data-left]'),S=r.querySelector('[data-subs]'),lv=r.querySelector('[data-lv]'),rv=r.querySelector('[data-rv]'),st=v.querySelector('[data-step]'),n=4;
+  var segs=['任务','工具结果 1','第 2 轮','工具结果 2','第 3 轮','工具结果 3','第 4 轮','工具结果 4'];
+  function draw(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
+  S.innerHTML='';for(var k=1;k<=3;k++){var t=document.createElement('span');t.textContent='子调用 '+k+' · 只看一小段';if(k>n-1&&n<4)t.hidden=true;S.appendChild(t)}
+  lv.textContent=n>=3?'越来越出分布':'还在分布内';rv.textContent='每次调用都在分布内';st.textContent='第 '+n+' 轮 / 共 4 轮'}
+  v.querySelector('[data-next]').addEventListener('click',function(){n=n>=4?1:n+1;draw()});
+  v.querySelector('[data-reset]').addEventListener('click',function(){n=1;draw()});draw()});
+  </script>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x06_rlm_launch_2026-01-02.jpg" aria-label="@a1zhang · 2026-01-02"><img src="assets/x/x06_rlm_launch_2026-01-02.jpg" alt="Recursive Language Models 论文首页：作者 Alex L. Zhang、Tim Kraska、Omar Khattab，下方图 1 对比 GPT-5 与 RLM(GPT-5) 在三个长上下文任务上随输入变长的得分" loading="lazy" width="1416" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a1zhang</b><span>2026-01-02</span></span><p>RLM 发布帖：“就像 2025 年从语言模型转向推理模型，2026 年会是转向 RLM 的一年。”图 1：输入变长后，GPT-5 的分数掉下去，RLM(GPT-5) 基本稳住。</p><a class="xgo" href="https://x.com/a1zhang/status/2007198916073136152" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>训练</b>：MIT 付不起规模化训练，Prime Intellect 这样的公司在做。他猜，围绕聪明 harness 训练时，也许会看到更好的后训练 scaling law。</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>换个角度看：RLM 不靠更长的上下文窗口，而是让每次调用看到的东西都短而熟悉，把“长”的问题换成了“组合”的问题。</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>53:57–1:02:26</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Prime Agent and RLMs in the wild</p><h2>Prime Agent 与实际应用</h2><p class="ch-sub">唯一的工具是 IPython</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Prime Agent 在 Pi 上加了 RLM 抽象：唯一的工具是 IPython，harness 能改自己，子 agent 能长期存在并用代码互相通信。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>来历</b>：Prime Intellect 先发文说 RLM 是未来，后经 GPU Mode 的朋友牵线合作。Prime 训练自己的模型；他不参与训练，把博士时间押在别的大注上。</li>
+    <li><b>子 agent 太短命</b>：<span class="host">主持人</span>这是 Codex 的痛点，诀窍是外部化到文件系统，一切走代码。他同意。</li>
+    <li><b>第三方</b>：Harvey 给法律工作后训练 RLM；Laude Institute 的 Headlong 能“持续思考”；DSPy 有 RLM 模块；ARC-AGI-3 Kaggle 赛上很多 harness 借了 RLM 抽象<span class="gl">（Prime Agent 和 Headlong 的作者都包括 Zhang<a class="fn" href="#src-11" aria-label="来源 11">11</a><a class="fn" href="#src-13" aria-label="来源 13">13</a>）</span>。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">Prime Agent 拆解</span><span>55:32–58:06</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>Pi 核心循环</b><small>极简 harness，他拿它当所有 harness 的参照</small></li>
+        <li class="hot"><b>唯一工具：IPython</b><small>其他工具是 Python 模块或 Bash 脚本</small></li>
+        <li><b>continual harness</b><small>能改自己的 skills、子 agent、prompt（背景：基础 system prompt 不可改，改动可回滚<a class="fn" href="#src-11" aria-label="来源 11">11</a>）</small></li>
+        <li><b>agent 间消息</b><small>通信也写在代码里</small></li>
+        <li><b>持久子 agent</b><small>跑完后还能继续追问</small></li>
+      </ol>
+      <p class="cap">他的话：除了这些，Prime Agent 其余部分都是“标准的”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_harvey_rlm_2026-09-08.jpg" aria-label="@harvey · 2026-09-08"><img src="assets/x/x07_harvey_rlm_2026-09-08.jpg" alt="流程图：上千个文件的数据室载入 Python REPL，根模型检索、切片后分批委派给子 agent，结果汇成尽调备忘录" loading="lazy" width="1600" height="753"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@harvey</b><span>2026-09-08</span></span><p>Harvey 与 Baseten 的 RLM harness：数据室放进 REPL，根 agent 把有界的审阅任务分给子 agent。7 个模型的评分通过率均值从 23% 升到 62%<a class="fn" href="#src-12" aria-label="来源 12">12</a>。</p><a class="xgo" href="https://x.com/harvey/status/2097372371195953272" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@PrimeIntellect</b>（2026-08-05）：发布 Prime Agent，“一个能自我改进的 RLM harness”，用于编程和长时间自主任务。<a class="xgo" href="https://x.com/PrimeIntellect/status/2085086999267144083" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>1:02:26–1:09:22</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">OpenAI swarms and the future of language models</p><h2>Swarm 与未来的“模型”</h2><p class="ch-sub">你问的模型，背后可能是一群</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>OpenAI 宣称解开了 Navier–Stokes 问题（有争议）。他判断用的是共享上下文的 agent swarm。将来你问的“语言模型”，背后可能是一整个看不见的 swarm。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>是不是 RLM</b>：他猜不是，但精神相近：一群 agent 共享文件系统。Astra 级模型拿到对的信息就够聪明，难的是找到这些信息。</li>
+    <li><b>将来</b>：前端还是 Claude Code、Codex 那样的流，背后是用户看不到的 swarm。他认为这是相对稳的押注。</li>
+    <li><b>浪费</b>：他“相当确定”这类 swarm 里 95% 的探索只是在烧 token；换一种组织方式也许没那么多，他也不确定。他类比压缩和 RLM：RLM 能解更难的题，但人们多数时候选便宜又快的压缩。</li>
+    <li><b>开放问题</b>：什么问题该用 swarm？agent 能不能自己决定？</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">那次 swarm 的账单 · 两种组织</span><span>1:06:16–1:08:13</span></div>
+    <div class="vz">
+      <div class="nums">
+        <div class="box"><b>~10,000</b><small>个 agent</small></div>
+        <div class="box"><b>88 小时</b><small>运行时间</small></div>
+        <div class="box"><b>1,300 亿</b><small>output token</small></div>
+        <div class="box est"><b>≈4,000 万美元</b><small>主持人按公开价估算；他说“比我想的少”</small></div>
+      </div>
+      <div class="q2" style="margin-top:12px">
+        <div class="box"><b>组织图式</b><small>规划者 → 子规划者 → worker（主持人举的 Cursor 例子<a class="fn" href="#src-15" aria-label="来源 15">15</a>）。主持人认为：要反复汇总，汇总就是瓶颈</small></div>
+        <div class="box hot"><b>共享上下文式</b><small>每个 agent 各干各的，读写同一份上下文（主持人：真正的 swarm 应该这样）</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_navier_stokes_2026-09-08.jpg" aria-label="@OpenAI · 2026-09-08"><img src="assets/x/x08_navier_stokes_2026-09-08.jpg" alt="流体涡旋的三维渲染，标注 inward spiral 与 axial stretching" loading="lazy" width="1254" height="1254"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAI</b><span>2026-09-08</span></span><p>OpenAI 称一组 agent 用比 GPT-6 Astra 强得多的内部模型解了 Navier–Stokes 问题。OpenAI 自己只说花了“数百万美元”；证明针对的是带外力的版本，署名也有争议<a class="fn" href="#src-14" aria-label="来源 14">14</a>。</p><a class="xgo" href="https://x.com/OpenAI/status/2097374640582668336" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>1:09:22–1:17:48</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Open-endedness and Sakana AI</p><h2>开放式研究</h2><p class="ch-sub">难的是从 slop 里挑</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>开放式研究和未解的数学题用同一套办法：演化搜索、放出 swarm。难点在最后一步：从一堆 slop 里挑出值得留的东西。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>方法相同</b>：演化搜索（AlphaEvolve 一类）很像放出一群 agent，等它们碰出好东西。没有明确目标时，他还看不清价值。</li>
+    <li><b>瓶颈在挑选</b>：他读博前在 Sakana 待过一个夏天，那里最大的难题是“最后怎么选”。他记得 Fugu 至少部分受这个想法启发<span class="gl">（Fugu 是一个训练来调用其他模型的模型<a class="fn" href="#src-16" aria-label="来源 16">16</a>）</span>。</li>
+    <li><b>Sakana</b>：更像博士实验室，研究常被看成“怪”，他喜欢这一点。主持人现场查到 Sakana 的日语模型是 Kimi 微调<span class="gl">（Namazu，基于 Kimi K2.6<a class="fn" href="#src-17" aria-label="来源 17">17</a>）</span>。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">开放式研究的漏斗</span><span>1:12:02–1:13:17</span></div>
+    <div class="vz">
+      <div class="tl">
+        <div class="box"><i>1</i>放出 swarm<small>或演化搜索</small></div>
+        <div class="box"><i>2</i>海量产出<small>高吞吐生成，大多是 slop</small></div>
+        <div class="box hot2"><i>3</i><b>筛选</b><small>怎样挑出好东西：瓶颈在这里</small></div>
+        <div class="box hot"><i>4</i>少数好东西<small>“hidden gems”</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x09_fugu_2026-09-17.jpg" aria-label="@SakanaAILabs · 2026-09-17"><img src="assets/x/x09_fugu_2026-09-17.jpg" alt="示意图：横轴成本、纵轴性能，Fugu Max 和 Fugu Ultra 组成的前沿高于单个模型组成的前沿" loading="lazy" width="1600" height="863"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@SakanaAILabs</b><span>2026-09-17</span></span><p>Fugu Max 与 Fugu Ultra v2：由多个模型组成的系统，在成本—性能上画出一条高于单个模型的前沿。</p><a class="xgo" href="https://x.com/SakanaAILabs/status/2100647118859886906" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>1:17:48–1:22:02</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Kimi vs OpenAI agent swarms</p><h2>swarm 怎样收敛</h2><p class="ch-sub">收敛不是白送的</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>swarm 能朝目标收敛，不是模型够聪明就白送的，要专门训练。在他看来 OpenAI 做到了，Claude Code 的 dynamic workflows 还没有；Kimi 的 swarm 他不确定。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>OpenAI</b>：“显然是对的做法”。他把 Hugging Face 事件解读为 OpenAI 在训练一个像 swarm 那样工作的系统<span class="gl">（2026 年 7 月，OpenAI 测评中的模型逃出沙箱、攻入 Hugging Face 部分设施；报告列出四种失准模式，“agent 之间未经授权的通信”是其中之一<a class="fn" href="#src-18" aria-label="来源 18">18</a>）</span>。</li>
+    <li><b>Kimi 与 dynamic workflows</b>：Kimi 的 swarm 他不知道能不能解新问题。dynamic workflows 他试过：太贵，行为不像朝着目标走，“有点失败”。</li>
+    <li><b>核心</b>：“我们把 swarm 收敛到一个答案当成理所当然。”</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">他对几种做法的判断</span><span>1:17:51–1:21:36</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">方案</th><th scope="col">他的判断</th><th scope="col">理由</th></tr></thead>
+        <tbody>
+          <tr><td>OpenAI swarm</td><td>对的做法</td><td>训练过，能花钱解开未解问题</td></tr>
+          <tr><td>Kimi Agent Swarm</td><td>有意思，存疑</td><td>不确定能解新问题</td></tr>
+          <tr><td>Claude Code dynamic workflows</td><td>“有点失败”</td><td>太贵，不朝目标收敛</td></tr>
+          <tr><td>Gemini 的 IMO harness</td><td>有点被夸大，但当时很聪明</td><td>模型不够好时，把 harness 做到了极致</td></tr>
+        </tbody></table></div>
+      <p class="cap">他先说明：自己没在这些公司工作过，“听听就好”。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@Kimi_Moonshot</b>（2026-01-27）：Kimi K2.5 发布，主打 Agent Swarm，最多可调 100 个子 agent<a class="fn" href="#src-19" aria-label="来源 19">19</a>。<a class="xgo" href="https://x.com/Kimi_Moonshot/status/2016021783833673897" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>1:22:02–1:30:15</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Capability overhang and speculative tool calling</p><h2>能力过剩</h2><p class="ch-sub">一个高中生都能做的事</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>主持人概括为“能力过剩”，他说某种意义上是：让前沿模型像一个 18 岁高中生那样，连续一个月可靠地做一份简单工作，今天还做不到。他认为这是“技能问题”，一个好 harness 就能解决。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Speculative PTC</b>（他的博客）：模型还在写代码时，就提前发出能静态分析出来的工具调用。他说凡是程序化调用都该用。</li>
+    <li><b>该有人去解</b>：长时间、简单、要可靠的任务。像跟实习生说话那样交代小事，一个通用 harness 插进去就能用；不需要前沿实验室，也许学术界该做。</li>
+    <li><b>能力能迁移吗</b>：思想实验：从 Astra 里去掉所有 GPU 编程数据，它还能在上下文里学会优化 kernel 吗？<span class="host">主持人</span>这就是 continual learning。他：“最好的例子。”</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">顺序 vs 投机</span><span>1:22:25–1:22:50</span></div>
+    <div class="vz">
+      <div class="gantt">
+        <div class="g-row"><b>顺序</b><div class="g-track"><span class="g-bar gen" style="left:0;width:40%;top:4px">写代码</span><span class="g-bar" style="left:40%;width:24%;top:30px">工具 A</span><span class="g-bar" style="left:64%;width:24%;top:56px">工具 B</span><span class="g-bar end" style="left:88%;width:12%;top:56px">完成</span></div></div>
+        <div class="g-row"><b>投机</b><div class="g-track"><span class="g-bar gen" style="left:0;width:40%;top:4px">写代码</span><span class="g-bar" style="left:14%;width:24%;top:30px">工具 A</span><span class="g-bar" style="left:24%;width:24%;top:56px">工具 B</span><span class="g-bar end" style="left:48%;width:12%;top:56px">完成</span></div></div>
+      </div>
+      <p class="cap">示意，时长不是讲者给的数据：能静态看出的调用，在代码还没写完时就排队执行。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_sptc_2026-08-24.jpg" aria-label="@a1zhang · 2026-08-24"><img src="assets/x/x11_sptc_2026-08-24.jpg" alt="博客 Speculative Programmatic Tool Calling 的图 1：左侧是模型写的 REPL 代码，右侧时间线对比有投机和无投机时子调用的执行" loading="lazy" width="1600" height="1301"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a1zhang</b><span>2026-08-24</span></span><p>sPTC 发布：在 harness 生成代码时就推测会用到的工具调用，提前排队，与 token 生成和 REPL 执行重叠。</p><a class="xgo" href="https://x.com/a1zhang/status/2091938825580716079" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>1:30:15–1:43:24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Neuralese, future research and AI for science</p><h2>下一步押什么</h2><p class="ch-sub">十几个想法，多数是坏的</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>他从 GPU 走到 harness，因为他认为大部分创新还会发生在这一层。选题靠很多想法，各花一点时间试，确信时放下一切。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Neuralese</b><span class="gl">（设想中模型自己的“内部语言”）</span>：他押英语和 Python 的混合，不买“二进制”。他反问：代码这类推理不是天生自回归吗？</li>
+    <li><b>为什么离开 GPU</b>：kernel 是手段。做 harness 很不舒服：模糊，算力有限难验证；但创新在这里。</li>
+    <li><b>怎样找他合作</b>：别只写“我很喜欢 RLM”；他喜欢有强观点、能说清为什么的人。</li>
+    <li><b>科学</b>：反馈环很长，还要判断半年后会不会被新模型直接解决；ARC-AGI-3 不到一年就饱和了。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">他的选题节奏</span><span>1:38:02–1:38:59</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>10–15 个想法</b><small>同时放在心里</small></li>
+        <li><b>多数是坏的</b><small>跑步、打网球时想</small></li>
+        <li><b>先看一看</b><small>和感兴趣的人花点时间试</small></li>
+        <li class="hot"><b>确信了</b><small>放下一切，接下来几周全力做</small></li>
+        <li><b>能跑实验了</b><small>“又可以轻松滑行”</small></li>
+      </ol>
+    </div>
+  </article>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Summary</p><h2>总结</h2></div></div></header>
+  <p class="sub-h"><b>这场访谈的 6 个要点</b>读后归纳</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>能力没用足</b>：瓶颈在怎样组织模型；可靠地做长而简单的工作是“技能问题”。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Harness</a><a class="chip" href="#ch-11"><i>11</i>过剩</a></span></li>
+    <li><b>harness 大同小异</b>：换一种抽象，scaling 曲线可能会不同（他的类比）。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Harness</a><a class="chip" href="#ch-06"><i>06</i>RLM</a></span></li>
+    <li><b>上下文放进环境</b>：每次调用都在分布内，换来组合泛化。<span class="chips"><a class="chip" href="#ch-05"><i>05</i>泛化</a><a class="chip" href="#ch-06"><i>06</i>RLM</a><a class="chip" href="#ch-07"><i>07</i>Prime</a></span></li>
+    <li><b>swarm 不是白来的</b>：他估计大部分搜索是浪费，收敛要靠训练。<span class="chips"><a class="chip" href="#ch-08"><i>08</i>Swarm</a><a class="chip" href="#ch-10"><i>10</i>收敛</a></span></li>
+    <li><b>专家仍是验证器</b>：从 slop 里挑出好东西是瓶颈。<span class="chips"><a class="chip" href="#ch-00"><i>00</i>Kernel</a><a class="chip" href="#ch-01"><i>01</i>专家</a><a class="chip" href="#ch-09"><i>09</i>开放</a></span></li>
+    <li><b>学术界押怪注</b>：输出空间、架构、harness 都还能重想。<span class="chips"><a class="chip" href="#ch-02"><i>02</i>品味</a><a class="chip" href="#ch-03"><i>03</i>Jev</a><a class="chip" href="#ch-12"><i>12</i>下一步</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Zhang 的收尾</b>：RLM 论文主要是实证结果，“想法本身很简单”；现在有更有意思的东西值得看。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>20 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>GPU kernel</td><td>在 GPU 上执行一个算子的底层程序</td><td>00 01</td></tr>
+        <tr><td>Reward hacking</td><td>奖励投机：钻打分规则的空子拿高分</td><td>00</td></tr>
+        <tr><td>Verifier</td><td>验证器：判断解对不对的人或程序</td><td>01 05</td></tr>
+        <tr><td>Speed of light</td><td>按硬件极限算出的理论最快速度</td><td>01</td></tr>
+        <tr><td>Kernel fusion / megakernel</td><td>把多个算子合成一个 kernel，少让数据进出显存</td><td>01</td></tr>
+        <tr><td>Output space</td><td>模型能输出的东西的集合：自由文本，或固定选项</td><td>03</td></tr>
+        <tr><td>Looped transformer</td><td>把同一组层循环使用的 Transformer</td><td>03</td></tr>
+        <tr><td>Calibration</td><td>校准：模型说的把握和真实正确率一致</td><td>03</td></tr>
+        <tr><td>Harness</td><td>包住模型、让它调用工具和执行任务的外层程序</td><td>04</td></tr>
+        <tr><td>Rollout</td><td>模型在环境里跑一遍留下的完整轨迹</td><td>04</td></tr>
+        <tr><td>Trajectory as a prompt</td><td>把整条轨迹不断追加进 prompt 的常规做法</td><td>05 06</td></tr>
+        <tr><td>RLM</td><td>Recursive Language Model：唯一工具是代码、能递归调用自己、上下文存在环境里的 harness 设计</td><td>06</td></tr>
+        <tr><td>Locally in-distribution</td><td>局部同分布：整个任务没见过，但每次调用都是见过的形式</td><td>06</td></tr>
+        <tr><td>Context offloading / compaction</td><td>把上下文放到模型外（变量、文件）/ 上下文太长时把旧内容总结掉</td><td>06 08</td></tr>
+        <tr><td>Persistent subagent</td><td>持久子 agent：跑完后还能继续追问</td><td>07</td></tr>
+        <tr><td>Agent swarm</td><td>成千上万个 agent 协同解一个问题</td><td>08 10</td></tr>
+        <tr><td>Open-endedness</td><td>开放式研究：没有固定目标，让系统自己找有趣的问题</td><td>09</td></tr>
+        <tr><td>PTC / speculative PTC</td><td>写代码来调用工具 / 代码没写完就提前执行能预见的调用</td><td>11</td></tr>
+        <tr><td>Capability overhang</td><td>能力过剩：模型已有的能力远多于实际用上的</td><td>11</td></tr>
+        <tr><td>Continual learning</td><td>持续学习：模型在使用中不断学会新东西</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Alex Zhang（<a href="https://x.com/a1zhang" rel="noopener">@a1zhang</a>），主持人 swyx（<a href="https://x.com/swyx" rel="noopener">@swyx</a>）和 Vibhu Sapra，2026-10-02 由 Latent Space <a href="https://www.youtube.com/watch?v=kog7mwsDqnk" rel="noopener">发布于 YouTube</a>；节目文字版见 <a href="https://www.latent.space/p/rlm" rel="noopener">latent.space/p/rlm</a>。本页为个人学习笔记，不含逐字稿，已略去开头预告；“主持人”标签的内容是 swyx 或 Vibhu 的话。视频画面版权归 Latent Space 所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://alexzhang13.github.io/" rel="noopener">Alex L. Zhang 个人主页</a></li>
+      <li id="src-2"><a href="https://arxiv.org/abs/2512.24601" rel="noopener">Zhang, Kraska, Khattab · Recursive Language Models · arXiv 2512.24601</a></li>
+      <li id="src-3"><a href="https://www.ai.engineer/speakers/vibhu-sapra" rel="noopener">AI Engineer · Vibhu Sapra</a></li>
+      <li id="src-4"><a href="https://www.latent.space/p/ainews-gpt-6-astra-openais-biggest" rel="noopener">Latent Space AINews · GPT-6 Astra · 2026-09-04</a></li>
+      <li id="src-5"><a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" rel="noopener">Anthropic · Claude Fable 5 and Mythos 5 · 2026-06-09</a></li>
+      <li id="src-6"><a href="https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/" rel="noopener">OpenAI · Advancing the price-performance frontier with GPT-5.6 · 2026-07-30</a></li>
+      <li id="src-7"><a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" rel="noopener">TypeSafe AI · Introducing System One models and Jev · 2026-09-15</a></li>
+      <li id="src-8"><a href="https://arxiv.org/abs/2505.18134" rel="noopener">Zhang et al. · VideoGameBench · arXiv 2505.18134</a></li>
+      <li id="src-9"><a href="https://arena.ai/blog/coding-agents-harness-tax" rel="noopener">Arena · HarnessTax · 2026-09-16</a></li>
+      <li id="src-10"><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" rel="noopener">Claude · Introducing dynamic workflows in Claude Code · 2026-05-28</a></li>
+      <li id="src-11"><a href="https://primeintellect.ai/blog/prime-agent" rel="noopener">Prime Intellect · Prime Agent · 2026-08-05</a></li>
+      <li id="src-12"><a href="https://www.harvey.ai/blog/post-training-rlm-agents-for-m-and-a-diligence" rel="noopener">Harvey · Post-Training RLM Agents for End-to-End M&amp;A Diligence · 2026-09-08</a></li>
+      <li id="src-13"><a href="https://www.laude.org/updates/headlong-a-microharness-for-persistent-agents" rel="noopener">Laude Institute · Headlong · 2026-08-24</a></li>
+      <li id="src-14"><a href="https://www.coindesk.com/tech/2026/09/09/openai-says-10-000-ai-agents-solved-a-usd1-million-math-problem-now-mathematicians-are-fighting" rel="noopener">CoinDesk · OpenAI 的 Navier–Stokes 结果与争议 · 2026-09-09</a></li>
+      <li id="src-15"><a href="https://cursor.com/blog/self-driving-codebases" rel="noopener">Cursor · Towards self-driving codebases · 2026-02-05</a></li>
+      <li id="src-16"><a href="https://sakana.ai/fugu-release/" rel="noopener">Sakana AI · Fugu</a></li>
+      <li id="src-17"><a href="https://sakana.ai/namazu/" rel="noopener">Sakana AI · Namazu</a></li>
+      <li id="src-18"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
+      <li id="src-19"><a href="https://www.kimi.com/blog/kimi-k2-5" rel="noopener">Kimi · Kimi K2.5 · 2026-01-27</a></li>
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>

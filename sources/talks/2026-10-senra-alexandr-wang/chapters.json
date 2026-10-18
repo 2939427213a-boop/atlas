@@ -1,0 +1,104 @@
+[
+ {
+  "id": "C01",
+  "start": 0.0,
+  "end": 346.0,
+  "file": "The vision behind Muse · Discovering personal agents · Three years of therapy"
+ },
+ {
+  "id": "C02",
+  "start": 346.0,
+  "end": 556.0,
+  "file": "Building Muse in 7 months"
+ },
+ {
+  "id": "C03",
+  "start": 556.0,
+  "end": 874.0,
+  "file": "Why Meta bet on personal AI"
+ },
+ {
+  "id": "AD1",
+  "start": 874.0,
+  "end": 1010.0,
+  "file": "[sponsor reads: Ramp, Deel]"
+ },
+ {
+  "id": "C04",
+  "start": 1010.0,
+  "end": 1215.0,
+  "file": "Mark Zuckerberg's obsession with improving products"
+ },
+ {
+  "id": "C05",
+  "start": 1215.0,
+  "end": 1412.0,
+  "file": "How Meta knew Muse was ready to launch"
+ },
+ {
+  "id": "C06",
+  "start": 1412.0,
+  "end": 1556.0,
+  "file": "Why great products need a single point of view"
+ },
+ {
+  "id": "C07",
+  "start": 1556.0,
+  "end": 2078.0,
+  "file": "Making Meta cool again with memes"
+ },
+ {
+  "id": "C08a",
+  "start": 2078.0,
+  "end": 2155.0,
+  "file": "Building trust with AI agents"
+ },
+ {
+  "id": "AD2",
+  "start": 2155.0,
+  "end": 2224.0,
+  "file": "[sponsor read: AppLovin]"
+ },
+ {
+  "id": "C08b",
+  "start": 2224.0,
+  "end": 2323.0,
+  "file": "Building trust with AI agents (cont.)"
+ },
+ {
+  "id": "C09",
+  "start": 2323.0,
+  "end": 2722.0,
+  "file": "The future of human ambition"
+ },
+ {
+  "id": "C10",
+  "start": 2722.0,
+  "end": 3319.0,
+  "file": "The call from Mark Zuckerberg · Leaving Scale AI for Meta"
+ },
+ {
+  "id": "C11",
+  "start": 3319.0,
+  "end": 3919.0,
+  "file": "Rebuilding Meta's AI lab from scratch · From founder to coach"
+ },
+ {
+  "id": "C12",
+  "start": 3919.0,
+  "end": 4161.0,
+  "file": "Diamond mining vs. building skyscrapers · 19th birthday party"
+ },
+ {
+  "id": "C13",
+  "start": 4161.0,
+  "end": 4313.0,
+  "file": "Why Alexandr has more than 200 direct reports"
+ },
+ {
+  "id": "OUT",
+  "start": 4313.0,
+  "end": 4337.0,
+  "file": "[outro]"
+ }
+]

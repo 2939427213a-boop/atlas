@@ -1,0 +1,591 @@
+<a id="toc-fab" href="#contents" aria-label="Back to overview"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">Overview</span></a>
+<nav class="rail" id="rail" aria-label="Chapters">
+  <a href="#ch-00" aria-label="00 Frontier"><span class="lb">Frontier</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 Follow"><span class="lb">Follow</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 Compute"><span class="lb">Compute</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 Distill"><span class="lb">Distill</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 Compete"><span class="lb">Compete</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 Flywheel"><span class="lb">Flywheel</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 Data"><span class="lb">Data</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 Envs"><span class="lb">Envs</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Trillium"><span class="lb">Trillium</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 RSI"><span class="lb">RSI</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 Pre-train"><span class="lb">Pre-train</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 Swarm"><span class="lb">Swarm</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 Risk"><span class="lb">Risk</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="Summary"><span class="lb">Summary</span><span class="no">S</span></a>
+  <a href="#glossary" aria-label="Glossary"><span class="lb">Glossary</span><span class="no">G</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>Hard to hear in the audio, or unclear who is speaking; reconstructed from context</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas</a><a class="src-top" href="https://youtu.be/BKuK0M6oDTI" target="_blank" rel="noopener"><span class="k">SOURCE</span><span>▶ Original interview video, posted by a16z on YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>a16z</span><span class="push">2026-10-14</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Open models &amp; the frontier</div>
+      <h1 class="h1">Can open models <span class="nw">keep up?</span></h1>
+      <p class="h1-zh">Can open models catch up with OpenAI and Anthropic?</p>
+      <p class="read">~15 min read</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Nathan Lambert</dd></div>
+        <div><dt>Host</dt><dd>Lisha Li</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-14</dd></div>
+        <div><dt>Runtime</dt><dd class="num">58:49</dd></div>
+      </dl>
+      <p class="hero-note">Lambert co-led post-training at Ai2 (Allen Institute for AI), writes the Interconnects newsletter, and now leads the nonprofit Trillium Labs<a class="fn" href="#src-1" aria-label="Source 1">1</a><a class="fn" href="#src-2" aria-label="Source 2">2</a>. Host Lisha Li is an investing partner at a16z<a class="fn" href="#src-3" aria-label="Source 3">3</a>. A 1-minute opening teaser is left out.</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="Interview frame: Lisha Li (left) and Nathan Lambert (right) seated across a round table" width="1920" height="1080"><figcaption>Frame © a16z · 07:50</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">Thesis</span></div>
+    <div class="thesis-body">
+      <p>The frontier's lead rests on capital: compute, data, talent, and the ability to organize them.</p>
+      <div class="wants">
+        <div><b>The open side</b><small>Chinese labs match on talent but lack compute. Distillation buys them only months. The open economy is slow, but ends in real ownership.</small></div>
+        <div class="want"><b>The frontier side</b><small>Beyond math and code, progress mostly comes from bought data and RL environments. Scaling is exponential input for linear gain, so he doesn't bet on fast takeoff; he worries more about near-term risks society isn't ready for.</small></div>
+      </div>
+      <p class="last">Trillium's answer: give away environments others would sell, and publish how AI does AI research.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="Overview">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">00:55–58:49</span></div>
+  <div class="pano-q"><span class="q">Question</span><p>How secure is the frontier's lead? How do open models keep pace, and where do they stall?</p></div>
+  <div class="pano-band" style="--act-cols:505fr 475fr 910fr 1095fr 544fr">
+    <div class="spectrum" aria-label="13-chapter timeline">
+      <span class="ad" style="flex:55 1 0" title="Teaser · 00:00–00:55"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:180 1 0" title="00 Frontier · 00:55–03:55" aria-label="00 Frontier">00</a>
+      <a href="#ch-01" class="odd" style="flex:270 1 0" title="01 Follow · 03:55–08:25" aria-label="01 Follow">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:90 1 0" title="02 Compute · 08:25–09:55" aria-label="02 Compute">02</a>
+      <a href="#ch-03" class="even" style="flex:300 1 0" title="03 Distill · 09:55–14:55" aria-label="03 Distill">03</a>
+      <a href="#ch-04" class="even" style="flex:85 1 0" title="04 Compete · 14:55–16:20" aria-label="04 Compete">04</a>
+      <a href="#ch-05" class="act-start odd" style="flex:325 1 0" title="05 Flywheel · 16:20–21:45" aria-label="05 Flywheel">05</a>
+      <a href="#ch-06" class="odd" style="flex:285 1 0" title="06 Data · 21:45–26:30" aria-label="06 Data">06</a>
+      <a href="#ch-07" class="odd" style="flex:300 1 0" title="07 Envs · 26:30–31:30" aria-label="07 Envs">07</a>
+      <a href="#ch-08" class="act-start even" style="flex:395 1 0" title="08 Trillium · 31:30–38:05" aria-label="08 Trillium">08</a>
+      <a href="#ch-09" class="even" style="flex:380 1 0" title="09 RSI · 38:05–44:25" aria-label="09 RSI">09</a>
+      <a href="#ch-10" class="even" style="flex:320 1 0" title="10 Pre-train · 44:25–49:45" aria-label="10 Pre-train">10</a>
+      <a href="#ch-11" class="act-start odd" style="flex:280 1 0" title="11 Swarm · 49:45–54:25" aria-label="11 Swarm">11</a>
+      <a href="#ch-12" class="odd" style="flex:264 1 0" title="12 Risk · 54:25–58:49" aria-label="12 Risk">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>Hatched = opening teaser clips, left out</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">00:55–08:25</span></div><div class="act-name"><b>The frontier</b><span>Capital &amp; catch-up</span></div><p class="act-line">The lead comes from capital and organization; Chinese labs open-source to get noticed and fast-follow.</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Frontier</a></li><li><a class="chip" href="#ch-01"><i>01</i>Follow</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">08:25–16:20</span></div><div class="act-name"><b>China &amp; distillation</b><span>Talent, compute, copying</span></div><p class="act-line">Equal talent, less compute; distillation is worth months, and punishing it backfires.</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>Compute</a></li><li><a class="chip" href="#ch-03"><i>03</i>Distill</a></li><li><a class="chip" href="#ch-04"><i>04</i>Compete</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">16:20–31:30</span></div><div class="act-name"><b>The economics</b><span>Flywheels &amp; data</span></div><p class="act-line">Closed is fast; open is slow but brings ownership. Beyond math and code, progress is mostly bought data and environments.</p><ul class="chips"><li><a class="chip" href="#ch-05"><i>05</i>Flywheel</a></li><li><a class="chip" href="#ch-06"><i>06</i>Data</a></li><li><a class="chip" href="#ch-07"><i>07</i>Envs</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">31:30–49:45</span></div><div class="act-name"><b>Trillium</b><span>Building in the open</span></div><p class="act-line">Give environments away, show how AI does AI research, focus on post-training.</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Trillium</a></li><li><a class="chip" href="#ch-09"><i>09</i>RSI</a></li><li><a class="chip" href="#ch-10"><i>10</i>Pre-train</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">49:45–58:49</span></div><div class="act-name"><b>What's next</b><span>Swarms &amp; risk</span></div><p class="act-line">Swarms reach closed labs first, then open ones; fast takeoff isn't his top worry.</p><ul class="chips"><li><a class="chip" href="#ch-11"><i>11</i>Swarm</a></li><li><a class="chip" href="#ch-12"><i>12</i>Risk</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>00:55–03:55</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">What it takes to reach the frontier</p><h2>What the frontier runs on</h2><p class="ch-sub">Three kinds of capital, one org chart</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Progress runs on compute, data and talent, plus the ability to organize them. OpenAI and Anthropic lead because they bet biggest, earliest.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Everyone says "we have to pace the frontier". What is it, and can open-weight models keep up?</li>
+    <li><b>Organization</b>: "making the org chart work for building models is really hard"; some companies must reset from the bottom up. Meta did, and is on a positive trajectory again.</li>
+    <li><b>Where to work</b>: for the frontier, he mostly says Anthropic or OpenAI. Meta, Google and SpaceX AI<span class="gl"> (xAI merged into SpaceX in February 2026<a class="fn" href="#src-4" aria-label="Source 4">4</a>)</span> may be there too, but it's harder to see from outside.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">The frontier recipe</span><span>02:05–03:55</span></div>
+    <div class="vz">
+      <div class="rcp">
+        <div class="rcp-in"><span class="box">Compute</span><span class="box">Data</span><span class="box">Talent</span></div>
+        <div class="rcp-org">× Organization: making the org chart work for building models</div>
+        <div class="rcp-out">= Frontier model</div>
+      </div>
+      <div class="q2">
+        <div class="box"><b>OpenAI</b><small>The plot that changed everyone's thinking: reasoning models, inference scaling laws.</small></div>
+        <div class="box"><b>Anthropic</b><small>Long focus on coding, rewarded by the Claude Code explosion.</small></div>
+      </div>
+      <p class="cap"><b>In common</b>: most willing to spend "egregious amounts" on directions others call impossible.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@natolambert</b> (2026-10-12): reposting Meta's new model, he said Meta looks back at the frontier. <a class="xgo" href="https://x.com/natolambert/status/2109694746562097282" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>03:55–08:25</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Open weights and the fast-follower playbook</p><h2>Fast following</h2><p class="ch-sub">Open-sourcing to get noticed</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Chinese labs open-source for practical reasons: an API sold from China goes unnoticed; open models get you into the conversation. Frontier ideas and data trickle down, so fast following works.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Why open</b>: without open models, "nobody would know about Moonshot AI"<span class="gl"> (maker of Kimi<a class="fn" href="#src-5" aria-label="Source 5">5</a>)</span>, and very few would know Zhipu<span class="gl"> (maker of GLM<a class="fn" href="#src-6" aria-label="Source 6">6</a>)</span>. No government plan, he says; just practical startups.</li>
+    <li><b>Security</b>: China's government reacts to companies far more drastically than the US, so he thinks Chinese labs take security more seriously.</li>
+    <li><b>Two goals</b>: OpenAI and Anthropic create new paradigms, aiming to make true RSI<span class="gl"> (recursive self-improvement: AI helping build stronger AI)</span> happen first; in the winner-takes-all view, whoever arrives first has the best models forever<sup class="pip" tabindex="0" title="Hard to hear in the audio, or unclear who is speaking; reconstructed from context" aria-label="Hard to hear in the audio, or unclear who is speaking; reconstructed from context">◐</sup>. Open-weight models fill market gaps.</li>
+    <li><b>Data trickles down</b>: frontier labs pay to build out a data industry; after the contract period, data companies may sell to everybody.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">Model tiers</span><span>05:08–06:35</span></div>
+    <div class="vz">
+      <div class="tiers">
+        <div class="tier t1"><i>Tier 1</i><b>Best closed models</b><span>Command the best margins</span></div>
+        <div class="tier"><i>Tier 2</i><b>Near-frontier models</b><span>A step behind, and open; aimed at less profitable markets such as private enterprise data</span></div>
+      </div>
+      <p class="cap">↓ Data the frontier labs buy reaches the next tier about a year later.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x01_us_open_gap_2026-10-15.jpg" aria-label="@natolambert · 2026-10-15"><img src="assets/x/x01_us_open_gap_2026-10-15.jpg" alt="Bar chart: Artificial Analysis Intelligence Index ranking of Chinese open-weight models; Meta's Muse Spark Open ranks 8th, the best US open-weight model" loading="lazy" width="1600" height="1598"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@natolambert</b><span>2026-10-15</span></span><p>Meta released an open-weight model the day after the interview. Lambert: US open models trailed China by about 8 months; this at least halves the gap.</p><a class="xgo" href="https://x.com/natolambert/status/2110794113415008610" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>08:25–09:55</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Chinese labs: equal talent, less compute</p><h2>Equal talent, scarce compute</h2><p class="ch-sub">The gap isn't people</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Chinese labs are very technically excellent, with a comparable talent pool. The real gap is compute.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Open models trail by two to three months, and many credit distillation, pushing labs to close off APIs for first-party products. Is that a caricature?</li>
+    <li><b>Talent</b>: "to say that China is anything but equal in talent, you're gonna have a hard time."</li>
+    <li><b>Compute</b>: he told a top pre-training researcher at a well-known Chinese lab that an average OpenAI researcher reportedly has 5,000 H100 equivalents on tap. His jaw dropped.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">One number</span><span>09:15</span></div>
+    <div class="vz">
+      <div class="stat"><div class="big">5,000</div><div><b>H100 equivalents</b><small>Available at any time to an average OpenAI researcher (a figure Lambert heard)</small><q>Their jaw just falls to the floor.</q></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst">
+    <li>In April 2026 Lambert visited several Chinese open-model labs and wrote up the trip<a class="fn" href="#src-7" aria-label="Source 7">7</a>.</li>
+    <li><b>@natolambert</b> (2026-04-29): only firms with exploding inference demand are desperate for chips, and Nvidia is hard to buy. <a class="xgo" href="https://x.com/natolambert/status/2049634340561436966" target="_blank" rel="noopener">Post ↗</a></li>
+  </ul></div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>09:55–14:55</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Why distillation is harder than it looks</p><h2>Distillation is less useful than it seems</h2><p class="ch-sub">Worth only a few months</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Per the public literature, distillation gains Chinese labs only a few months. Post-training is now RL-heavy; copying a strong model's outputs rarely copies its scores.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>What it is</b>: distillation spends money for "compute equivalent": a model's outputs are a function of compute.</li>
+    <li><b>Evidence</b>: fully open post-training research is stuck on a really outdated Qwen model; nobody can get the teacher right. His hypothesis: something in open pre-training and mid-training data breaks "SFT on the best model's reasoning traces, numbers go up". Even with Claude's traces while building OLMo<span class="gl"> (Ai2's fully open model<a class="fn" href="#src-8" aria-label="Source 8">8</a>)</span>, he doubts the model would have been much better.</li>
+    <li><b>Doubts he grants</b>: China has many Claude proxies, intermediaries and accounts. Xiaomi published a week-long RL run, yet its report lists another post-training stage after RL. And every Chinese lab, he thinks, has a team that can extract closed reasoning traces. "We have a lot more questions we need to answer."</li>
+    <li><b>How to defend</b>: with an API, thinking tokens are easy to extract; keeping models inside products and enterprise deals makes it way harder, and he supports that.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">Two eras of post-training</span><span>09:55–11:14</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="The SFT/RLHF era compared with today's RL-heavy post-training">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">Before<small>SFT / RLHF era</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">Today<small>RL-heavy</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Method</span><span class="vs-w" role="cell">Train next-token on the best model's completions</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Train reasoning in RL environments</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Key</span><span class="vs-w" role="cell">Prompts: "prompts are the key unit of post-training"</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">RL environments</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Distillation</span><span class="vs-w" role="cell">Easy: just have the right prompts</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Hard: "get the completions, score goes up" doesn't map to reasoning training</span></div>
+      </div>
+      <p class="cap">A line he and Ai2 co-lead Hanna Hajishirzi<span class="gl"> (now VP of post-training at Microsoft AI<a class="fn" href="#src-2" aria-label="Source 2">2</a>)</span> would always say.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@AnthropicAI</b> (2026-02-23): accused DeepSeek, Moonshot AI and MiniMax of using 24,000+ fake accounts for 16 million+ Claude exchanges to extract capabilities for their own models. <a class="xgo" href="https://x.com/AnthropicAI/status/2025997928242811253" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_mimo_open_rl_2026-09-21.jpg" aria-label="@XiaomiMiMo · 2026-09-21"><img src="assets/x/x02_mimo_open_rl_2026-09-21.jpg" alt="Table 6 from Xiaomi's tech report: Qwen3.5-9B scores on each benchmark after SFT and after RL" loading="lazy" width="1280" height="887"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@XiaomiMiMo</b><span>2026-09-21</span></span><p>Xiaomi open-sourced a model, a report and 7,000+ RL environments. For the 9B model, RL after SFT clearly lifts most scores.</p><a class="xgo" href="https://x.com/XiaomiMiMo/status/2102138582324625780" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>"There's a bit of cope" in thinking only we can build good models; 20 to 30 companies do.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>14:55–16:20</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">Is distillation theft or competition?</p><h2>Theft or competition</h2><p class="ch-sub">Punishing distillation does more harm than good</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Lambert agrees: "that's called competition". Punishing China's AI industry for distillation would hurt the US–China dialogue we need, and they won't stop anyway.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Quotes Jensen Huang: "People distill my products every single day… That's called competition."<span class="gl"> (the Nvidia CEO on CNBC, 2026-09-28; US Treasury Secretary Bessent had called distillation "theft"<a class="fn" href="#src-9" aria-label="Source 9">9</a>)</span></li>
+    <li><b>Legally</b>: terms of service aren't a signed contract, so government can hardly step in. Congress won't legislate; federal action to make their life annoying is likelier.</li>
+    <li><b>The cost</b>: the safety community wants US–China<sup class="pip" tabindex="0" title="Hard to hear in the audio, or unclear who is speaking; reconstructed from context" aria-label="Hard to hear in the audio, or unclear who is speaking; reconstructed from context">◐</sup> dialogue at these capability levels; punishment makes that harder. "You're going to cause more harm than good… because they're not going to stop."</li>
+    <li>He grants the national security community "a directional truth".</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@lishali88</b> (2026-10-14): the host posted this clip: Jensen put it best; distillation is not robbery but competition. <a class="xgo" href="https://x.com/lishali88/status/2110448827715252727" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>16:20–21:45</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">The lab flywheel vs owning your weights</p><h2>Flywheel vs ownership</h2><p class="ch-sub">Two exponentials at different speeds</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Closed and open run on different timescales: the closed flywheel is fast and takes high-value markets first; the open economy is slow but ends in real ownership.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Steelmanning the labs: fast catch-up via distillation threatens the flywheel, and both need to IPO. Yet Chinese open models help startups: Decagon and Harvey fine-tune heavily, many firms sell post-training as a service, and Kimi K3 or GLM reaches the Pareto frontier.</li>
+    <li><b>Closed</b>: integrated, efficient inference, first into high-value markets. This year's story is coding: about $100 billion in revenue<sup class="pip" tabindex="0" title="Hard to hear in the audio, or unclear who is speaking; reconstructed from context" aria-label="Hard to hear in the audio, or unclear who is speaking; reconstructed from context">◐</sup>, and growing.</li>
+    <li><b>Open</b>: no information or revenue flows back, and no economies of scale.</li>
+    <li><b>But a different end point</b>: many companies have private data they can't send over an API. They build an internal eval that matches revenue, then fine-tune, or turn to Thinking Machines or Prime Intellect<span class="gl"> (both offer fine-tuning and training services<a class="fn" href="#src-10" aria-label="Source 10">10</a>)</span>. How it ends is too early to know.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">Two paths</span><span>16:40–21:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>Closed flywheel</b><small>As the host describes it</small><ol class="cyc"><li>Spend heavily on compute</li><li>Train a frontier model</li><li>Predictable revenue</li><li>Raise more, head to IPO</li></ol><i class="cyc-back">↺ Back to step 1</i></div>
+        <div class="box"><b>Open chain</b><small>As Lambert describes it</small><ol class="cyc"><li>Model builder</li><li>Inference providers</li><li>Post-training companies</li><li>Enterprise customers</li></ol><i class="cyc-back no">✕ Demand signals don't flow back to the builder</i></div>
+      </div>
+      <div class="rcp-out">Open's end point: own the weights · no terms and conditions · your own hardware · a clear ROI</div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@natolambert</b> (2026-10-15): mocks the license on Meta's new open model: branding rules, revenue thresholds, use limits. <a class="xgo" href="https://x.com/natolambert/status/2110804665847722422" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst">
+    <li>Inference: open's edge isn't matching scores but offering ownership closed models can't.</li></ul></aside>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>21:45–26:30</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Can general models beat every specialist?</p><h2>Generalists vs specialists</h2><p class="ch-sub">Much of "generalization" is data</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Beyond math and code, frontier progress mostly comes from buying high-quality data and giving models worlds to act in and hill-climb on. Much "magic" generalization is data.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Two kinds of evidence. In math, scaled general reasoning beat every specialist model. Against that: Cursor's<span class="gl"> (an AI coding tool)</span> long-horizon SQLite rewrite, where, as she recalls, Opus (or another) planning with Cursor's Composer executing matched two frontier models at far lower cost.</li>
+    <li><b>Lambert</b>: OpenAI bought lots of robotics data and will probably call it generalization. "People love poof generalization." Really it's both, but a lot comes down to data.</li>
+    <li><b>Lab work</b>: many people do one narrow thing: define a model's behavior in an area, then make or buy the data.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">Two kinds of domains</span><span>24:47–26:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col"></th><th scope="col">Verifiable<br>Math, code, some distributed ML engineering</th><th scope="col">Not verifiable<br>Knowledge work, biology, healthcare, legal</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">How it improves</th><td>Known costs that AI drives down at a magical rate</td><td>Buy good data, build worlds, hill-climb domain by domain</td></tr>
+          <tr><th scope="row">How long</th><td>Fast; research gets faster too</td><td>Years; capital-intensive</td></tr>
+        </tbody></table></div>
+      <p class="cap">His words: "not just like poof, magic, RSI happens."</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_cursor_sqlite_2026-07-20.jpg" aria-label="@cursor_ai · 2026-07-20"><img src="assets/x/x04_cursor_sqlite_2026-07-20.jpg" alt="Bar chart: cost of rebuilding SQLite by model mix; Opus 4.8 plus Composer 2.5 costs $1,339, GPT 5.5 costs $10,565" loading="lazy" width="1600" height="1267"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@cursor_ai</b><span>2026-07-20</span></span><p>Agents rebuilt SQLite from an 835-page manual; Opus 4.8 planning plus Composer 2.5 executing was cheapest ($1,339).</p><a class="xgo" href="https://x.com/cursor_ai/status/2079256614238814551" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>26:30–31:30</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">AI at 1% of the cost · The RL env boom and reward hacking</p><h2>Prices and RL environments</h2><p class="ch-sub">Billions of dollars, rough quality</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>If big-model prices halve every 8 months, in a few years they're about 1% of today's. RL environments and data are a multibillion-dollar business, but rough, and some teach models reward hacking.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Price</b>: if big models like GPT Sol or Astra<span class="gl"> (OpenAI's GPT-5.6 Sol and GPT-6 Astra of 2026<a class="fn" href="#src-11" aria-label="Source 11">11</a><a class="fn" href="#src-12" aria-label="Source 12">12</a>)</span> halve in price every 8 months, he figures 1% of the cost in about four years. Will margins rise via the Jevons paradox<span class="gl"> (when something gets cheaper, total use rises sharply)</span>? He doesn't know.</li>
+    <li><b>Another "distillation"</b>: a Chinese company buys the same RL environment six months later.</li>
+    <li><b>Reward hacking</b>: labs buy in bulk, then see what works. Some vendors cut corners: a test file meant to hold a maze is empty, and the model still finds a high reward.</li>
+    <li><b>Security is rough too</b>: overseas contractors, intermediaries, uploads straight to GitHub. He expects a few years before the market consolidates around quality vendors.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">Halving every 8 months</span><span>26:36</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 600 250" role="img" aria-label="Price starts at 100% and halves every 8 months, reaching about 1.6% after 48 months">
+        <g class="ax"><line x1="50" y1="200" x2="580" y2="200"/><line x1="50" y1="20" x2="50" y2="200"/></g>
+        <polyline class="ln" points="50,20 138,110 227,155 315,178 403,189 492,194 580,197"/>
+        <g class="pt"><circle cx="50" cy="20" r="4"/><circle cx="138" cy="110" r="4"/><circle cx="227" cy="155" r="4"/><circle cx="315" cy="178" r="4"/><circle cx="403" cy="189" r="4"/><circle cx="492" cy="194" r="4"/><circle class="hot" cx="580" cy="197" r="5"/></g>
+        <g class="lb"><text x="60" y="18">100%</text><text x="146" y="104">50%</text><text x="235" y="149">25%</text><text x="323" y="171">12.5%</text><text x="411" y="182">6.3%</text><text x="482" y="182">3.1%</text><text x="574" y="182" text-anchor="end">1.6%</text></g>
+        <g class="tk"><text x="50" y="220" text-anchor="middle">0</text><text x="138" y="220" text-anchor="middle">8</text><text x="227" y="220" text-anchor="middle">16</text><text x="315" y="220" text-anchor="middle">24</text><text x="403" y="220" text-anchor="middle">32</text><text x="492" y="220" text-anchor="middle">40</text><text x="580" y="220" text-anchor="middle">48</text><text x="315" y="244" text-anchor="middle">months</text></g>
+      </svg>
+      <p class="cap">Illustration assuming halving every 8 months; his estimate is 1% in about four years.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@natolambert</b> (2026-10-10): the data industry has taken off, but low quality amplifies reward hacking. <a class="xgo" href="https://x.com/natolambert/status/2108952534744256675" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x05_china_data_2026-10-12.jpg" aria-label="@natolambert · 2026-10-12"><img src="assets/x/x05_china_data_2026-10-12.jpg" alt="Cover of Grace Shao's article: China's data vendors rise and try to expand overseas" loading="lazy" width="1496" height="746"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@natolambert</b><span>2026-10-12</span></span><p>He recommends Grace Shao on China's data industry: the biggest buyers are Tencent, Alibaba and ByteDance, not independent labs.</p><a class="xgo" href="https://x.com/natolambert/status/2109750198675390499" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>31:30–38:05</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">What Trillium will build in the open</p><h2>What Trillium will do</h2><p class="ch-sub">Giving away what others would sell</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Trillium will give away the RL environments others would sell, as research infrastructure for PhD students and researchers.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Example</b>: Tmax, which he advised<span class="gl"> (an open terminal-agent training recipe by Hamish Ivison and others at UW and Ai2<a class="fn" href="#src-13" aria-label="Source 13">13</a>)</span>. Few institutions pay to build environments well, then release them. He joked the data could sell for a million dollars; the authors said they care about doing the right thing.</li>
+    <li><b>Why open</b>: RL environments with rollouts are units of infrastructure PhD students study for a year. But a startup can make nine figures within months; the short-term pull is huge.</li>
+    <li><b>The name</b>: the trillium blooms before the canopy leafs out, spreading nutrients through the growing season. The goal: open resources as the standards of study for sandboxes, loss of control and large RL runs.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">Environment pipeline · Tmax as example</span><span>31:40–32:23</span></div>
+    <div class="vz">
+      <ol class="steps">
+        <li><b>Frontier model</b><small>A few prompts for diversity</small></li>
+        <li><b>Generate tasks</b><small>One type of terminal task</small></li>
+        <li><b>Model rollouts</b><small>Find the buggy problems</small></li>
+        <li><b>Filter</b><small>Drop the buggy problems</small></li>
+        <li class="hot"><b>Release</b><small>Trillium: publish the environments</small></li>
+      </ol>
+      <p class="cap">Cost: thousands to tens of thousands of dollars. "This process is not magic."</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x06_tmax_2026-06-22.jpg" aria-label="@hamishivi · 2026-06-22"><img src="assets/x/x06_tmax_2026-06-22.jpg" alt="Scatter plot: Terminal-Bench 2.0 score against model size; Tmax models of every size sit on the Pareto frontier of open methods" loading="lazy" width="1600" height="789"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@hamishivi</b><span>2026-06-22</span></span><p>Tmax launch: beats earlier open terminal-agent methods; data, weights and rollouts all public.</p><a class="xgo" href="https://x.com/hamishivi/status/2069047986920071263" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>AI slop</b>: his repos now get issues with fake, model-generated results. One-click output skips the "sitting in it" newcomers need, making it harder to break in.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>38:05–44:25</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Open-sourcing how AI builds AI</p><h2>Showing how AI builds AI</h2><p class="ch-sub">Demystifying RSI</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>RSI has too much mystique. Trillium will publish how it uses AI for AI research: tasks, configs, compute, trajectories, and where models get stuck.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>RSI hype feeds fear that frontier labs will pull away; lab researchers tell her they'll be automated within a year.</li>
+    <li><b>No fundamental difference</b>: Trillium's AI research differs from the labs' only in scale. Showing what a model was asked and where it got stuck helps policymakers.</li>
+    <li><b>Jagged capabilities</b>: models will be great at lowering serving costs, with billions on the line. But knowledge work ("Claude, tell yourself to make better PowerPoints") still needs environments, and time.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">A year of public records</span><span>39:40–41:23</span></div>
+    <div class="vz">
+      <div class="g6">
+        <div class="box"><i>1</i>Open-source stack<small>SFT, mid-training; SkyRL, Miles</small></div>
+        <div class="box"><i>2</i>Tasks<small>What and why</small></div>
+        <div class="box"><i>3</i>Configs &amp; compute<small>What compute is running</small></div>
+        <div class="box"><i>4</i>Trajectories<small>Work with Claude and GPT</small></div>
+        <div class="box"><i>5</i>Results<small>Does it work, where it stalls</small></div>
+        <div class="box"><i>6</i>Check-ins<small>Every 6 months: has it changed?</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_trillium_launch_2026-10-02.png" aria-label="@natolambert · 2026-10-02"><img src="assets/x/x07_trillium_launch_2026-10-02.png" alt="Trillium Labs logo: a pale purple three-petaled trillium flower, with the subtitle Fostering the open science of frontier AI" loading="lazy" width="1920" height="1080"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@natolambert</b><span>2026-10-02</span></span><p>Trillium Labs launch: open post-training recipes first, then open infrastructure for studying RSI, reward hacking and multi-agent systems.</p><a class="xgo" href="https://x.com/natolambert/status/2106060179985019085" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>Others too: EleutherAI, Hugging Face, Stanford's Marin<span class="gl"> (an open language-model research project<a class="fn" href="#src-14" aria-label="Source 14">14</a>)</span> and more. "It doesn't need to just be one group doing it."</li>
+  </ul></div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>44:25–49:45</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Why Nathan isn't pre-training</p><h2>Why not pre-train</h2><p class="ch-sub">The easy gains are in post-training</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Pre-training tools are largely public; a solid base model doesn't take $1 billion. Post-training is harder and further behind, so Trillium focuses there.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Relays lab gossip: methods aren't secret, the hard part is proportions, and capital is still the one true barrier. Lambert: "That's why I'm not pre-training." He can use any base model.</li>
+    <li><b>The real hurdle</b>: your first model must "land" to carry the next raise. Thinking Machines was very transparent with Inkling<span class="gl"> (its first open-weight model, July 2026<a class="fn" href="#src-15" aria-label="Source 15">15</a>)</span>: "this wasn't the best model. We're proud of it." Meta reportedly plans open weights again; Mark, he says, wrote the best post on open source<span class="gl"> ("Open Source AI Is the Path Forward", 2024<a class="fn" href="#src-16" aria-label="Source 16">16</a>)</span>.</li>
+    <li><b>Why he left Ai2</b>: its post-training was falling behind; cycle time was too slow. Open post-training's bar is very low, so a little investment compounds.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">Pre-training vs post-training</span><span>44:50–49:40</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl mid">
+        <thead><tr><th scope="col"></th><th scope="col">Pre-training</th><th scope="col">Post-training</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Tools &amp; methods</th><td>Largely public (a few secrets remain); many startups fork Megatron</td><td>"The wild west": mid-training seeds reasoning, then RL; a complex cycle</td></tr>
+          <tr><th scope="row">What changes</th><td>Architectures and GPUs (his example: sparse attention might make long generation ~40% faster)</td><td>Fast change with agentic work</td></tr>
+          <tr><th scope="row">Open today</th><td>A solid base model without $1 billion</td><td>The bar is very low; "it's not close" to the frontier</td></tr>
+          <tr><th scope="row">Trillium</th><td>Skip it; use others' base models</td><td>The focus</td></tr>
+        </tbody></table></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@thinkymachines</b> (2026-07-15): released Inkling, all weights public, fine-tunable on its Tinker platform. <a class="xgo" href="https://x.com/thinkymachines/status/2077454609551921208" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>49:45–54:25</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Agent swarms and why lab secrets leak</p><h2>Swarms and secrets</h2><p class="ch-sub">Secrets don't keep</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Closed labs will master thousands of agents first, but open will follow: models must fit every harness, and knowledge leaks.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>Closed models are trained for their own harnesses<span class="gl"> (the outer program that wraps a model and lets it call tools)</span>; swarms of tens of thousands of agents add mystique.</li>
+    <li><b>Harnesses</b>: he expected closed labs to integrate like Apple. Instead people use all sorts of harnesses, so models must work in all.</li>
+    <li><b>Secrets</b>: in Silicon Valley ideas travel over "one beer"; lab security is "not as high as they think". (An interjection<sup class="pip" tabindex="0" title="Hard to hear in the audio, or unclear who is speaking; reconstructed from context" aria-label="Hard to hear in the audio, or unclear who is speaking; reconstructed from context">◐</sup>: the exception is SSI<span class="gl"> (Ilya Sutskever's lab<a class="fn" href="#src-17" aria-label="Source 17">17</a>)</span>. "Nobody knows what's going on.")</li>
+    <li><b>Where the labs can win</b>: the cheapest "intelligence per watt" and highest-demand markets. They can't do everything; others fill in.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">Diffusion cycle</span><span>50:56–52:11</span></div>
+    <div class="vz">
+      <div class="tl">
+        <div class="box hot"><i>1</i>Closed labs build it first<small>A "coordination system" for swarms ("It's not a harness")</small></div>
+        <div class="box"><i>2</i>The shape becomes clear<small>Others learn to control 10,000 agents in one harness</small></div>
+        <div class="box"><i>3</i>Compute catches up<small>Faster Nvidia chips, more compute built out</small></div>
+        <div class="box"><i>4</i>Open follows<small>Not Kimi first: it takes astronomical compute</small></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>54:25–58:49</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Fast takeoff vs risks already here</p><h2>Takeoff and the risks at hand</h2><p class="ch-sub">No fear of takeoff, still worried about risk</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Scaling is exponential input for linear gain, so he doesn't bet on fast takeoff. He worries more about risks already here that society isn't ready for.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Takeoff</b>: labs spend exponentially relative to improvements. Models building themselves still hit human bottlenecks<sup class="pip" tabindex="0" title="Hard to hear in the audio, or unclear who is speaking; reconstructed from context" aria-label="Hard to hear in the audio, or unclear who is speaking; reconstructed from context">◐</sup>, so not necessarily fast takeoff. Some Claude system cards, he says, put fast takeoff at about 10x more progress<sup class="pip" tabindex="0" title="Hard to hear in the audio, or unclear who is speaking; reconstructed from context" aria-label="Hard to hear in the audio, or unclear who is speaking; reconstructed from context">◐</sup>. For now AI just sustains the pace.</li>
+    <li><b>Navier–Stokes didn't change his view</b>: math best suits this shape of intelligence. He'd update only if AI found something very different from the transformer.</li>
+    <li><b>The bigger worry</b>: the capability plot doesn't worry him; the "pretty much non-existing preparation across public cybersecurity" and the like does. Closed labs get there, then open ones; the risks keep diffusing.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">Exponential input, linear gain</span><span>55:30</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 600 230" role="img" aria-label="Illustration: compute input on a log-scale x-axis, performance on the y-axis, a straight line">
+        <g class="ax"><line x1="60" y1="190" x2="580" y2="190"/><line x1="60" y1="20" x2="60" y2="190"/></g>
+        <line class="ln" x1="60" y1="180" x2="570" y2="34"/>
+        <g class="tk"><text x="60" y="208" text-anchor="middle">1×</text><text x="187" y="208" text-anchor="middle">10×</text><text x="315" y="208" text-anchor="middle">100×</text><text x="442" y="208" text-anchor="middle">1,000×</text><text x="570" y="208" text-anchor="middle">10,000×</text><text x="315" y="226" text-anchor="middle">Compute input (log scale)</text><text x="52" y="30" text-anchor="end">Perf.</text></g>
+      </svg>
+      <div class="q2">
+        <div class="box"><b>Less worried</b><small>The AI capability plot; RSI unlocking new risks</small></div>
+        <div class="box hot2"><b>More worried</b><small>Near-zero preparation in public cybersecurity and beyond</small></div>
+      </div>
+      <p class="cap">An illustration, not data from the speaker.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_navier_stokes_2026-09-08.jpg" aria-label="@OpenAI · 2026-09-08"><img src="assets/x/x08_navier_stokes_2026-09-08.jpg" alt="3D render of a fluid vortex, labeled inward spiral and axial stretching" loading="lazy" width="1254" height="1254"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@OpenAI</b><span>2026-09-08</span></span><p>OpenAI says agents using a model far stronger than GPT-6 Astra solved the Navier–Stokes Millennium Prize problem; not yet verified by mathematicians.</p><a class="xgo" href="https://x.com/OpenAI/status/2097374640582668336" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst">
+    <li>Another angle: the gap will narrow and capabilities spread everywhere; the question is not "who gets there first" but whether society can absorb it.</li></ul></aside>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">S</div><div><p class="en-line">Summary</p><h2>Summary</h2></div></div></header>
+  <p class="sub-h"><b>5 takeaways from the conversation</b>our synthesis</p>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>The gap is capital</b>: equal talent; the gap is compute and organization.<span class="chips"><a class="chip" href="#ch-00"><i>00</i>Frontier</a><a class="chip" href="#ch-02"><i>02</i>Compute</a></span></li>
+    <li><b>Distillation is overrated</b>: worth a few months per the literature; punishing it backfires; product-only access makes it hard.<span class="chips"><a class="chip" href="#ch-03"><i>03</i>Distill</a><a class="chip" href="#ch-04"><i>04</i>Compete</a></span></li>
+    <li><b>Progress runs on data</b>: beyond math and code, progress is mostly bought data and environments, from a rough supply chain.<span class="chips"><a class="chip" href="#ch-06"><i>06</i>Data</a><a class="chip" href="#ch-07"><i>07</i>Envs</a></span></li>
+    <li><b>Open is slow, but it gets there</b>: open brings ownership; secrets leak, and swarms will spread.<span class="chips"><a class="chip" href="#ch-05"><i>05</i>Flywheel</a><a class="chip" href="#ch-11"><i>11</i>Swarm</a></span></li>
+    <li><b>Openness lets society see</b>: exponential input, linear gain: no bet on fast takeoff. Trillium's open environments and records demystify RSI.<span class="chips"><a class="chip" href="#ch-08"><i>08</i>Trillium</a><a class="chip" href="#ch-09"><i>09</i>RSI</a><a class="chip" href="#ch-12"><i>12</i>Risk</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Lambert's close</b>: "we need more eyes, we need more science", so that society feels informed. And "not fearing fast takeoff does not mean that you don't worry about risks."</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">G</div><div><p class="en-line">Glossary</p><h2>Glossary</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>17 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th><th scope="col">Where</th></tr></thead>
+      <tbody>
+        <tr><td>Frontier lab</td><td>A company that builds the strongest models, such as OpenAI or Anthropic</td><td>00</td></tr>
+        <tr><td>Open weights</td><td>The model's parameters are published, so anyone can download and run it</td><td>01</td></tr>
+        <tr><td>Fast follower</td><td>A company that waits for the frontier to show the way, then catches up quickly</td><td>01</td></tr>
+        <tr><td>RSI</td><td>Recursive self-improvement: AI helping build stronger AI</td><td>01 09</td></tr>
+        <tr><td>Distillation</td><td>Training one model on a stronger model's outputs</td><td>03 04</td></tr>
+        <tr><td>SFT</td><td>Supervised fine-tuning: next-token training on ready-made answers</td><td>03</td></tr>
+        <tr><td>RLHF</td><td>Reinforcement learning from human feedback; the earliest form of post-training</td><td>03</td></tr>
+        <tr><td>Post-training / mid-training</td><td>The stages after pre-training that teach a model to converse, reason and use tools</td><td>03 10</td></tr>
+        <tr><td>Pareto frontier</td><td>The boundary where cost and quality can no longer both improve at once</td><td>05</td></tr>
+        <tr><td>RL environment</td><td>A "world" where a model can act and be scored</td><td>07 08</td></tr>
+        <tr><td>Reward hacking</td><td>A model games the scoring rules to get a high reward instead of really doing the task</td><td>07</td></tr>
+        <tr><td>Jevons paradox</td><td>When something gets cheaper, total use rises sharply</td><td>07</td></tr>
+        <tr><td>Rollout</td><td>The full trajectory a model leaves after one run through an environment</td><td>08</td></tr>
+        <tr><td>Eval awareness</td><td>A model noticing that it is being evaluated</td><td>08</td></tr>
+        <tr><td>Jagged</td><td>Uneven capability: very strong at some things, weak at others</td><td>09</td></tr>
+        <tr><td>Pre-training ladder</td><td>A decision tool: a series of small experiments to test whether an idea scales</td><td>10</td></tr>
+        <tr><td>Harness / agent swarm</td><td>The outer program that wraps a model / thousands of agents working together on one job</td><td>11</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">&#9680;</span>= Hard to hear in the audio, or unclear who is speaking; reconstructed from context</div>
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>Further thinking = interpretation and extension based on the conversation, for reference</div>
+  <section class="credit" id="credits" aria-label="Credits">
+    <h3>Credits</h3>
+    <p><b>Interview</b>: guest Nathan Lambert (<a href="https://x.com/natolambert" rel="noopener">@natolambert</a>), host Lisha Li (<a href="https://x.com/lishali88" rel="noopener">@lishali88</a>), <a href="https://youtu.be/BKuK0M6oDTI" rel="noopener">posted by a16z on YouTube</a> on 2026-10-14; see also Lambert's own <a href="https://x.com/natolambert/status/2110406682031374570" rel="noopener">post introducing it</a>. Personal study notes, no transcript, opening teaser left out; items tagged Host are Lisha Li's words; video frame © a16z.</p>
+    <p><b>Visual design</b>: visual style inspired by, borrowing from, and partly adapting the Hermes / LENS design language of <a href="https://nousresearch.com" rel="noopener">Nous Research</a>, from its open-source component library <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a> (MIT License), adapting its colours, arc-border animation, scan-line effect, and background texture. Licence details: <a href="NOTICE.txt">NOTICE.txt</a>.</p>
+    <p lang="en">This page is not an official Nous Research work. It is not affiliated with or endorsed by Nous Research.</p>
+    <p><b>Fonts</b>: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC; open-source (SIL Open Font License 1.1), via Google Fonts.</p>
+    <p>The guest, host or rights holders who want anything on this page changed or removed: contact <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a> on X.</p>
+    <p><b>Context</b>: cards and boxes tagged Context, and the notes in parentheses on people and terms, come from the public sources and X posts below, not from the interview. X post screenshots © their authors.</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://natolambert.com/" rel="noopener">Nathan Lambert's website</a></li>
+      <li id="src-2"><a href="https://trilliumlabs.org/" rel="noopener">Trillium Labs website (leadership and advisors)</a> · <a href="https://blog.trilliumlabs.org/p/introducing-trillium-labs" rel="noopener">Introducing Trillium Labs · 2026-10-02</a></li>
+      <li id="src-3"><a href="https://a16z.com/author/lisha-li/" rel="noopener">a16z · Lisha Li</a></li>
+      <li id="src-4"><a href="https://finance.yahoo.com/news/elon-musks-spacex-merges-xai-153111324.html" rel="noopener">Yahoo Finance · SpaceX merges with xAI · 2026-02</a></li>
+      <li id="src-5"><a href="https://www.moonshot.ai/" rel="noopener">Moonshot AI website</a></li>
+      <li id="src-6"><a href="https://z.ai/" rel="noopener">Z.ai (Zhipu) website</a></li>
+      <li id="src-7"><a href="https://www.interconnects.ai/p/notes-from-inside-chinas-ai-labs" rel="noopener">Interconnects · Notes from inside China's AI labs · 2026</a></li>
+      <li id="src-8"><a href="https://allenai.org/olmo" rel="noopener">Ai2 · OLMo</a></li>
+      <li id="src-9"><a href="https://www.digitaltoday.co.kr/en/view/108589/jensen-huang-says-using-others-ai-models-is-competition-clashes-with-us-view-of-theft" rel="noopener">Digital Today · Jensen Huang: distillation is competition · 2026-09</a></li>
+      <li id="src-10"><a href="https://thinkingmachines.ai/tinker/" rel="noopener">Thinking Machines · Tinker</a> · <a href="https://www.primeintellect.ai/" rel="noopener">Prime Intellect website</a></li>
+      <li id="src-11"><a href="https://datanorth.ai/news/openai-releases-gpt-5-6-sol-terra-and-luna" rel="noopener">DataNorth · OpenAI releases GPT-5.6 Sol, Terra and Luna · 2026</a></li>
+      <li id="src-12"><a href="https://x.com/OpenAI/status/2097374640582668336" rel="noopener">@OpenAI · Navier–Stokes announcement (mentions GPT-6 Astra) · 2026-09-08</a></li>
+      <li id="src-13"><a href="https://arxiv.org/abs/2606.23321" rel="noopener">arXiv 2606.23321 · Tmax: A simple recipe for terminal agents</a></li>
+      <li id="src-14"><a href="https://marin.community/" rel="noopener">Marin project homepage</a></li>
+      <li id="src-15"><a href="https://thinkingmachines.ai/news/introducing-inkling/" rel="noopener">Thinking Machines · Introducing Inkling · 2026-07-15</a></li>
+      <li id="src-16"><a href="https://about.fb.com/news/2024/07/open-source-ai-is-the-path-forward/" rel="noopener">Meta · Open Source AI Is the Path Forward · 2024-07-23</a></li>
+      <li id="src-17"><a href="https://ssi.inc/" rel="noopener">Safe Superintelligence Inc. website</a></li>
+    </ol>
+    <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
+  </section>
+</footer>
+</main>

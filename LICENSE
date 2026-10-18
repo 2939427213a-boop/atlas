@@ -1,0 +1,48 @@
+This repository holds two kinds of material under different terms.
+
+1. Code
+-------
+Everything under src/, migrations/, test/, scripts/, sources/favicon/ and
+public/assets/, plus the build scripts and the project configuration files,
+is released under the MIT License below.
+
+2. Content
+----------
+The study pages and their working notes (public/talks/, sources/talks/,
+public/index.html, public/privacy.html, public/404.html) are not covered by
+the MIT License.
+
+- The written notes, summaries and translations are (c) 2026 Haoli.
+  All rights reserved.
+- Slide screenshots, video frames and X post screenshots belong to their
+  original authors and copyright holders, as credited on each page and in its
+  NOTICE.txt. They are included for commentary and study only.
+- The background texture public/talks/*/assets/hermes/filler-bg0.webp comes
+  from @nous-research/ui (MIT License, Copyright (c) Nous Research). See each
+  page's NOTICE.txt.
+
+Rights holders who want material changed or removed can contact
+X @steamedbun1111.
+
+MIT License
+-----------
+
+Copyright (c) 2026 Haoli
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

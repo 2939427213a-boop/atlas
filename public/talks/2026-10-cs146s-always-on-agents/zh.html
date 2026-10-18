@@ -1,0 +1,1653 @@
+<!doctype html>
+<!--
+  How always-on agents work · Lee Robinson · Stanford CS146S · 2026-10-08 — Chinese study notes.
+  Visual style inspired by and adapted from Nous Research's Hermes / LENS design language
+  (@nous-research/ui, MIT License). Not affiliated with Nous Research. See NOTICE.txt.
+  Fonts: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC (SIL OFL 1.1, via Google Fonts).
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How always-on agents work · CS146S</title>
+<meta name="description" content="Lee Robinson 在 Stanford CS146S 嘉宾讲座的学习笔记：always-on agent 如何运转，包括事件唤醒、会休眠的云电脑、状态持久化、harness 设计和 context 工程。">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Atlas">
+<meta property="og:title" content="How always-on agents work · 学习笔记">
+<meta property="og:description" content="Lee Robinson 在 Stanford CS146S 嘉宾讲座的学习笔记：always-on agent 如何运转，包括事件唤醒、会休眠的云电脑、状态持久化、harness 设计和 context 工程。">
+<meta property="og:url" content="https://atlas.haoli-agi.com/talks/2026-10-cs146s-always-on-agents/zh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://atlas.haoli-agi.com/talks/2026-10-cs146s-always-on-agents/slides/s01_0000.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="讲座标题页：How always-on agents work，Lee Robinson，Stanford CS146S，2026-10-08">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@steamedbun1111">
+<link rel="canonical" href="https://atlas.haoli-agi.com/talks/2026-10-cs146s-always-on-agents/zh">
+<link rel="alternate" hreflang="en" href="https://atlas.haoli-agi.com/talks/2026-10-cs146s-always-on-agents/">
+<link rel="alternate" hreflang="zh-CN" href="https://atlas.haoli-agi.com/talks/2026-10-cs146s-always-on-agents/zh">
+<link rel="alternate" hreflang="x-default" href="https://atlas.haoli-agi.com/talks/2026-10-cs146s-always-on-agents/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ===== tokens (teal dark only) ===== */
+:root{
+  --background-base:#041c1c;--background:#041c1c;--midground-base:#ffe6cb;--midground:#ffe6cb;
+  --warm-glow:rgba(255,189,56,.35);--amber:#f2b544;--red:#ff7a6b;
+  --font-display:'Unbounded','Noto Sans SC',sans-serif;--font-sans:'Instrument Serif','Noto Sans SC',serif;
+  --font-zh:'Noto Sans SC',sans-serif;--font-mond:'JetBrains Mono','Noto Sans SC',monospace;--font-mono:'JetBrains Mono','Noto Sans SC',monospace;
+  --mg-80:color-mix(in srgb,var(--midground-base) 80%,transparent);--mg-65:color-mix(in srgb,var(--midground-base) 65%,transparent);
+  --mg-45:color-mix(in srgb,var(--midground-base) 45%,transparent);--line:color-mix(in srgb,var(--midground-base) 16%,transparent);
+  --line-2:color-mix(in srgb,var(--midground-base) 34%,transparent);--fill:color-mix(in srgb,var(--midground-base) 5%,transparent);
+  --panel:color-mix(in srgb,var(--background-base) 84%,transparent);--rail-top:max(56px,calc(50vh - 214px));
+}
+*{box-sizing:border-box}
+html{background:#000;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000;color:var(--midground);font-family:var(--font-zh);font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+b,strong{font-weight:700}
+code{font-family:var(--font-mono);font-size:.88em;padding:0 .3em;border:1px solid var(--line);background:var(--fill)}
+button{font:inherit;color:inherit}
+p{margin:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* backdrop stack */
+.hermes-bg>*{position:fixed;inset:0;pointer-events:none}
+.bg-l1{z-index:1;background:var(--background-base);mix-blend-mode:difference}
+.bg-l2{z-index:2;width:100%;height:150vh;object-fit:cover;object-position:top left;filter:invert(1);opacity:.033;mix-blend-mode:difference}
+.bg-l99{z-index:99;background:radial-gradient(120% 90% at 0% 0%,var(--warm-glow),transparent 60%);opacity:.22;mix-blend-mode:lighten}
+.bg-l201{z-index:201;opacity:.5;mix-blend-mode:color-dodge;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gradient-stroke{0%{background-position:15% 15%}100%{background-position:75% 75%}}
+@keyframes dash-flow{to{stroke-dashoffset:-12}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes flipin{from{transform:rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.arc-host{position:relative}
+.arc-border{--arc-c1:var(--midground);--arc-c2:var(--background);--arc-duration:2.23s;
+  --arc-gradient:linear-gradient(160deg,transparent 0%,transparent 15%,var(--arc-c1) 20%,var(--arc-c2) 25%,transparent 35%,transparent 55%,var(--arc-c1) 60%,var(--arc-c2) 65%,transparent 75%,transparent 95%,var(--arc-c1) 100%);
+  position:absolute;z-index:3;overflow:hidden;border-radius:inherit;inset:-2px;padding:1.25px;pointer-events:none;opacity:0;transition:opacity .2s;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.arc-border::before{content:'';position:absolute;inset:0;background:var(--arc-gradient);background-size:300% 300%;animation:gradient-stroke var(--arc-duration) linear infinite}
+.arc-host:hover>.arc-border,.arc-host:focus-visible>.arc-border,.arc-host.on>.arc-border{opacity:1}
+
+/* PiP marker */
+.pip{display:inline-block;margin-left:1px;font-size:.62em;line-height:1;vertical-align:super;color:var(--amber);cursor:help;outline-offset:2px}
+.toast{position:fixed;z-index:70;left:12px;right:12px;bottom:14px;max-width:460px;margin:0 auto;padding:10px 14px;border:1px solid var(--amber);background:var(--background-base);color:var(--midground);font-size:13px;line-height:1.5}
+.toast[hidden]{display:none}
+
+.credit .privacy-note{font-family:var(--font-mono);font-size:11px}
+/* ===== language switch ===== */
+.lang-switch{position:fixed;z-index:70;top:12px;right:12px;display:flex;border:1px solid var(--line-2);background:var(--panel);font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em}
+.lang-switch a{display:flex;align-items:center;justify-content:center;min-width:36px;height:28px;padding:0 10px;color:var(--midground);text-decoration:none}
+.lang-switch a[lang=zh-CN]{font-family:var(--font-zh);letter-spacing:0}
+.lang-switch a[aria-current]{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.lang-switch a:not([aria-current]):hover{background:var(--fill)}
+.lang-switch a:focus-visible{outline:1px solid var(--midground);outline-offset:2px}
+.top-row{display:flex;gap:8px;margin:0 0 14px}
+.home-link{display:flex;align-items:center;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.06em;white-space:nowrap}
+.home-link:hover{border-color:var(--midground)}
+.src-top{flex:1;min-width:0;display:flex;align-items:center;gap:10px;margin:0;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;letter-spacing:.03em}
+.src-top .k{font-weight:700;letter-spacing:.14em;color:var(--mg-65)}
+.src-top .go{margin-left:auto}
+.src-top:hover{border-color:var(--midground)}
+
+/* ===== right rail ===== */
+#toc-fab{position:fixed;z-index:60;right:12px;top:var(--rail-top);display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;text-decoration:none;font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em;
+  background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+#toc-fab:hover .fab-k{animation:blink 1s step-end infinite}
+#toc-fab:active{filter:invert(1)}
+.rail{position:fixed;z-index:59;right:12px;top:calc(var(--rail-top) + 38px);display:flex;flex-direction:column;align-items:flex-end;padding:4px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.rail{background:color-mix(in srgb,var(--background-base) 94%,transparent);border-color:var(--line)}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;height:24px;text-decoration:none;color:var(--mg-65);outline-offset:-2px}
+.rail .no{display:inline-grid;place-items:center;min-width:30px;height:20px;padding:0 4px;font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.rail .lb{max-width:9em;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--mg-80)}
+.rail a:hover .no{border-color:var(--line-2);color:var(--midground)}
+.rail a.on .no{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.rail a.on .lb{color:var(--midground)}
+.rail .sep{height:1px;width:30px;margin:4px 0;background:var(--line)}
+
+/* ===== layout ===== */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:40px clamp(92px,calc(775px - 50vw),190px) 120px 48px}
+.wrap>*+*{margin-top:56px}
+section[id],article[id],details[id],div[id]{scroll-margin-top:16px}
+.panel{position:relative;border:1px solid var(--line);background:var(--panel)}
+.bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--fill);font-family:var(--font-mono);font-size:11px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.bar .k{color:var(--midground);font-weight:700;font-family:var(--font-zh);letter-spacing:.04em;font-size:12.5px;text-transform:none}
+.bar .push{margin-left:auto}
+.eyebrow{font-family:var(--font-mond);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mg-65)}
+.en-line{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kv{display:grid;margin:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.kv>div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kv dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mg-45);margin-bottom:4px}
+.kv dd{margin:0;font-family:var(--font-sans);font-size:17px;line-height:1.35}
+.kv dd.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero-body{container-type:inline-size;padding:clamp(22px,3.4vw,44px) clamp(18px,3.4vw,44px) 26px}
+.h1{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:clamp(26px,6.9cqi,72px);line-height:.96;letter-spacing:.01em;margin:14px 0}
+.h1 .nw{white-space:nowrap}
+.h1-zh{margin:0 0 14px;font-size:clamp(17px,1.8vw,21px);font-weight:500;color:var(--mg-80)}
+.h1-zh::before{content:'// ';font-family:var(--font-mono);color:var(--mg-45)}
+.read{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:3px 10px;border:1px solid var(--line-2);font-size:13px}
+.read::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--midground);animation:blink 1.6s step-end infinite}
+.kv-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero-note{margin-top:14px;font-size:13px;line-height:1.65;color:var(--mg-65)}
+.thesis-body{padding:20px clamp(18px,3vw,32px) 22px;font-size:clamp(16px,1.5vw,18px);line-height:1.8}
+.thesis-body ul{margin:8px 0 12px;padding:0;list-style:none}
+.thesis-body li{position:relative;padding-left:1.4em}
+.thesis-body li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+.thesis-body .last{padding-top:12px;border-top:1px dashed var(--line)}
+.hl{background:var(--midground);color:var(--background-base);padding:0 .25em}
+
+/* panorama */
+.pano{container-type:inline-size}
+.pano-q{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;padding:18px clamp(14px,2.6vw,28px) 4px}
+.pano-q .q{font-weight:700;font-size:13px;padding:1px 8px;background:var(--midground);color:var(--background-base)}
+.pano-q p{font-size:clamp(16px,1.6vw,19px);line-height:1.7;font-weight:500}
+.pano-band{padding:16px clamp(14px,2.6vw,28px) 22px}
+.spectrum{display:flex;height:34px;border:1px solid var(--line-2);background:var(--background-base)}
+.spectrum a{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;text-decoration:none;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-80);border-left:1px solid var(--line);transition:background .15s,color .15s}
+.spectrum a:first-child{border-left:0}
+.spectrum a.act-start{border-left:1px solid var(--midground)}
+.spectrum a.odd{background:color-mix(in srgb,var(--midground-base) 9%,transparent)}
+.spectrum a.even{background:color-mix(in srgb,var(--midground-base) 18%,transparent)}
+.spectrum a:hover,.spectrum a:focus-visible,.spectrum a.on{background:var(--midground);color:var(--background-base)}
+.acts{display:grid;grid-template-columns:var(--act-cols);margin:0;padding:0;list-style:none;border-left:1px solid var(--line)}
+.act{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.act::before{content:'';position:absolute;left:-1px;top:0;width:1px;height:14px;background:var(--midground)}
+.act-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.act-no{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.6cqi,40px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--midground)}
+.act-time{font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45);white-space:nowrap}
+.act-name b{display:block;font-size:19px;font-weight:900;line-height:1.25}
+.act-name span{display:block;margin-top:3px;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mg-65);line-height:1.4}
+.act-line{font-size:13.5px;line-height:1.7;color:var(--mg-80)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 0;padding:4px 0 0;list-style:none}
+.chip{display:inline-flex;align-items:baseline;gap:6px;padding:2px 8px;border:1px solid var(--line-2);text-decoration:none;font-size:12px;line-height:1.6;white-space:nowrap}
+.chip i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+span.chip{white-space:normal}
+a.chip:hover,a.chip:focus-visible{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+a.chip:hover i,a.chip:focus-visible i{color:inherit}
+@container (max-width:860px){
+  .acts{grid-template-columns:minmax(0,1fr);border-left:0;margin-top:14px;border-top:1px solid var(--line)}
+  .act{display:grid;grid-template-columns:54px minmax(0,1fr);column-gap:12px;row-gap:6px;border-left:1px solid var(--line);padding:12px}
+  .act::before{height:100%;width:2px}
+  .act-top{display:contents}
+  .act-no{grid-row:1/span 4;font-size:30px}
+  .act-time,.act-name,.act-line,.act .chips{grid-column:2}
+}
+
+/* chapters */
+.ch>*+*{margin-top:16px}
+.ch-head-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,3vw,30px);align-items:end;padding:clamp(18px,2.6vw,28px) clamp(16px,2.6vw,28px) 20px}
+.ch-no{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,6vw,80px);line-height:.8;background:var(--midground);color:var(--background-base);padding:.08em .1em 0}
+.ch-no.zh{font-family:var(--font-zh);font-weight:900;line-height:1;padding:.06em .12em}
+.ch-head-body .en-line{margin-bottom:6px;font-size:clamp(11.5px,1.25vw,14px);color:var(--mg-80)}
+.ch-head-body h2{margin:0;font-size:clamp(22px,2.8vw,34px);line-height:1.22;font-weight:900}
+.ch-sub{margin-top:6px;font-size:15px;color:var(--mg-65)}
+.oneliner{display:grid;grid-template-columns:auto minmax(0,1fr)}
+.oneliner .lbl{writing-mode:vertical-rl;padding:12px 7px;border-right:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:var(--mg-45);text-transform:uppercase}
+.oneliner p{padding:16px clamp(16px,2.6vw,26px);font-size:clamp(16px,1.55vw,18.5px);line-height:1.75;font-weight:500}
+.grp{display:flex;align-items:center;gap:12px;margin-top:28px !important;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mg-45)}
+.grp::after{content:'';flex:1;height:1px;background:var(--line)}
+.grp .gt{font-family:var(--font-zh);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:none;color:var(--midground)}
+
+/* text blocks */
+.pts{padding:16px clamp(14px,2.4vw,24px)}
+.pts>*+*{margin-top:12px}
+.lst{margin:0;padding:0;list-style:none}
+.lst>li{position:relative;padding-left:1.4em;font-size:14.5px;line-height:1.75}
+.lst>li+li{margin-top:6px}
+.lst>li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+ol.lst{counter-reset:n}
+ol.lst>li{counter-increment:n;padding-left:2em}
+ol.lst>li::before{content:counter(n,decimal-leading-zero);font-size:11px;top:.3em}
+.lst .lst{margin-top:4px}
+.lst .lst>li{font-size:14px;color:var(--mg-80)}
+.lst .lst>li::before{content:'·'}
+.sub-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--mg-65)}
+.sub-h b{font-family:var(--font-zh);font-size:13.5px;letter-spacing:.02em;color:var(--midground);margin-right:6px}
+pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-2);background:var(--background-base);font-family:var(--font-mono);font-size:12px;line-height:1.6;color:var(--mg-80)}
+.note-line{font-size:12.5px;color:var(--mg-65)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.tbl.mid{min-width:560px}
+.tbl th{text-align:left;font-weight:500;font-size:12px;color:var(--mg-65);padding:9px 12px;border-bottom:1px solid var(--line-2);background:var(--fill);vertical-align:bottom}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td,.tbl tbody tr:last-child th{border-bottom:0}
+.tbl td+td,.tbl th+th,.tbl th+td{border-left:1px solid var(--line)}
+.tbl tbody th{font-weight:700;font-size:13.5px;color:var(--midground);background:transparent;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tbl tbody tr:hover>*{background:var(--fill)}
+
+/* speaker notes / analysis */
+.notes{padding:14px clamp(14px,2.4vw,24px)}
+.analysis{position:relative;border-left:2px solid color-mix(in srgb,var(--midground) 32%,transparent);background:transparent}
+.an-tag{display:block;padding:8px clamp(14px,2.4vw,24px) 0;color:var(--mg-65);font-family:var(--font-mono);font-size:11px;letter-spacing:.14em}
+.an-tag::before{content:'↳ '}
+.analysis .lst{padding:4px clamp(14px,2.4vw,24px) 10px}
+.analysis .lst>li{color:var(--mg-80)}
+.analysis .lst>li::before{color:var(--mg-65)}
+.analysis a{color:var(--midground)}
+
+/* ===== widgets: shared ===== */
+.viz{container-type:inline-size}
+.vz{padding:16px clamp(12px,2.2vw,22px) 18px}
+.vz>*+*{margin-top:14px}
+.cap{font-size:13px;line-height:1.65;color:var(--mg-65)}
+.cap b{color:var(--midground);font-weight:500}
+.h-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:0;padding:7px 12px;font-family:var(--font-zh);font-size:13px;line-height:1.3;background:transparent;color:var(--midground);
+  box-shadow:inset -1px -1px 0 0 #ffffff12,inset 1px 1px 0 0 #ffffff29,0 0 0 1px var(--line-2);transition:background .15s,color .15s}
+.h-btn:hover{background:var(--fill)}
+.h-btn:active{filter:invert(1)}
+.h-btn:disabled{opacity:.4;cursor:default}
+.h-btn[aria-checked="true"],.h-btn[aria-pressed="true"],.h-btn.solid{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.h-btn i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.mini{cursor:pointer;border:1px solid var(--line-2);background:transparent;padding:1px 8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--midground)}
+.mini:hover{background:var(--fill)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;flex-wrap:wrap}
+.seg .h-btn{box-shadow:0 0 0 1px var(--line-2)}
+.arr{display:grid;place-items:center;color:var(--mg-45);transition:color .2s}
+.arr svg{display:block;width:34px;height:12px;overflow:visible}
+.arr .ln{stroke-dasharray:3 3}
+.arr.lit{color:var(--midground)}
+.arr.lit .ln{animation:dash-flow 1s linear infinite}
+.box{border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.box small{display:block;font-size:12px;color:var(--mg-65)}
+.box.lit{border-color:var(--midground)}
+.box.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.box.hot small{color:inherit;opacity:.75}
+.box.dim{opacity:.35}
+.mono{font-family:var(--font-mono)}
+
+/* 00 · switcher */
+.flip-row{display:grid;grid-template-columns:76px minmax(0,1fr);border-top:1px solid var(--line)}
+.flip{border:1px solid var(--line);border-top:0}
+.flip-k{padding:9px 12px;font-size:13px;color:var(--mg-65)}
+.flip-v{padding:9px 12px;border-left:1px solid var(--line);font-size:14.5px;perspective:600px}
+.flip-v>span{display:block;animation:flipin .35s ease both}
+.flip-v .a,.is-a .flip-v .w{display:none}
+.is-a .flip-v .a{display:block}
+.is-a .flip-v{background:var(--fill)}
+
+/* 01 · stairs + duo tracks */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;gap:6px}
+.stair{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.stair .tx{padding:0 2px;font-size:13px;line-height:1.55;color:var(--mg-80)}
+.stair .tx b{display:block;color:var(--midground);font-size:14px}
+.stair .tx i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.stair .riser{height:calc(var(--lv) * 22px);border:1px solid var(--line-2);border-bottom:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 6px)}
+.stair:last-child .riser{background:var(--midground)}
+.stairs-axis{display:flex;justify-content:flex-end;gap:8px;font-size:12.5px;color:var(--mg-65);border-top:1px solid var(--line-2);padding-top:6px}
+@container (max-width:620px){
+  .stairs{grid-template-columns:minmax(0,1fr);gap:10px}
+  .stair{flex-direction:row-reverse;align-items:center;justify-content:flex-end}
+  .stair .riser{height:24px;width:calc(var(--lv) * 14px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .stairs-axis{justify-content:flex-start}
+}
+.trk{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:start}
+.trk+.trk{margin-top:12px}
+.trk-l{padding-top:4px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cell{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:26px;min-height:26px;padding:0 8px;border:1px solid var(--line-2);font-size:12px;transition:background .2s,color .2s}
+.cell.ap{border-style:dashed;font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.cell.on{background:var(--midground);color:var(--background-base)}
+.cell.wait{animation:blink .5s step-end infinite}
+.cell.in{border-color:var(--amber);color:var(--amber);font-size:11.5px}
+.cell.in.on{background:var(--amber);color:#1b1304}
+.cell .ok{margin-left:6px;font-family:var(--font-mono);font-size:10px;padding:0 4px;border:1px solid currentColor}
+.trk .cap{margin-top:6px}
+
+/* 02 · file tree */
+.ft{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;align-items:start}
+@container (max-width:620px){.ft{grid-template-columns:minmax(0,1fr)}}
+.ft-tree{border:1px solid var(--line);padding:10px 12px;font-family:var(--font-mono);font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto;color:var(--mg-45)}
+.ft-file{cursor:pointer;border:0;background:none;padding:0 5px;font-family:var(--font-mono);font-size:12.5px;color:var(--midground);border-bottom:1px dotted var(--mg-45)}
+.ft-file[aria-pressed="true"]{background:var(--midground);color:var(--background-base)}
+.ft-desc{border:1px solid var(--line-2);padding:12px 14px}
+.ft-desc code{display:inline-block;margin-bottom:6px}
+.ft-desc p{font-size:14.5px}
+.why{border-left:3px solid var(--line-2);padding:4px 0 4px 12px}
+
+/* 03 · simulator, router, system */
+.sim-lanes{border:1px solid var(--line)}
+.lane{display:grid;grid-template-columns:170px 120px minmax(0,1fr);align-items:center;border-top:1px solid var(--line)}
+.lane:first-child{border-top:0}
+.lane>*{padding:9px 12px;min-width:0}
+.lane>*+*{border-left:1px solid var(--line)}
+.ln-h b{display:block;font-size:14px}
+.ln-h small{display:block;font-size:11.5px;color:var(--mg-65);line-height:1.5}
+.lane.head{background:var(--fill)}
+.lane.head>*{padding:5px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--mg-45)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;font-size:12.5px;border:1px dashed var(--line-2);color:var(--mg-65);white-space:nowrap}
+.pill.on{border:1px solid var(--midground);background:var(--midground);color:var(--background-base);font-weight:700}
+.pill.keep{border:1px solid var(--midground);color:var(--midground)}
+.track{display:grid;grid-template-columns:repeat(var(--n,10),minmax(0,1fr));gap:3px;align-items:center}
+.track span{height:18px;border:1px solid transparent}
+.track .on{background:var(--midground)}
+.track .off{border-color:var(--line);background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 4px)}
+.track .keep{background:color-mix(in srgb,var(--midground-base) 55%,transparent)}
+.track .empty{border:1px dashed color-mix(in srgb,var(--midground-base) 10%,transparent)}
+.track.ev span{height:auto;border:0;font-family:var(--font-mono);font-size:9.5px;line-height:1.2;text-align:center;color:var(--mg-45);white-space:nowrap;overflow:hidden}
+.track.ev span.last{color:var(--midground)}
+.sim-log{margin:0;padding:8px 12px;border:1px solid var(--line);background:var(--background-base);font-size:13px;line-height:1.7;list-style:none;min-height:3.6em}
+.sim-log li{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:8px;color:var(--mg-45)}
+.sim-log li span:first-child{font-family:var(--font-mono);font-size:11px}
+.sim-log li:first-child{color:var(--midground)}
+@container (max-width:700px){
+  .lane{grid-template-columns:minmax(0,1fr) auto}
+  .lane>*+*{border-left:0}
+  .lane .track{grid-column:1/-1;padding-top:0}
+  .lane.head>*:not(.track){display:none}
+  .lane.head .track{padding-top:6px}
+}
+.rt-grid{display:grid;grid-template-columns:minmax(0,1.2fr) 38px minmax(0,1fr) 38px minmax(0,1fr) 38px minmax(0,1.1fr);align-items:center}
+.rt-src{display:flex;flex-direction:column;gap:5px}
+.rt-src .h-btn{justify-content:flex-start;text-align:left;width:100%;padding:5px 10px}
+.rt-node b{display:block;font-size:14.5px}
+.rt .rt-node,.rt .out{opacity:.5}
+.rt.has-sel .rt-node{opacity:1;border-color:var(--midground)}
+.rt-dec{display:flex;flex-direction:column;gap:8px}
+.out{padding:6px 10px;border:1px dashed var(--line-2);font-size:13px;color:var(--mg-65);transition:background .2s,opacity .2s}
+.rt.has-sel[data-worth="1"] .out.yes,.rt.has-sel[data-worth="0"] .out.no{opacity:1;background:var(--midground);color:var(--background-base);border:1px solid var(--midground)}
+.rt-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.rt-log{font-size:13px;color:var(--mg-65)}
+.rt-log b{color:var(--midground);font-weight:500}
+@container (max-width:680px){
+  .rt-grid{grid-template-columns:minmax(0,1fr);row-gap:4px}
+  .rt-grid .arr svg{transform:rotate(90deg);margin:8px 0}
+  .rt-src{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr) 48px minmax(0,1.5fr) 48px minmax(0,1fr);align-items:stretch}
+.s3-col{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);padding:10px;min-width:0;outline-offset:2px;transition:border-color .2s,opacity .2s}
+.s3-col>b{font-size:14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.s3-v{text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-65);line-height:1}
+.s3-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.3fr);gap:6px;align-items:stretch}
+.s3-row .bi{align-self:center;font-family:var(--font-mono);color:var(--mg-65)}
+.s3-gut{display:flex;flex-direction:column;justify-content:space-between;padding:44px 2px 16px}
+.s3-gut.g2{justify-content:center}
+.s3-gut .lnk{transition:opacity .2s}
+.s3-gut .back svg{transform:scaleX(-1)}
+.sys3[data-hl] .lnk{opacity:.2}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"],.sys3[data-hl="server"] .lnk[data-link~="server"],.sys3[data-hl="comp"] .lnk[data-link~="comp"]{opacity:1}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .arr,.sys3[data-hl="server"] .lnk[data-link~="server"] .arr,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .arr{color:var(--midground)}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .ln,.sys3[data-hl="server"] .lnk[data-link~="server"] .ln,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .ln{animation:dash-flow 1s linear infinite}
+.sys3[data-hl="apps"] [data-col="apps"],.sys3[data-hl="server"] [data-col="server"],.sys3[data-hl="comp"] [data-col="comp"]{border-color:var(--midground)}
+.sys3[data-hl="apps"] [data-col="comp"],.sys3[data-hl="comp"] [data-col="apps"]{opacity:.4}
+@container (max-width:700px){
+  .s3-grid{grid-template-columns:minmax(0,1fr)}
+  .s3-gut{flex-direction:row;justify-content:center;gap:40px;padding:6px 0}
+  .s3-gut .arr svg{transform:rotate(90deg);margin:6px auto}
+  .s3-gut .back svg{transform:rotate(-90deg)}
+}
+
+/* 04 · crash + queue */
+.cr-lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.cr-lane:first-of-type{border-top:0}
+.cr-lane .lb b{display:block;font-family:var(--font-mono);font-size:12.5px}
+.cr-lane .lb small{display:block;font-size:12px;color:var(--mg-65)}
+.stp{display:inline-grid;place-items:center;min-width:56px;padding:3px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;animation:pop .25s ease both}
+.stp.done{background:var(--fill)}
+.stp.x{border-color:var(--red);color:var(--red)}
+.stp.redo{border-style:dashed;color:var(--mg-45)}
+.stp.go{background:var(--midground);color:var(--background-base)}
+.ctr{font-size:13.5px}
+.ctr b{font-family:var(--font-mono);font-size:15px;padding:0 6px;border:1px solid var(--line-2)}
+@container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
+.q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.qbox{border:1px solid var(--line);padding:12px}
+.qbox>*+*{margin-top:10px}
+.qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
+.qc{display:inline-grid;place-items:center;height:26px;padding:0 9px;border:1px solid var(--line-2);font-size:12px;animation:pop .25s ease both}
+.qc.run{background:repeating-linear-gradient(135deg,var(--fill) 0 6px,transparent 6px 12px);border-color:var(--midground)}
+.qc.cut{border-color:var(--red);color:var(--red);text-decoration:line-through}
+.qc.jump{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.qc.merge{background:var(--midground);color:var(--background-base)}
+
+/* 05 · hub + UI controls */
+.hub{display:grid;grid-template-columns:minmax(0,1.5fr) 40px auto 40px minmax(0,.8fr);align-items:center}
+.hub-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.hub-tools,.hub-ch{display:flex;flex-wrap:wrap;gap:5px}
+.hub-ch{flex-direction:column}
+.tg{display:inline-block;padding:2px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap}
+.hub-mid{padding:14px 16px;background:var(--midground);color:var(--background-base);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em}
+@container (max-width:680px){
+  .hub{grid-template-columns:minmax(0,1fr)}
+  .hub .arr svg{transform:rotate(90deg);margin:8px auto}
+  .hub-mid{justify-self:center}
+  .hub-ch{flex-direction:row}
+}
+.uic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@container (max-width:600px){.uic{grid-template-columns:minmax(0,1fr)}}
+.uic-card{border:1px solid var(--line-2);background:var(--background-base);padding:12px}
+.uic-card>*+*{margin-top:8px}
+.uic-card h4{margin:0;font-size:14px}
+.fld{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.fld.filled{color:var(--midground);border-color:var(--midground)}
+.uic-card .state{font-family:var(--font-mono);font-size:11px;color:var(--midground)}
+.emo{display:flex;gap:6px}
+.emo button{cursor:pointer;width:36px;height:30px;border:1px solid var(--line-2);background:none;font-size:15px}
+.emo button[aria-pressed="true"]{border-color:var(--midground);background:var(--fill)}
+
+/* 06 · blocks, ladder, helpers */
+.blocks{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:460px}
+.blocks span{aspect-ratio:1;border:1px solid var(--line);transition:background .25s}
+.blocks span.t{background:var(--midground);border-color:var(--midground)}
+.blk-n{font-family:var(--font-mono);font-size:13px}
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;align-items:end}
+.rung{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.rung .bar2{height:calc(var(--lv) * 12px + 10px);border:1px solid var(--line-2);border-bottom:0;background:var(--fill);transition:background .2s,border-color .2s}
+.rung .t{font-size:12.5px;line-height:1.45;transition:color .2s,opacity .2s}
+.ladder.broken .r2 .t,.ladder.broken .r4 .t{text-decoration:line-through;color:var(--red)}
+.ladder.broken .r2 .bar2,.ladder.broken .r4 .bar2{border-color:var(--red)}
+.ladder.broken .r6 .bar2{background:var(--midground)}
+.ladder.broken .r6 .t{color:var(--midground);font-weight:700}
+.ladder.broken .r1,.ladder.broken .r3,.ladder.broken .r5{opacity:.35}
+.ladder-axis{display:flex;justify-content:flex-end;border-top:1px solid var(--line-2);padding-top:6px;font-size:12.5px;color:var(--mg-65)}
+.rule{padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px;transition:background .2s,color .2s}
+.rule.hot{background:var(--midground);color:var(--background-base)}
+@container (max-width:620px){
+  .ladder{grid-template-columns:minmax(0,1fr);gap:6px}
+  .rung{flex-direction:row-reverse;justify-content:flex-end;align-items:center;gap:10px}
+  .rung .bar2{height:22px;width:calc(var(--lv) * 12px + 10px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .ladder-axis{justify-content:flex-start}
+}
+.hp{display:grid;grid-template-columns:auto 38px auto 38px minmax(0,1fr) 38px auto;align-items:center}
+.hp-help{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+@container (max-width:720px){
+  .hp{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .hp .arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 07 · auto-review */
+.ar{display:grid;grid-template-columns:auto 34px auto 34px minmax(0,1fr);align-items:center;gap:0}
+.ar-br{display:flex;flex-direction:column;gap:10px}
+.ar-path{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.ar-path .arr svg{width:24px}
+.cd{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+@container (max-width:720px){
+  .ar{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .ar>.arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 08 · cache stack */
+.cs{border:1px solid var(--line)}
+.cs-row{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid var(--line)}
+.cs-row:first-child{border-top:0}
+.cs-l{padding:9px 10px;font-size:12.5px;color:var(--mg-65);border-right:1px solid var(--line)}
+.cs-cells{display:flex;flex-wrap:wrap;gap:5px;padding:8px}
+.cs-c{display:inline-grid;place-items:center;min-height:28px;padding:2px 9px;border:1px solid var(--line-2);font-size:12px;line-height:1.4;transition:background .2s,color .2s,border-color .2s}
+.cs-c.hit{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-c.miss{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red);color:var(--red)}
+.cs-c.new{border-style:dashed;border-color:var(--midground);animation:pop .25s ease both}
+.cs-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mg-65)}
+.cs-leg span::before{content:'';display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;border:1px solid}
+.cs-leg .h::before{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-leg .m::before{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red)}
+@container (max-width:520px){.cs-row{grid-template-columns:minmax(0,1fr)}.cs-l{border-right:0;border-bottom:1px dashed var(--line);padding:6px 10px}}
+
+/* 09 · timeline + memory */
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.tl .box{position:relative}
+.tl .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.tl .box.hot i{color:inherit}
+@container (max-width:620px){.tl{grid-template-columns:minmax(0,1fr)}}
+.mem{display:flex;flex-direction:column;gap:6px}
+.mem-l{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 12px;border:1px solid var(--line-2)}
+.mem-l b{font-family:var(--font-mono);font-size:13px}
+.mem-l span{font-size:13.5px}
+.mem-l.l1{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.mem-l.l2{background:color-mix(in srgb,var(--midground-base) 16%,transparent)}
+.mem-l.l3{background:linear-gradient(90deg,color-mix(in srgb,var(--midground-base) 10%,transparent),transparent)}
+.mem-l.l4{border-style:dashed;color:var(--mg-80)}
+
+/* 10 · double loop */
+.loops{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.loop{border:1px solid var(--line-2);border-radius:18px;padding:12px}
+.loop>b{display:block;margin-bottom:8px;font-size:14px}
+.loop ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.loop li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;padding:5px 8px;border:1px solid var(--line);font-size:13px;transition:background .2s,color .2s}
+.loop li i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.loop li.hot{background:var(--midground);color:var(--background-base)}
+.loop li.hot i{color:inherit}
+.loop .ret{margin-top:6px;text-align:right;font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--amber)}
+@container (max-width:700px){.loops{grid-template-columns:minmax(0,1fr)}.bridge{flex-direction:row}}
+
+/* 11 · building blocks */
+.bb{display:grid;grid-template-columns:minmax(0,.8fr) 40px minmax(0,1.6fr);gap:10px;align-items:start}
+.bb-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.bb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.bb-l .bb-grid{grid-template-columns:minmax(0,1fr)}
+.bb-b{display:block;width:100%;padding:8px 10px;border:1px solid var(--line-2);background:var(--background-base);text-align:left;font-size:13px;line-height:1.4}
+button.bb-b{cursor:pointer}
+button.bb-b:hover,button.bb-b[aria-pressed="true"]{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.bb-read{font-size:13px;color:var(--mg-65)}
+.bb-read .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:middle}
+@container (max-width:640px){.bb{grid-template-columns:minmax(0,1fr)}.bb .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 12 · checklist */
+.chk{margin:0;padding:0;list-style:none;border:1px solid var(--line)}
+.chk li{border-top:1px solid var(--line)}
+.chk li:first-child{border-top:0}
+.chk label{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 12px;cursor:pointer;font-size:14px}
+.chk input{width:16px;height:16px;margin:0;accent-color:#ffe6cb}
+.chk .n{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.chk li.done{background:var(--fill)}
+.chk li.done .t{text-decoration:line-through;color:var(--mg-65)}
+.prog{font-family:var(--font-mono);font-size:12px;color:var(--mg-65)}
+.prog b{color:var(--midground)}
+
+/* slides strip + transcript */
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.slide{flex:0 0 184px;display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--panel);scroll-snap-align:start}
+.slide-frame{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:#000}
+.slide-frame img{display:block;width:100%;height:100%;object-fit:cover}
+.slide-frame::before,.slide-frame::after{content:'';position:absolute;inset:0;background:var(--img) center/cover no-repeat;opacity:0;pointer-events:none}
+.slide-frame .scan{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.35) 2px 3px)}
+.slide:hover .slide-frame::before,.slide:focus-visible .slide-frame::before{opacity:1;filter:drop-shadow(3px 0 0 rgba(255,40,90,.8));animation:tear-a .46s steps(1,end) 2 forwards}
+.slide:hover .slide-frame::after,.slide:focus-visible .slide-frame::after{opacity:1;filter:drop-shadow(-3px 0 0 rgba(0,230,255,.8));animation:tear-b .46s steps(1,end) 2 forwards}
+.slide:hover .scan{opacity:.55;animation:scan-roll 1.4s linear infinite}
+@keyframes tear-a{0%{clip-path:inset(8% 0 80% 0);transform:translateX(-8px)}25%{clip-path:inset(44% 0 40% 0);transform:translateX(10px)}50%{clip-path:inset(70% 0 16% 0);transform:translateX(-5px)}75%{clip-path:inset(22% 0 68% 0);transform:translateX(7px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes tear-b{0%{clip-path:inset(60% 0 28% 0);transform:translateX(9px)}25%{clip-path:inset(14% 0 74% 0);transform:translateX(-7px)}50%{clip-path:inset(34% 0 52% 0);transform:translateX(6px)}75%{clip-path:inset(82% 0 6% 0);transform:translateX(-9px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes scan-roll{to{background-position:0 12px}}
+.slide-cap{display:flex;align-items:baseline;gap:8px;padding:6px 8px;font-family:var(--font-mono);font-size:11px;border-top:1px solid var(--line)}
+.slide-cap span{color:var(--mg-65)}
+.slide:hover{border-color:var(--line-2)}
+.transcript summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 14px;cursor:pointer;list-style:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary .k{color:var(--midground);font-weight:700}
+.transcript summary .tg2{margin-left:auto;padding:1px 8px;border:1px solid var(--line-2);color:var(--midground)}
+.transcript summary .tg2::after{content:'+'}
+.transcript[open] summary .tg2::after{content:'−'}
+.transcript[open] summary{border-bottom:1px solid var(--line)}
+.transcript summary:hover{background:var(--fill)}
+.tr-body{padding:4px 16px 14px}
+.tr-seg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-seg:last-child{border-bottom:0}
+.tr-meta{font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.tr-meta b{display:block;color:var(--midground);font-size:12.5px}
+.tr-seg p{max-width:80ch;font-family:var(--font-sans);font-size:16px;line-height:1.6;color:var(--mg-80)}
+.gloss .tbl{min-width:620px}
+.gloss .tbl td:first-child{font-family:var(--font-mono);font-size:13px;color:var(--midground);white-space:nowrap}
+
+.foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--mg-45)}
+.foot .legend{font-family:var(--font-zh);font-size:12px;letter-spacing:0;color:var(--mg-65)}
+.foot .legend .pipx{color:var(--amber);margin-right:4px}
+.foot div:nth-child(2){text-align:center}.foot div:nth-child(3){text-align:right}
+
+@media (max-width:1180px){.kv-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.wrap{padding:32px 190px 110px 28px}}
+@media (max-width:760px){
+  body{font-size:15px}
+  .wrap{padding:48px 34px 100px 12px}
+  .lang-switch{top:8px;right:4px}.lang-switch a{min-width:30px;height:26px;padding:0 7px}
+  .top-row{flex-wrap:wrap}.top-row .src-top{flex:1 1 100%}
+  .wrap>*+*{margin-top:44px}
+  .ch-head-body{grid-template-columns:minmax(0,1fr)}
+  .ch-no{justify-self:start}
+  .tr-seg{grid-template-columns:minmax(0,1fr);gap:4px}
+  .slide{flex-basis:150px}
+  .spectrum{height:18px}.spectrum a{font-size:0}
+  .foot{grid-template-columns:minmax(0,1fr)}.foot div:nth-child(2),.foot div:nth-child(3){text-align:left}
+  :root{--rail-top:max(44px,calc(50vh - 170px))}
+  #toc-fab{right:4px;height:24px;width:24px;padding:0;justify-content:center}
+  #toc-fab .fab-zh{display:none}
+  .rail{right:4px;top:calc(var(--rail-top) + 30px);padding:2px 0;border:0;background:none !important}
+  .rail a{width:24px;height:20px;justify-content:center}
+  .rail .lb{display:none}
+  .rail .no{min-width:0;width:24px;height:18px;padding:0;font-size:10px;border:0}
+  .rail a.on .no{background:var(--midground);color:var(--background-base)}
+  .rail .sep{width:10px;margin:2px auto}
+}
+@media (max-width:560px){.kv-4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .bg-l201{display:none}
+}
+
+/* 00 · before → after */
+.vs{display:grid;gap:6px}
+.vs-head,.vs-row{display:grid;grid-template-columns:5em minmax(0,1fr) 26px minmax(0,1.45fr);gap:8px;align-items:stretch}
+.vs-head span{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--mg-65);align-self:end}
+.vs-head small{display:block;margin-top:2px;font-family:var(--font-zh);font-size:12px;letter-spacing:0}
+.vs-head .vs-a{color:var(--midground)}
+.vs-k{align-self:center;font-weight:700;font-size:13px;color:var(--mg-80)}
+.vs-row .vs-w{padding:9px 12px;border:1px dashed var(--line-2);color:var(--mg-65);font-size:13px;line-height:1.5}
+.vs-row .vs-a{padding:9px 12px;border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);color:var(--midground);font-size:14px;line-height:1.5}
+.vs-arr{display:grid;place-items:center;font-family:var(--font-mono);color:var(--midground)}
+@media (max-width:760px){.vs-head{display:none}.vs-row{grid-template-columns:minmax(0,1fr) 20px minmax(0,1.35fr);gap:6px}.vs-k{grid-column:1/-1;margin-top:6px}}
+/* 02 · file tree, all visible */
+.ft2{display:grid;gap:6px}
+.ft2-row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:14px;align-items:baseline;padding:8px 12px;border-left:2px solid var(--midground);background:color-mix(in srgb,var(--midground) 6%,transparent);font-size:14px}
+.ft2-row code{font-family:var(--font-mono);font-size:12.5px;color:var(--midground);overflow-wrap:anywhere}
+@media (max-width:760px){.ft2-row{grid-template-columns:minmax(0,1fr);gap:2px}}
+/* 06 · context grids */
+.cg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.cg2 figure{margin:0}.cg2 figcaption{font-size:13px;margin-bottom:8px;color:var(--mg-80)}
+.cg{display:grid;grid-template-columns:repeat(25,minmax(0,1fr));gap:2px}
+.cg span,.cg-legend i{aspect-ratio:1;display:block}
+.cg .s,.cg-legend .s{background:repeating-linear-gradient(45deg,var(--mg-65) 0 2px,transparent 2px 4px)}
+.cg .d,.cg-legend .d{background:var(--midground)}
+.cg .n,.cg-legend .n{background:color-mix(in srgb,var(--midground) 45%,transparent)}
+.cg .c,.cg-legend .c{background:color-mix(in srgb,var(--midground) 16%,transparent)}
+.cg .f,.cg-legend .f{border:1px solid var(--line)}
+.cg-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.cg-legend span{display:inline-flex;align-items:center;gap:6px}.cg-legend i{width:10px}
+@media (max-width:760px){.cg2{grid-template-columns:minmax(0,1fr)}}
+/* 11 · chips on blocks */
+.bb-b .bb-ch{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.bb-b .bb-ch .chip{font-size:11px;padding:0 6px}
+/* in-page slide viewer */
+.slide{cursor:zoom-in}
+html.sv-open{overflow:hidden}
+.sv{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:56px 72px}
+.sv[hidden]{display:none}
+.sv:focus{outline:none}
+.sv-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88)}
+.sv-fig{position:relative;margin:0;display:grid;gap:10px;justify-items:center;max-width:min(100%,1600px)}
+.sv-fig img{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;border:1px solid var(--line-2);background:#000;cursor:pointer;user-select:none}
+.sv-cap{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-80)}
+.sv-cap b{color:var(--midground)}
+.sv-hint{color:var(--mg-65);font-family:var(--font-zh)}.sv-hint-touch{display:none}
+.sv-btn,.sv-close{position:fixed;z-index:101;display:grid;place-items:center;border:1px solid var(--line-2);background:color-mix(in srgb,var(--background-base) 85%,transparent);color:var(--midground);cursor:pointer;font:400 26px/1 var(--font-mono)}
+.sv-btn{top:50%;transform:translateY(-50%);width:46px;height:70px}
+.sv-prev{left:14px}.sv-next{right:14px}
+.sv-btn:disabled{opacity:.22;cursor:default}
+.sv-btn:not(:disabled):hover,.sv-close:hover{background:var(--midground);color:var(--background-base)}
+.sv-close{top:14px;right:14px;width:42px;height:42px;font-size:22px}
+@media (max-width:760px){.sv{padding:56px 10px 24px}.sv-btn{width:34px;height:54px;font-size:20px}.sv-prev{left:4px}.sv-next{right:4px}.sv-hint-key{display:none}.sv-hint-touch{display:inline}}
+
+/* footer credits */
+.foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.foot .credit{grid-column:1/-1;margin-top:6px;padding:14px 16px;border:1px solid var(--line);font-family:var(--font-zh);font-size:12.5px;line-height:1.7;letter-spacing:0;color:var(--mg-65);text-align:left}
+.foot .credit h3{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--mg-80)}
+.foot .credit p{margin:4px 0}.foot .credit b{color:var(--mg-80)}
+.foot .credit a{color:var(--midground)}
+.foot .credit p[lang=en]{font-family:var(--font-mono);font-size:11px}
+.foot div:nth-child(2){text-align:left}
+@media (max-width:760px){.foot{grid-template-columns:minmax(0,1fr)}}
+</style>
+<script src="/assets/atlas.js" defer data-page="talks/2026-10-cs146s-always-on-agents" data-v="2026-10-09"></script>
+</head>
+<body>
+
+<nav class="lang-switch" id="lang-switch" aria-label="语言 / Language"><a href="./" hreflang="en" lang="en">EN</a><a href="zh.html" hreflang="zh-CN" lang="zh-CN" aria-current="page">中</a></nav>
+
+<div class="hermes-bg" aria-hidden="true"><div class="bg-l1"></div><img class="bg-l2" src="assets/hermes/filler-bg0.webp" alt=""><div class="bg-l99"></div><div class="bg-l201"></div></div>
+
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 起点"><span class="lb">起点</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 演进"><span class="lb">演进</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 模型能力"><span class="lb">模型能力</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 生命周期"><span class="lb">生命周期</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 可靠性"><span class="lb">可靠性</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 对话工具"><span class="lb">对话工具</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 工具与 helpers"><span class="lb">工具与 helpers</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 安全"><span class="lb">安全</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Prompt 缓存"><span class="lb">Prompt 缓存</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 压缩与记忆"><span class="lb">压缩与记忆</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 训练飞轮"><span class="lb">训练飞轮</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 往哪走"><span class="lb">往哪走</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 带走什么"><span class="lb">带走什么</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>原幻灯片此处被画中画遮挡，已据残留文字或口播补全</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://x.com/leerob/status/2108650243365736855" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原讲座视频，由 Lee Robinson 发布于 X</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ lecture.log</span><span>Stanford CS146S</span><span class="push">2026-10-08</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">CS146S · Lecture</div>
+      <h1 class="h1">How <span class="nw">always-on</span><br>agents work</h1>
+      <p class="h1-zh">always-on agent 是怎么运转的</p>
+      <p class="read">阅读约 14 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Speaker</dt><dd>Lee Robinson</dd></div>
+        <div><dt>Course</dt><dd>Stanford CS146S</dd></div>
+        <div><dt>Date</dt><dd class="num">2026-10-08</dd></div>
+        <div><dt>Runtime</dt><dd class="num">45:17</dd></div>
+      </dl>
+      <p class="hero-note">讲者现于 SpaceX（据其个人网站做 ML，此前在 Cursor）；产品叫 Bot，口播称 GrokBot；录屏不含 Q&amp;A。</p>
+    </div>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>always-on agent 就是把最基础的 agent loop 搬上服务器。这个 loop 即 <code>“model + tools in a loop”</code>：模型在循环里反复调用工具，直到不再需要工具为止；CS146S 学生在课程第一周亲手写过它。搬上服务器之后：</p>
+      <ul><li>事件唤醒它，跑完一轮就停；</li><li>配一台会休眠的云电脑；</li><li>状态全部存进数据库。</li></ul>
+      <p class="last">让它成立的有两样东西：<span class="hl">模型能力的提升</span>，以及 <span class="hl">loop 周围的基础设施和 context 工程</span>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">00:00–45:17</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>怎样把一个关掉终端就会停的 loop，变成能连续工作几个月的同事？</p></div>
+  <div class="pano-band" style="--act-cols:604fr 483fr 557fr 423fr 650fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <a href="#ch-00" class="act-start odd" style="flex:154 1 0" title="00 起点 · 00:00–02:34" aria-label="00 起点">00</a>
+      <a href="#ch-01" class="odd" style="flex:219 1 0" title="01 演进 · 02:34–06:13" aria-label="01 演进">01</a>
+      <a href="#ch-02" class="odd" style="flex:231 1 0" title="02 模型能力 · 06:13–10:04" aria-label="02 模型能力">02</a>
+      <a href="#ch-03" class="act-start even" style="flex:321 1 0" title="03 生命周期 · 10:04–15:25" aria-label="03 生命周期">03</a>
+      <a href="#ch-04" class="even" style="flex:162 1 0" title="04 可靠性 · 15:25–18:07" aria-label="04 可靠性">04</a>
+      <a href="#ch-05" class="act-start odd" style="flex:112 1 0" title="05 对话工具 · 18:07–19:59" aria-label="05 对话工具">05</a>
+      <a href="#ch-06" class="odd" style="flex:388 1 0" title="06 工具与 helpers · 19:59–26:27" aria-label="06 工具与 helpers">06</a>
+      <a href="#ch-07" class="odd" style="flex:57 1 0" title="07 安全 · 26:27–27:24" aria-label="07 安全">07</a>
+      <a href="#ch-08" class="act-start even" style="flex:247 1 0" title="08 Prompt 缓存 · 27:24–31:31" aria-label="08 Prompt 缓存">08</a>
+      <a href="#ch-09" class="even" style="flex:176 1 0" title="09 压缩与记忆 · 31:31–34:27" aria-label="09 压缩与记忆">09</a>
+      <a href="#ch-10" class="act-start odd" style="flex:196 1 0" title="10 训练飞轮 · 34:27–37:43" aria-label="10 训练飞轮">10</a>
+      <a href="#ch-11" class="odd" style="flex:339 1 0" title="11 往哪走 · 37:43–43:22" aria-label="11 往哪走">11</a>
+      <a href="#ch-12" class="odd" style="flex:115 1 0" title="12 带走什么 · 43:22–45:17" aria-label="12 带走什么">12</a>
+    </div>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">00:00–10:04</span></div><div class="act-name"><b>起点</b><span>Why</span></div><p class="act-line">模型变强后，agent 从“等你批准”变成“自己干活、你随时转向”，界面反而越来越简单。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>起点</a></li><li><a class="chip" href="#ch-01"><i>01</i>演进</a></li><li><a class="chip" href="#ch-02"><i>02</i>模型能力</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">10:04–18:07</span></div><div class="act-name"><b>骨架</b><span>Always on</span></div><p class="act-line">没事时什么都不跑：事件唤醒，跑一轮就停，状态全部存库，崩溃后从断点继续。</p><ul class="chips"><li><a class="chip" href="#ch-03"><i>03</i>生命周期</a></li><li><a class="chip" href="#ch-04"><i>04</i>可靠性</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">18:07–27:24</span></div><div class="act-name"><b>Harness</b><span>How it works</span></div><p class="act-line">只用一个工具和你说话，其余工具按需加载；重活交给 helpers，外加四道安全防线。</p><ul class="chips"><li><a class="chip" href="#ch-05"><i>05</i>对话工具</a></li><li><a class="chip" href="#ch-06"><i>06</i>工具与 helpers</a></li><li><a class="chip" href="#ch-07"><i>07</i>安全</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">27:24–34:27</span></div><div class="act-name"><b>Context</b><span>Stay sharp, stay cheap</span></div><p class="act-line">前缀不变，趁缓存还热先压缩，记忆分层：长期运行也不会变笨、变贵。</p><ul class="chips"><li><a class="chip" href="#ch-08"><i>08</i>Prompt 缓存</a></li><li><a class="chip" href="#ch-09"><i>09</i>压缩与记忆</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">34:27–45:17</span></div><div class="act-name"><b>未来</b><span>Where it goes</span></div><p class="act-line">每个失败都变成 eval；尽量少造东西；学好新的积木和底层原理。</p><ul class="chips"><li><a class="chip" href="#ch-10"><i>10</i>训练飞轮</a></li><li><a class="chip" href="#ch-11"><i>11</i>往哪走</a></li><li><a class="chip" href="#ch-12"><i>12</i>带走什么</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>00:00–02:34</span><span>S01–S05</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">Your agent vs. an always-on agent</p><h2>从 week-one loop 到 always-on</h2><p class="ch-sub">同一个 loop，换一种运行方式</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>CS146S 学生在课程第一周写过一个最基础的 agent（S03 标题：You built this in week one），它一关终端就停。本讲讲的是，怎样让同一个 loop 一直跑下去。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts">
+    <p class="sub-h"><b>课程第一周写的基础 loop</b>S03</p>
+    <pre class="code">messages = [system_prompt, user_message]
+while True:
+    reply = llm(messages, tools=TOOLS)
+    messages.append(reply)
+    if not reply.tool_calls:
+        print(reply.text)
+        break
+    for call in reply.tool_calls:
+        messages.append(run_tool(call))</pre>
+  </div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">对照表</span><span>S04</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="Week-one 与 Always-on 对照">
+        <div class="vs-head" role="row"><span role="columnheader">维度</span><span class="vs-w" role="columnheader">WEEK-ONE<small>终端里的基础 loop</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">ALWAYS-ON<small>服务器上的 agent</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">在哪跑</span><span class="vs-w" role="cell">你的终端</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">服务器：崩溃、部署、合上笔记本都不影响</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">电脑</span><span class="vs-w" role="cell">你的笔记本</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">自己的云电脑，有桌面、浏览器和文件</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">记忆</span><span class="vs-w" role="cell">只有 messages 列表</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">保存状态、记忆和技能，旧消息会被总结</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">说话</span><span class="vs-w" role="cell">打印每一条回复</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">只在调用 send 工具时说话，所以可以保持安静</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">启动</span><span class="vs-w" role="cell">你打字才启动</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">由事件启动：消息、定时任务、Slack、电话、完成的工作</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">寿命</span><span class="vs-w" role="cell">做完一件事就退出</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">用同一份记忆工作好几个月</span></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>它像同事：知道什么时候该安静，在后台干活，有重要进展才来找你。目标是能连续工作几周甚至几个月。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>这 6 个维度都是工程上的变化，但讲座同样强调模型能力（第 <a href="#ch-02">02</a>、<a href="#ch-10">10</a> 章）。工程让 agent 能一直跑，模型能力让它值得一直跑。</li></ul></aside>
+  <div class="grp"><span>slides · S01–S05 · 5</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s01_0000.jpg" aria-label="S01 00:00–00:12"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s01_0000.jpg')"><img src="slides/s01_0000.jpg" alt="S01 00:00–00:12" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S01</b><span>00:00–00:12</span></span></a><a class="slide arc-host" href="slides/s02_0012.jpg" aria-label="S02 00:12–00:21"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s02_0012.jpg')"><img src="slides/s02_0012.jpg" alt="S02 00:12–00:21" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S02</b><span>00:12–00:21</span></span></a><a class="slide arc-host" href="slides/s03_0021.jpg" aria-label="S03 00:21–00:49"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s03_0021.jpg')"><img src="slides/s03_0021.jpg" alt="S03 00:21–00:49" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S03</b><span>00:21–00:49</span></span></a><a class="slide arc-host" href="slides/s04_0049.jpg" aria-label="S04 00:49–02:06"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s04_0049.jpg')"><img src="slides/s04_0049.jpg" alt="S04 00:49–02:06" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S04</b><span>00:49–02:06</span></span></a><a class="slide arc-host" href="slides/s05_0206.jpg" aria-label="S05 02:06–02:34"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s05_0206.jpg')"><img src="slides/s05_0206.jpg" alt="S05 02:06–02:34" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S05</b><span>02:06–02:34</span></span></a></div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>02:34–06:13</span><span>S06–S08</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">How developers work with AI</p><h2>怎么走到这里</h2><p class="ch-sub">从审批到转向</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>AI 做的事越来越多，人的角色从逐步批准变成随时转向；界面反而简单得像发短信。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01a">
+    <div class="bar"><span class="k">四个时代阶梯</span><span>S06</span></div>
+    <div class="vz">
+      <div class="stairs">
+        <div class="stair" style="--lv:1"><p class="tx"><i>2022–23</i><b>复制粘贴</b>在浏览器里聊天，手动把代码搬来搬去。</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:2"><p class="tx"><i>2024–25</i><b>终端里的 agent</b>它改文件、跑命令，每一步都要你批准。</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:3"><p class="tx"><i>2025–26</i><b>为 agent 做的 app</b>多个 agent 在后台或云端并行，你审查结果。</p><span class="riser"></span></div>
+        <div class="stair" style="--lv:4"><p class="tx"><i>Now</i><b>always-on</b>你发一条消息，它带着自己的电脑、工具和记忆一直干活。</p><span class="riser"></span></div>
+      </div>
+      <p class="stairs-axis">台阶越高，AI 做的越多。<span aria-hidden="true">→</span></p>
+    </div>
+  </article>
+  <article class="panel viz" id="v01b">
+    <div class="bar"><span class="k">Before / Now 双轨</span><span>S07</span><span class="push"><button class="mini" type="button" data-play>▶ play</button></span></div>
+    <div class="vz">
+      <div class="trk"><span class="trk-l">BEFORE</span><div>
+        <div class="cells" data-trk="before"><span class="cell"></span><span class="cell ap">Approve?</span><span class="cell"></span><span class="cell ap">Approve?</span><span class="cell"></span><span class="cell ap">Approve?</span><span class="cell"></span></div>
+        <p class="cap">Before：每一步都停在 “Approve?” 等你。</p></div></div>
+      <div class="trk"><span class="trk-l">NOW</span><div>
+        <div class="cells" data-trk="now"><span class="cell"></span><span class="cell in" title="Also check the Slack thread">插话</span><span class="cell"></span><span class="cell in" title="Actually, make it Thursday">插话</span><span class="cell"></span><span class="cell">发日历邀请<span class="ok">auto-review</span></span><span class="cell"></span></div>
+        <p class="cap">Now：你的插话（“Also check the Slack thread”“Actually, make it Thursday”）汇入同一条工作流；发日历邀请这一步由 auto-review 自动批准<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup>。</p></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ul class="lst"><li>讲者团队的实现叫 Bot（S08）。界面左边是一列 bot（Sales Outbound、Inbox Manager……），右边是聊天。缺少 Salesforce 登录时，它会在自己的电脑上请你登录。</li></ul></div>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>很多公司把“用独立模型审查每条命令”叫作 auto review。讲者认为，这比人疲劳地逐条批准上百条命令更安全。他还假设：如果做盲测，模型多半审得更好。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>审批从人手里交给了模型，瓶颈也就从人的注意力，变成了审查模型的准确率。</li></ul></aside>
+  <div class="grp"><span>slides · S06–S08 · 3</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s06_0234.jpg" aria-label="S06 02:34–04:07"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s06_0234.jpg')"><img src="slides/s06_0234.jpg" alt="S06 02:34–04:07" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S06</b><span>02:34–04:07</span></span></a><a class="slide arc-host" href="slides/s07_0407.jpg" aria-label="S07 04:07–05:30"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s07_0407.jpg')"><img src="slides/s07_0407.jpg" alt="S07 04:07–05:30" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S07</b><span>04:07–05:30</span></span></a><a class="slide arc-host" href="slides/s08_0530.jpg" aria-label="S08 05:30–06:13"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s08_0530.jpg')"><img src="slides/s08_0530.jpg" alt="S08 05:30–06:13" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S08</b><span>05:30–06:13</span></span></a></div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>06:13–10:04</span><span>S09–S11</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">Six new model capabilities</p><h2>模型变了什么</h2><p class="ch-sub">知识住在文件里</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>六项新的模型能力让 always-on 成为可能；知识就放在普通文件里，正如幻灯片所说：“Everything is computer”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts">
+    <p class="sub-h"><b>六项能力</b>S10</p>
+    <ol class="lst">
+      <li>长时间工作，并一直遵守指令。</li>
+      <li>把任务交给 helper，每个 helper 都有全新的 context。</li>
+      <li>使用真实工具：shell、文件、浏览器、MCP。</li>
+      <li>操作电脑，没有 API 的应用也能用。</li>
+      <li>知识存在文件里。</li>
+      <li>你演示一遍，它就存成 skill。</li>
+    </ol>
+  </div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">文件树</span><span>S11 · 简化示例</span></div>
+    <div class="vz">
+      <div class="ft2">
+        <div class="ft2-row"><code>memory/profile.md</code><span>常驻 prompt。</span></div>
+        <div class="ft2-row"><code>memory/log/2026-10.md</code><span>带日期的事实，一行一条。</span></div>
+        <div class="ft2-row"><code>skills/*/SKILL.md</code><span>需要时才加载（“Use this when…”）。</span></div>
+        <div class="ft2-row"><code>routines/morning-brief</code><span>一段 prompt，工作日 8:00 运行。</span></div>
+      </div>
+      <div class="why"><p class="sub-h"><b>为什么用文件</b></p><ul class="lst">
+        <li>模型极其擅长用 shell。</li><li>纯文本，人和 agent 都能读写。</li><li>你说一次偏好，它就存进记忆。</li><li>skills 按需加载，所以多装也不贵。</li></ul></div>
+    </div>
+  </article>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>换个角度看：幻灯片把六项都算作模型能力，但第 3、5、6 项同样依赖 harness 的设计。它们复用的是现成的文件系统和 grep，没有另造一套存储。</li></ul></aside>
+  <div class="grp"><span>slides · S09–S11 · 3</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s09_0613.jpg" aria-label="S09 06:13–06:20"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s09_0613.jpg')"><img src="slides/s09_0613.jpg" alt="S09 06:13–06:20" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S09</b><span>06:13–06:20</span></span></a><a class="slide arc-host" href="slides/s10_0620.jpg" aria-label="S10 06:20–08:29"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s10_0620.jpg')"><img src="slides/s10_0620.jpg" alt="S10 06:20–08:29" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S10</b><span>06:20–08:29</span></span></a><a class="slide arc-host" href="slides/s11_0829.jpg" aria-label="S11 08:29–10:04"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s11_0829.jpg')"><img src="slides/s11_0829.jpg" alt="S11 08:29–10:04" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S11</b><span>08:29–10:04</span></span></a></div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>10:04–15:25</span><span>S12–S18</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">Inside an always-on agent</p><h2>生命周期与三段式架构</h2><p class="ch-sub">没事时什么都不跑</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>always-on 不是机器一直开着，而是没事时什么都不跑，状态都已存好，任何触发都能把它拉回来。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03a">
+    <div class="bar"><span class="k">生命周期模拟器</span><span>S13 · S15</span><span class="push"><button class="mini" type="button" data-reset>reset</button></span></div>
+    <div class="vz">
+      <div class="btn-row" role="group" aria-label="事件">
+        <button class="h-btn" type="button" data-ev="msg">你发消息</button>
+        <button class="h-btn" type="button" data-ev="routine">8:00 routine</button>
+        <button class="h-btn" type="button" data-ev="tool">调用浏览器工具</button>
+        <button class="h-btn" type="button" data-ev="idle2">空闲 2 分钟</button>
+        <button class="h-btn" type="button" data-ev="idleN">空闲几分钟</button>
+      </div>
+      <div class="sim-lanes">
+        <div class="lane head"><span>LANE</span><span>NOW</span><div class="track ev" data-track="ev"></div></div>
+        <div class="lane"><div class="ln-h"><b>进程</b><small>被触发才运行，空闲 2 分钟后停</small></div><div><span class="pill" data-pill="proc">○ 停</span></div><div class="track" data-track="proc"></div></div>
+        <div class="lane"><div class="ln-h"><b>电脑</b><small>工具需要时才恢复；空闲几分钟后存快照并停</small></div><div><span class="pill" data-pill="comp">○ 休眠</span></div><div class="track" data-track="comp"></div></div>
+        <div class="lane"><div class="ln-h"><b>状态</b><small>数据库加存储（会话、记忆、routines、skills），始终都在</small></div><div><span class="pill keep">● 始终都在</span></div><div class="track" data-track="state"></div></div>
+      </div>
+      <ul class="chips" style="margin:0"><li><span class="chip">一轮正在进行时，电脑绝不休眠。</span></li><li><span class="chip">routine 用不到电脑时，电脑保持休眠。</span></li><li><span class="chip">进程没在运行时，不会有工具调用。</span></li></ul>
+      <ol class="sim-log" data-log aria-live="polite"><li><span>t0</span><span>—</span></li></ol>
+    </div>
+  </article>
+  <article class="panel viz" id="v03b">
+    <div class="bar"><span class="k">唤醒路由图</span><span>S14</span></div>
+    <div class="vz">
+      <div class="rt" data-worth="1">
+        <div class="rt-grid">
+          <div class="rt-src" role="radiogroup" aria-label="7 个来源">
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="0">你</button>
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="1">routine 或 webhook</button>
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="2">Slack</button>
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="3">电话或会议</button>
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="4">另一个 agent</button>
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="5">后台任务完成</button>
+            <button class="h-btn" type="button" role="radio" aria-checked="false" data-src="6">定时 check-in</button>
+          </div>
+          <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><div class="box rt-node"><b>Router</b><small>去重并选出会话</small></div>
+          <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><div class="box rt-node"><b>会话队列</b><small>一次只跑一轮</small></div>
+          <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><div class="rt-dec"><div class="box rt-node"><b>有值得说的吗？</b></div><div class="out yes">是：发到正确的地方</div><div class="out no">否：保持安静</div></div>
+        </div>
+      </div>
+      <div class="rt-foot">
+        <div class="seg" role="radiogroup" aria-label="有值得说的吗？">
+          <button class="h-btn" type="button" role="radio" aria-checked="true" data-worth="1">是</button>
+          <button class="h-btn" type="button" role="radio" aria-checked="false" data-worth="0">否</button>
+        </div>
+        <p class="rt-log">每次唤醒都会记录来源<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup> <b data-rt-src>—</b></p>
+      </div>
+    </div>
+  </article>
+  <article class="panel viz" id="v03c">
+    <div class="bar"><span class="k">三段式系统图</span><span>S16</span></div>
+    <div class="vz">
+      <figure class="sys3" style="margin:0">
+        <div class="s3-grid">
+          <div class="s3-col" data-col="apps" tabindex="0"><b>客户端</b>
+            <div class="box">桌面</div><div class="box">手机和网页</div><div class="box">Slack</div><div class="box">邮件 / webhook / 定时任务</div><div class="box">电话和会议</div></div>
+          <div class="s3-gut"><div class="lnk" data-link="apps server"><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div></div><div class="lnk back" data-link="apps server"><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div></div></div>
+          <div class="s3-col" data-col="server" tabindex="0"><b>服务器</b>
+            <div class="box">入口</div><div class="s3-v" aria-hidden="true">↓</div>
+            <div class="box">每个会话一个队列</div><div class="s3-v" aria-hidden="true">↓</div>
+            <div class="s3-row"><div class="box hot">agent loop</div><span class="bi" aria-hidden="true">⇄</span><div class="box">模型</div></div>
+            <div class="s3-v" aria-hidden="true">↕</div>
+            <div class="box lit">读写数据库</div></div>
+          <div class="s3-gut g2"><div class="lnk" data-link="server comp"><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div></div></div>
+          <div class="s3-col" data-col="comp" tabindex="0"><b>云电脑</b>
+            <div class="box">文件与 connector 服务</div><div class="box">命令执行器</div><div class="box">每个 agent 一块屏加 Chrome<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup></div></div>
+        </div>
+      </figure>
+      <p class="cap"><b>结论：所有端看到同一个会话。</b></p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ul class="lst">
+    <li><b>云电脑</b>（S15）：每个用户一台 Firecracker 虚拟机，里面跑 Debian 容器，由 supervisor 保持运行。文件、已装的工具、浏览器登录状态都跨会话保留。</li>
+    <li><b>为什么 loop 跑在服务器上</b>（S17）：合上电脑照样干活；手机电脑无缝切换；发版不等 App Store；要跑几个月的 agent 不能放在设备上<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup>。</li>
+    <li><b>关键一条</b>（S18）：状态都在服务器上，所以虚拟机随时可以重建（比如修复 Linux 0-day 漏洞），不打断 loop。</li></ul></div>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>给每个人的电脑都一直开着太贵，“世界上没有那么多电脑”。在 SpaceX，常有人派 bot 进会议记笔记。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>计算按需，状态常驻。把 loop 和电脑拆开，虚拟机才能单独重建，多个 agent 也才能共享基础设施。</li></ul></aside>
+  <div class="grp"><span>slides · S12–S18 · 7</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s12_1004.jpg" aria-label="S12 10:04–10:10"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s12_1004.jpg')"><img src="slides/s12_1004.jpg" alt="S12 10:04–10:10" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S12</b><span>10:04–10:10</span></span></a><a class="slide arc-host" href="slides/s13_1010.jpg" aria-label="S13 10:10–11:13"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s13_1010.jpg')"><img src="slides/s13_1010.jpg" alt="S13 10:10–11:13" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S13</b><span>10:10–11:13</span></span></a><a class="slide arc-host" href="slides/s14_1113.jpg" aria-label="S14 11:13–12:19"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s14_1113.jpg')"><img src="slides/s14_1113.jpg" alt="S14 11:13–12:19" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S14</b><span>11:13–12:19</span></span></a><a class="slide arc-host" href="slides/s15_1219.jpg" aria-label="S15 12:19–13:14"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s15_1219.jpg')"><img src="slides/s15_1219.jpg" alt="S15 12:19–13:14" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S15</b><span>12:19–13:14</span></span></a><a class="slide arc-host" href="slides/s16_1314.jpg" aria-label="S16 13:14–14:06"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s16_1314.jpg')"><img src="slides/s16_1314.jpg" alt="S16 13:14–14:06" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S16</b><span>13:14–14:06</span></span></a><a class="slide arc-host" href="slides/s17_1406.jpg" aria-label="S17 14:06–15:05"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s17_1406.jpg')"><img src="slides/s17_1406.jpg" alt="S17 14:06–15:05" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S17</b><span>14:06–15:05</span></span></a><a class="slide arc-host" href="slides/s18_1505.jpg" aria-label="S18 15:05–15:25"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s18_1505.jpg')"><img src="slides/s18_1505.jpg" alt="S18 15:05–15:25" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S18</b><span>15:05–15:25</span></span></a></div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>15:25–18:07</span><span>S19–S21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">Messages, crashes and the queue</p><h2>可靠性</h2><p class="ch-sub">消息、崩溃与插队</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>可靠性靠三件事：消息带唯一 ID 和序号，每一轮都跑在 durable workflow 里，新消息按优先级排队。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts">
+    <p class="sub-h"><b>按下发送之后</b>S19</p>
+    <ol class="lst">
+      <li><b>发送</b>：消息先在本地显示，并带上唯一 ID；服务器丢弃重复的 ID，所以重试是安全的。</li>
+      <li><b>一轮</b>：消息进入队列，一个会话一次只跑一轮，每一步都存进数据库。</li>
+      <li><b>通知</b>：服务器只发一个“有变化”的信号，各端自己去拉数据，所以丢掉一个信号也无害。</li>
+      <li><b>排序</b>：每个更新都带序号（41、42、43），缺了哪个就从数据库重新加载<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup>。</li>
+    </ol>
+  </div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04a">
+    <div class="bar"><span class="k">崩溃模拟器</span><span>S20</span><span class="push"><button class="mini" type="button" data-reset>reset</button></span></div>
+    <div class="vz">
+      <div class="btn-row"><button class="h-btn solid" type="button" data-crash>在 Step 3 崩溃</button></div>
+      <div>
+        <div class="cr-lane"><div class="lb"><b>Job queue</b><small>从 Step 1 重做</small></div><div class="cells" data-lane="jq"></div></div>
+        <div class="cr-lane"><div class="lb"><b>durable workflow</b><small>从 Step 3 继续</small></div><div class="cells" data-lane="dw"></div></div>
+      </div>
+      <p class="ctr">重复执行步数：<b data-ctr>0 / 0</b></p>
+      <p class="cap">图注：每一步都有记录；每一步都是幂等的（执行两次也无害）；Temporal 这类开源引擎自带定时器和取消功能<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup>。</p>
+    </div>
+  </article>
+  <article class="panel viz" id="v04b">
+    <div class="bar"><span class="k">插队与合并</span><span>S21</span><span class="push"><button class="mini" type="button" data-reset>reset</button></span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="qbox">
+          <div class="qrow" data-q="a"></div>
+          <div class="btn-row"><button class="h-btn" type="button" data-qa="改成周四">“改成周四”</button><button class="h-btn" type="button" data-qa="Stop">Stop</button></div>
+          <p class="cap">你在 1:1 对话里说“改成周四”或按 Stop：消息插队，打断正在跑的那一轮。</p>
+        </div>
+        <div class="qbox">
+          <div class="qrow" data-q="b"></div>
+          <div class="btn-row"><button class="h-btn" type="button" data-qb>+3</button></div>
+          <p class="cap">群聊、Slack、routine、helper 的消息：排到队尾；连发的 3 条合并成 1 轮。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>真相只存在数据库里，通知和进程都可以丢。对长期运行的 agent 来说，“能恢复”比“不崩溃”更重要。</li></ul></aside>
+  <div class="grp"><span>slides · S19–S21 · 3</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s19_1525.jpg" aria-label="S19 15:25–16:17"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s19_1525.jpg')"><img src="slides/s19_1525.jpg" alt="S19 15:25–16:17" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S19</b><span>15:25–16:17</span></span></a><a class="slide arc-host" href="slides/s20_1617.jpg" aria-label="S20 16:17–17:19"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s20_1617.jpg')"><img src="slides/s20_1617.jpg" alt="S20 16:17–17:19" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S20</b><span>16:17–17:19</span></span></a><a class="slide arc-host" href="slides/s21_1719.jpg" aria-label="S21 17:19–18:07"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s21_1719.jpg')"><img src="slides/s21_1719.jpg" alt="S21 17:19–18:07" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S21</b><span>17:19–18:07</span></span></a></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>18:07–19:59</span><span>S22–S24</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">One tool for talking to you</p><h2>Harness ①：一个对话工具</h2><p class="ch-sub">SendToUser</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>agent 只用一个工具和你说话，就是 SendToUser；需要你确认的事，交给专门的 UI 控件。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05a">
+    <div class="bar"><span class="k">枢纽图</span><span>S23</span></div>
+    <div class="vz">
+      <div class="hub">
+        <div class="hub-col"><small>12 个干活的工具</small><div class="hub-tools">
+          <span class="tg">Shell</span><span class="tg">Files</span><span class="tg">Browser</span><span class="tg">Desktop</span><span class="tg">Memory</span><span class="tg">Skills</span><span class="tg">Helper agents</span><span class="tg">Cloud agents</span><span class="tg">App connectors</span><span class="tg">Web search</span><span class="tg">Image generation</span><span class="tg">Screen recording</span></div></div>
+        <div class="arr lit" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><div class="hub-mid">SendToUser</div><div class="arr lit" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="hub-col"><div class="hub-ch"><span class="tg">Desktop</span><span class="tg">Web</span><span class="tg">Mobile</span><span class="tg">Slack</span><span class="tg">Email</span><span class="tg">Voice</span></div></div>
+      </div>
+      <ul class="chips">
+        <li><span class="chip">思考不外露。</span></li><li><span class="chip">没有新东西就不说话。</span></li><li><span class="chip">富消息：文件、多选、安全的密码输入。</span></li><li><span class="chip">最后一条消息直接结束这一轮。</span></li></ul>
+    </div>
+  </article>
+  <article class="panel viz" id="v05b">
+    <div class="bar"><span class="k">UI 控件</span><span>S24</span></div>
+    <div class="vz">
+      <div class="uic">
+        <div class="uic-card"><h4>登录</h4><div class="fld" data-pw>••••</div><div class="btn-row"><button class="h-btn" type="button" data-fill>1Password</button></div><p class="cap">由 1Password 填表，密码不经过模型。</p></div>
+        <div class="uic-card" data-pick><h4>付款</h4><div class="btn-row"><button class="h-btn" type="button" aria-pressed="false">Allow</button><button class="h-btn" type="button" aria-pressed="false">Deny</button></div><p class="cap">等你点 Allow 或 Deny。</p></div>
+        <div class="uic-card" data-pick><h4>邮件草稿</h4><div class="btn-row"><button class="h-btn" type="button" aria-pressed="false">Send</button><button class="h-btn" type="button" aria-pressed="false">Discard</button></div><p class="cap">由你选 Send 或 Discard。</p></div>
+        <div class="uic-card"><h4>表情回应<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup></h4><div class="emo" data-emo><button type="button" aria-pressed="false" aria-label="👍">👍</button><button type="button" aria-pressed="false" aria-label="✅">✅</button><button type="button" aria-pressed="false" aria-label="👀">👀</button></div></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>讲者说，和课程第一周写的基础 harness 相比（可能也包括一些同类产品），最大的不同就是客户端和服务器之间只有这一个工具。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>把“说话”做成一次显式的工具调用，沉默就成了默认行为。<a href="#ch-03">第 03 章</a>“有值得说的吗？”这一步，靠的就是它。</li></ul></aside>
+  <div class="grp"><span>slides · S22–S24 · 3</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s22_1807.jpg" aria-label="S22 18:07–18:20"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s22_1807.jpg')"><img src="slides/s22_1807.jpg" alt="S22 18:07–18:20" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S22</b><span>18:07–18:20</span></span></a><a class="slide arc-host" href="slides/s23_1820.jpg" aria-label="S23 18:20–19:14"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s23_1820.jpg')"><img src="slides/s23_1820.jpg" alt="S23 18:20–19:14" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S23</b><span>18:20–19:14</span></span></a><a class="slide arc-host" href="slides/s24_1914.jpg" aria-label="S24 19:14–19:59"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s24_1914.jpg')"><img src="slides/s24_1914.jpg" alt="S24 19:14–19:59" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S24</b><span>19:14–19:59</span></span></a></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>19:59–26:27</span><span>S25–S29</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Tools and helpers</p><h2>Harness ②：工具与 helpers</h2><p class="ch-sub">先走最便宜的路</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>工具先只给名字；获取信息的方式按成本逐级升级；重活交给 helper，主 agent 只收简报。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06a">
+    <div class="bar"><span class="k">Context 占用对比</span><span>S25 · 示意图</span></div>
+    <div class="vz">
+      <div class="cg2">
+        <figure><figcaption>一开始就加载全部工具</figcaption><div class="cg" data-cg="6,62,0,24,8" aria-hidden="true"></div><p class="blk-n">工具细节 62 格 · 空闲 8 格</p></figure>
+        <figure><figcaption>先只给名字，细节按需加载</figcaption><div class="cg" data-cg="6,6,2,24,62" aria-hidden="true"></div><p class="blk-n">工具 8 格（细节 6、名字 2）· 空闲 62 格</p></figure>
+      </div>
+      <p class="cg-legend"><span><i class="s"></i>System prompt</span><span><i class="d"></i>工具细节</span><span><i class="n"></i>工具名</span><span><i class="c"></i>对话</span><span><i class="f"></i>空闲</span></p>
+      <p class="cap">每格 = 1%，按幻灯片示意比例。这种做法也叫 dynamic tool discovery / tool search tool。</p>
+    </div>
+  </article>
+  <article class="panel viz" id="v06b">
+    <div class="bar"><span class="k">成本阶梯</span><span>S26</span></div>
+    <div class="vz">
+      <div class="ladder" data-ladder>
+        <div class="rung r1" style="--lv:1"><span class="t">已知信息</span><span class="bar2"></span></div>
+        <div class="rung r2" style="--lv:2"><span class="t">app API（connector）</span><span class="bar2"></span></div>
+        <div class="rung r3" style="--lv:3"><span class="t">web search</span><span class="bar2"></span></div>
+        <div class="rung r4" style="--lv:4"><span class="t">自己登录的浏览器</span><span class="bar2"></span></div>
+        <div class="rung r5" style="--lv:5"><span class="t">完整桌面</span><span class="bar2"></span></div>
+        <div class="rung r6" style="--lv:6"><span class="t">问你</span><span class="bar2"></span></div>
+      </div>
+      <p class="ladder-axis">越往后越慢、越贵<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup> <span aria-hidden="true">&nbsp;→</span></p>
+      <div class="btn-row"><button class="h-btn" type="button" aria-pressed="false" data-broken>connector 坏了</button></div>
+      <p class="rule" data-rule>规则：connector 坏了，不要改用浏览器绕过去，而是告诉你。</p>
+    </div>
+  </article>
+  <article class="panel viz" id="v06c">
+    <div class="bar"><span class="k">主 agent + helpers</span><span>S28</span></div>
+    <div class="vz">
+      <div class="seg" role="radiogroup" aria-label="任务">
+        <button class="h-btn" type="button" role="radio" aria-checked="true" data-task="s">简单问题</button>
+        <button class="h-btn" type="button" role="radio" aria-checked="false" data-task="b">大任务</button>
+      </div>
+      <div class="hp" data-hp>
+        <div class="box hot" data-n="main"><b>主 agent</b></div>
+        <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="box" data-n="task">大任务</div>
+        <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="hp-help" data-n="help"><small class="cap">helper 分四类：</small><span class="tg">通用（shell、web、connectors）</span><span class="tg">电脑操作</span><span class="tg">视频</span><span class="tg">云端写代码<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup></span></div>
+        <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="box" data-n="rep">简短报告</div>
+      </div>
+      <p class="cap">主 agent 自己回答简单问题，把大任务交出去，收回一份简短报告。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts">
+    <p class="sub-h"><b>用电脑的三种方式</b>S27</p>
+    <ul class="lst">
+      <li>读页面结构：拿到按钮和链接的列表，快且稳。</li>
+      <li>点像素：在 1280×800 的屏幕上点，用于桌面 app 和系统对话框。</li>
+      <li>问人：遇到登录、两步验证、captcha、付款时交给你。</li>
+      <li>点击由 helper 完成，截图不会进入主 context。</li></ul>
+    <p class="sub-h"><b>工具设计 4 条</b>S29</p>
+    <ol class="lst">
+      <li>两轮之间不增删工具。</li>
+      <li>每个工具的描述加 schema 少于 4,000 字符。</li>
+      <li>存状态用专用工具，方便审查。</li>
+      <li>错误信息要写清下一步，例如：“The computer is asleep. Use Shell or Read to wake it, then try again.”</li></ol>
+  </div>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>每个 helper 都是一个 durable workflow，崩溃后能接着做。产品因此“感觉像有无限的 context”。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>这一章的共同原则：主 context 是最稀缺的资源，贵的东西都移到它外面去。</li></ul></aside>
+  <div class="grp"><span>slides · S25–S29 · 5</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s25_1959.jpg" aria-label="S25 19:59–21:31"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s25_1959.jpg')"><img src="slides/s25_1959.jpg" alt="S25 19:59–21:31" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S25</b><span>19:59–21:31</span></span></a><a class="slide arc-host" href="slides/s26_2131.jpg" aria-label="S26 21:31–22:36"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s26_2131.jpg')"><img src="slides/s26_2131.jpg" alt="S26 21:31–22:36" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S26</b><span>21:31–22:36</span></span></a><a class="slide arc-host" href="slides/s27_2236.jpg" aria-label="S27 22:36–23:29"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s27_2236.jpg')"><img src="slides/s27_2236.jpg" alt="S27 22:36–23:29" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S27</b><span>22:36–23:29</span></span></a><a class="slide arc-host" href="slides/s28_2329.jpg" aria-label="S28 23:29–25:12"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s28_2329.jpg')"><img src="slides/s28_2329.jpg" alt="S28 23:29–25:12" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S28</b><span>23:29–25:12</span></span></a><a class="slide arc-host" href="slides/s29_2512.jpg" aria-label="S29 25:12–26:27"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s29_2512.jpg')"><img src="slides/s29_2512.jpg" alt="S29 25:12–26:27" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S29</b><span>25:12–26:27</span></span></a></div>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>26:27–27:24</span><span>S30</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">How we keep it safe</p><h2>安全</h2><p class="ch-sub">四道防线</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>四道防线：模型审查、来源标记、先问再发、密码隔离。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="tbl-wrap"><table class="tbl mid">
+    <thead><tr><th scope="col">防线</th><th scope="col">规则</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">自动审查</th><td>独立模型在高风险操作执行前检查；被拦下时请你批准，15 秒没有回应就维持拦截</td></tr>
+      <tr><th scope="row">追踪来源</th><td>邮件和 webhook 的文本标为不可信；记忆是信息，不是指令</td></tr>
+      <tr><th scope="row">先问</th><td>你没要求，就不给别人发消息；新的 routine 需要你同意</td></tr>
+      <tr><th scope="row">藏好密码</th><td>密码放在环境变量里，不进模型；要动你的笔记本，需要你批准</td></tr>
+    </tbody></table></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">auto-review 流程</span><span>S30</span></div>
+    <div class="vz">
+      <div class="btn-row"><button class="h-btn solid" type="button" data-sim>模拟一次</button><button class="h-btn" type="button" data-approve disabled>批准</button></div>
+      <div class="ar">
+        <div class="box" data-n="op">风险操作</div>
+        <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="box" data-n="rev">模型审查</div>
+        <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="ar-br">
+          <div class="ar-path"><span class="box" data-n="pass">通过</span><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><span class="box" data-n="exec">执行</span></div>
+          <div class="ar-path"><span class="box" data-n="blk">被拦下</span><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><span class="box" data-n="ask">请你批准</span><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><span class="box" data-n="cd"><span class="cd" data-cd>15</span> 秒倒计时</span><div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div><span class="box" data-n="keep">没有回应就维持拦截</span></div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>“15 秒无回应就拦截”是默认拒绝（fail closed）：宁可停下，也不冒险。</li></ul></aside>
+  <div class="grp"><span>slides · S30 · 1</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s30_2627.jpg" aria-label="S30 26:27–27:24"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s30_2627.jpg')"><img src="slides/s30_2627.jpg" alt="S30 26:27–27:24" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S30</b><span>26:27–27:24</span></span></a></div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>27:24–31:31</span><span>S31–S34</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">Keep the start of the prompt the same</p><h2>Context 工程 ①：Prompt 缓存</h2><p class="ch-sub">cache miss 就是 bug</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>长期运行的 agent，大部分 token 都应该命中缓存。做法是：prompt 开头保持不变，新内容只加在末尾，出现 cache miss 就当 bug 修。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">缓存堆叠图</span><span>S32</span><span class="push"><button class="mini" type="button" data-reset>reset</button></span></div>
+    <div class="vz">
+      <div class="btn-row">
+        <button class="h-btn" type="button" data-cache="msg">发新消息</button>
+        <button class="h-btn" type="button" data-cache="bad">改工具描述（错误做法）</button>
+        <button class="h-btn" type="button" data-cache="note">追加一条说明（正确做法）</button>
+      </div>
+      <div class="cs">
+        <div class="cs-row"><span class="cs-l">不变层</span><div class="cs-cells" data-layer="fixed"><span class="cs-c" data-tool>工具定义</span><span class="cs-c">system prompt（含记忆和 routines 的快照）</span><span class="cs-c">首条消息（环境信息、工具名）</span></div></div>
+        <div class="cs-row"><span class="cs-l">对话历史</span><div class="cs-cells" data-layer="hist"><span class="cs-c">只往末尾追加</span></div></div>
+        <div class="cs-row"><span class="cs-l">最新消息</span><div class="cs-cells" data-layer="new"><span class="cs-c">时间、变化说明、你的话</span></div></div>
+      </div>
+      <p class="cs-leg"><span class="h">命中缓存</span><span class="m">cache miss</span></p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ul class="lst">
+    <li><b>主 context 只留指针或总结</b>（S33）：长输出存文件，截图和重活交给 helper，旧消息换成总结，指令写成 skill。</li>
+    <li><b>把 cache miss 当 bug</b>（S34）：总结前前缀一字不改；部署改了工具描述，就给进行中的对话追加说明；顺序固定、分段哈希；用户一打字就预热缓存。</li></ul></div>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>今年 1 月 OpenClaw 流行时，出现了大量 cache miss，后来做了很多修复。做 A/B 测试时，也不能打乱 prompt 的顺序。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>缓存按前缀匹配，所以“稳定的放前面、变化的放后面”是唯一的排法：用追加代替修改。</li></ul></aside>
+  <div class="grp"><span>slides · S31–S34 · 4</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s31_2724.jpg" aria-label="S31 27:24–27:46"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s31_2724.jpg')"><img src="slides/s31_2724.jpg" alt="S31 27:24–27:46" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S31</b><span>27:24–27:46</span></span></a><a class="slide arc-host" href="slides/s32_2746.jpg" aria-label="S32 27:46–28:45"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s32_2746.jpg')"><img src="slides/s32_2746.jpg" alt="S32 27:46–28:45" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S32</b><span>27:46–28:45</span></span></a><a class="slide arc-host" href="slides/s33_2845.jpg" aria-label="S33 28:45–29:51"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s33_2845.jpg')"><img src="slides/s33_2845.jpg" alt="S33 28:45–29:51" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S33</b><span>28:45–29:51</span></span></a><a class="slide arc-host" href="slides/s34_2951.jpg" aria-label="S34 29:51–31:31"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s34_2951.jpg')"><img src="slides/s34_2951.jpg" alt="S34 29:51–31:31" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S34</b><span>29:51–31:31</span></span></a></div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>31:31–34:27</span><span>S35–S36</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Summarize while you're away</p><h2>Context 工程 ②：压缩与记忆</h2><p class="ch-sub">趁缓存还热先总结</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>趁缓存还热，先把对话压缩成总结。记忆分四层：Profile 常驻 prompt，Log 只放最相关的 30 条。</p></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09a">
+    <div class="bar"><span class="k">压缩时间线</span><span>S35</span><span class="push"><button class="mini" type="button" data-play>▶ play</button></span></div>
+    <div class="vz">
+      <div class="tl" data-tl>
+        <div class="box"><i>01</i>一大轮结束（超过 10 万 tokens）</div>
+        <div class="box"><i>02</i>约 10 分钟后（缓存还热）</div>
+        <div class="box"><i>03</i>写总结（复用缓存）</div>
+        <div class="box"><i>04</i>你的下一条消息从总结开始</div>
+      </div>
+      <ul class="lst">
+        <li>后台任务马上要唤醒 agent 时，就跳过这次总结。</li>
+        <li>最后几条消息逐字保留。</li>
+        <li>一轮太长时，可以在中途总结。</li></ul>
+    </div>
+  </article>
+  <article class="panel viz" id="v09b">
+    <div class="bar"><span class="k">记忆四层</span><span>S36</span></div>
+    <div class="vz">
+      <div class="mem">
+        <div class="mem-l l1"><b>Profile</b><span>核心事实，常驻 prompt，最多 100 条、4,000 字符。</span></div>
+        <div class="mem-l l2"><b>Log</b><span>带日期的事件，只取最相关的近 30 条。</span></div>
+        <div class="mem-l l3"><b>Notes</b><span>短期细节，很快就淡出。</span></div>
+        <div class="mem-l l4"><b>其余</b><span>用搜索工具找。</span></div>
+      </div>
+      <ul class="lst">
+        <li>重要的事实排在前面，旧的慢慢下沉。</li>
+        <li>只能删除自己看到过的事实。</li>
+        <li>关于你的事实，你的所有 agent 共享。</li>
+        <li>记忆是信息，不是指令。</li></ul>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>所有压缩都有损，“可能有整篇博士论文专门研究这个问题”。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>压缩的时机和缓存的经济账绑在一起；记忆分层，本质上是在给 context 做预算。</li></ul></aside>
+  <div class="grp"><span>slides · S35–S36 · 2</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s35_3131.jpg" aria-label="S35 31:31–32:50"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s35_3131.jpg')"><img src="slides/s35_3131.jpg" alt="S35 31:31–32:50" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S35</b><span>31:31–32:50</span></span></a><a class="slide arc-host" href="slides/s36_3250.jpg" aria-label="S36 32:50–34:27"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s36_3250.jpg')"><img src="slides/s36_3250.jpg" alt="S36 32:50–34:27" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S36</b><span>32:50–34:27</span></span></a></div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>34:27–37:43</span><span>S37–S38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Product and model improve together</p><h2>产品与模型一起进化</h2><p class="ch-sub">每个失败都是 eval</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型要为产品专门训练。每个失败都会变成一条 eval：内循环用它修 harness，外循环用它训练下一代模型。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ul class="lst">
+    <li><b>训练三阶段</b>（S37）：<ul class="lst">
+      <li>预训练：学语言、代码和通用知识。</li>
+      <li>SFT：学会 harness，包括工具和格式、什么时候该快速回复。</li>
+      <li>RL：练习遵循长指令、使用 skills 和记忆、点对位置（grounding）、与其他 bot 协作。</li></ul></li>
+    <li><b>推理也分开调</b>：主 agent 几秒内就要回复；helper 要能可靠地跑好几个小时<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup>。</li></ul></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">双循环</span><span>S38</span><span class="push"><button class="mini" type="button" data-play>▶ play</button></span></div>
+    <div class="vz">
+      <div class="loops">
+        <div class="loop"><b>内循环（每天）</b><ol data-loop="in">
+          <li><i>01</i>bot 出错</li><li><i>02</i>变成 eval</li><li><i>03</i>修 harness、prompt 或推理</li><li><i>04</i>跑 evals</li><li><i>05</i>发布</li></ol><p class="ret" aria-hidden="true">↺</p></div>
+        <div class="bridge"><span aria-hidden="true">⇄</span><span>Evals guide training</span></div>
+        <div class="loop"><b>外循环（每几个月）</b><ol data-loop="out">
+          <li><i>01</i>用 harness 和 evals 训练新模型</li><li><i>02</i>换进产品</li><li><i>03</i>用户用出新用法（比如满是 bot 的群聊）</li><li><i>04</i>做新的评估和训练</li></ol><p class="ret" aria-hidden="true">↺</p></div>
+      </div>
+    </div>
+  </article>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>不训练模型的团队也能跑内循环：把每个线上失败都固化成一条 eval。</li></ul></aside>
+  <div class="grp"><span>slides · S37–S38 · 2</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s37_3427.jpg" aria-label="S37 34:27–36:05"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s37_3427.jpg')"><img src="slides/s37_3427.jpg" alt="S37 34:27–36:05" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S37</b><span>34:27–36:05</span></span></a><a class="slide arc-host" href="slides/s38_3605.jpg" aria-label="S38 36:05–37:43"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s38_3605.jpg')"><img src="slides/s38_3605.jpg" alt="S38 36:05–37:43" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S38</b><span>36:05–37:43</span></span></a></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>37:43–43:22</span><span>S39–S42</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Where this is going</p><h2>往哪里走</h2><p class="ch-sub">Delete the product</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Delete the product：假设模型会大幅变强，围绕它尽量少造东西，用不上的就删掉。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="tbl-wrap"><table class="tbl mid">
+    <thead><tr><th scope="col">6–12 个月的预测（S40）</th><th scope="col">对应的开放问题（S41）</th></tr></thead>
+    <tbody>
+      <tr><td>更长的项目（几个月）</td><td>怎样测试跑几周的 agent</td></tr>
+      <tr><td>更好的记忆</td><td>正确的记忆：更新、遗忘、不编造</td></tr>
+      <tr><td>更强的工具</td><td>prompt injection：邮件和网页里的骗人文字</td></tr>
+      <tr><td>更简单的界面（也许只用语音）</td><td>何时开口：太多是噪音，太少看不见进展</td></tr>
+      <tr><td>在工作中学会新技能</td><td>协作：多 agent 共用电脑和记忆＝分布式系统问题</td></tr>
+      <tr><td>知识被写下来</td><td>成本：空闲近乎免费，活跃也要便宜</td></tr>
+    </tbody></table></div>
+  <p class="note-line">左右两栏按主题两两对照。</p>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">积木映射</span><span>S42</span></div>
+    <div class="vz">
+      <div class="bb">
+        <div class="bb-col bb-l"><small>每个 web app 都有的</small><div class="bb-grid">
+          <span class="bb-b">服务器</span><span class="bb-b">数据库</span><span class="bb-b">缓存</span><span class="bb-b">CRUD 界面</span></div></div>
+        <div class="arr" aria-hidden="true"><svg viewBox="0 0 34 12"><path class="ln" d="M0 6H31" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M27 1.5 33 6l-6 4.5" stroke="currentColor" stroke-width="1.3" fill="none"/></svg></div>
+        <div class="bb-col"><small>每个 agent 产品都会有的</small><div class="bb-grid" data-bb>
+          <span class="bb-b">durable workflows<span class="bb-ch"><a class="chip" href="#ch-04"><i>04</i></a></span></span>
+          <span class="bb-b">能用电脑<span class="bb-ch"><a class="chip" href="#ch-03"><i>03</i></a><a class="chip" href="#ch-06"><i>06</i></a></span></span>
+          <span class="bb-b">记忆和 skills<span class="bb-ch"><a class="chip" href="#ch-02"><i>02</i></a><a class="chip" href="#ch-09"><i>09</i></a></span></span>
+          <span class="bb-b">触发器和定时任务<span class="bb-ch"><a class="chip" href="#ch-03"><i>03</i></a></span></span>
+          <span class="bb-b">connectors 和授权<span class="bb-ch"><a class="chip" href="#ch-05"><i>05</i></a><a class="chip" href="#ch-06"><i>06</i></a></span></span>
+          <span class="bb-b">文字和语音渠道<span class="bb-ch"><a class="chip" href="#ch-05"><i>05</i></a></span></span>
+          <span class="bb-b">支付和身份<span class="bb-ch"><a class="chip" href="#ch-05"><i>05</i></a><a class="chip" href="#ch-07"><i>07</i></a></span></span>
+          <span class="bb-b">evals 和可观测性<span class="bb-ch"><a class="chip" href="#ch-10"><i>10</i></a></span></span></div></div>
+      </div>
+      <p class="bb-read">芯片 = 本讲相关章节</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>“今天的模型是它们最差的时候”，半年后可能要把 UI 整个重做。他口头还补充了一个开放问题：安全，不能让 agent 被坏人接管。</li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst">
+    <li>第 06–09 章的许多技巧，是为了弥补当前模型的局限；模型变强之后，它们可能会被删掉。</li></ul></aside>
+  <div class="grp"><span>slides · S39–S42 · 4</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s39_3743.jpg" aria-label="S39 37:43–38:35"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s39_3743.jpg')"><img src="slides/s39_3743.jpg" alt="S39 37:43–38:35" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S39</b><span>37:43–38:35</span></span></a><a class="slide arc-host" href="slides/s40_3835.jpg" aria-label="S40 38:35–40:20"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s40_3835.jpg')"><img src="slides/s40_3835.jpg" alt="S40 38:35–40:20" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S40</b><span>38:35–40:20</span></span></a><a class="slide arc-host" href="slides/s41_4020.jpg" aria-label="S41 40:20–42:03"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s41_4020.jpg')"><img src="slides/s41_4020.jpg" alt="S41 40:20–42:03" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S41</b><span>40:20–42:03</span></span></a><a class="slide arc-host" href="slides/s42_4203.jpg" aria-label="S42 42:03–43:22"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s42_4203.jpg')"><img src="slides/s42_4203.jpg" alt="S42 42:03–43:22" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S42</b><span>42:03–43:22</span></span></a></div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>43:22–45:17</span><span>S43–S44</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">What to take away</p><h2>带走什么</h2><p class="ch-sub">架构会复利</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>代码越容易写，懂得部件怎么组合就越重要。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ul class="lst">
+    <li><b>架构会复利</b>：写代码便宜了，对的架构能让你走得比别人快。</li>
+    <li><b>自己造一个</b>：从课程第一周写的基础 agent 出发，加上服务器、电脑和记忆。开源的 always-on agent 很适合拿来学。</li>
+    <li><b>学 LLM 的基本原理</b>：就像做网站要懂数据库<sup class="pip" tabindex="0" title="原幻灯片此处被画中画遮挡，已据残留文字或口播补全" aria-label="原幻灯片此处被画中画遮挡，已据残留文字或口播补全">◐</sup>。</li></ul></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">“自己造一个”清单</span><span>建议顺序</span><span class="push prog" data-prog><b>0</b> / 6</span></div>
+    <div class="vz">
+      <ul class="chk" data-chk>
+        <li><label><input type="checkbox"><span class="n">01</span><span class="t">week-one loop</span><a class="chip" href="#ch-00"><i>00</i></a></label></li>
+        <li><label><input type="checkbox"><span class="n">02</span><span class="t">搬上服务器，状态存库</span><a class="chip" href="#ch-03"><i>03</i></a></label></li>
+        <li><label><input type="checkbox"><span class="n">03</span><span class="t">加 durable workflow 和队列</span><a class="chip" href="#ch-04"><i>04</i></a></label></li>
+        <li><label><input type="checkbox"><span class="n">04</span><span class="t">加云电脑</span><a class="chip" href="#ch-03"><i>03</i></a></label></li>
+        <li><label><input type="checkbox"><span class="n">05</span><span class="t">加文件记忆和压缩</span><span class="chips"><a class="chip" href="#ch-02"><i>02</i></a><a class="chip" href="#ch-09"><i>09</i></a></span></label></li>
+        <li><label><input type="checkbox"><span class="n">06</span><span class="t">加 SendToUser 和安全审查</span><span class="chips"><a class="chip" href="#ch-05"><i>05</i></a><a class="chip" href="#ch-07"><i>07</i></a></span></label></li>
+      </ul>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">讲者补充</span></div>
+  <div class="panel notes"><ul class="lst"><li>他仍然会读自己写的代码，尤其要理解自己发布出去的架构。</li></ul></div>
+  <div class="grp"><span>slides · S43–S44 · 2</span></div>
+  <div class="strip"><a class="slide arc-host" href="slides/s43_4322.jpg" aria-label="S43 43:22–45:11"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s43_4322.jpg')"><img src="slides/s43_4322.jpg" alt="S43 43:22–45:11" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S43</b><span>43:22–45:11</span></span></a><a class="slide arc-host" href="slides/s44_4511.jpg" aria-label="S44 45:11–45:17"><span class="arc-border"></span><span class="slide-frame" style="--img:url('slides/s44_4511.jpg')"><img src="slides/s44_4511.jpg" alt="S44 45:11–45:17" loading="lazy"><span class="scan"></span></span><span class="slide-cap"><b>S44</b><span>45:11–45:17</span></span></a></div>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Summary</p><h2>总结</h2></div></div></header>
+  <p class="sub-h"><b>贯穿全讲的 6 条原则</b>读后归纳</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th scope="col">原则</th><th scope="col">出处</th></tr></thead>
+    <tbody>
+      <tr><td>状态是唯一的真相，其他都可以丢</td><td><span class="chips" style="margin:0"><a class="chip" href="#ch-03"><i>03</i>生命周期</a><a class="chip" href="#ch-04"><i>04</i>可靠性</a></span></td></tr>
+      <tr><td>默认沉默，开口要有理由</td><td><span class="chips" style="margin:0"><a class="chip" href="#ch-03"><i>03</i>生命周期</a><a class="chip" href="#ch-05"><i>05</i>对话工具</a></span></td></tr>
+      <tr><td>主 context 最稀缺</td><td><span class="chips" style="margin:0"><a class="chip" href="#ch-06"><i>06</i>工具与 helpers</a><a class="chip" href="#ch-08"><i>08</i>Prompt 缓存</a><a class="chip" href="#ch-09"><i>09</i>压缩与记忆</a></span></td></tr>
+      <tr><td>只追加，不修改</td><td><span class="chips" style="margin:0"><a class="chip" href="#ch-04"><i>04</i>可靠性</a><a class="chip" href="#ch-08"><i>08</i>Prompt 缓存</a></span></td></tr>
+      <tr><td>先走最便宜、最可控的路</td><td><span class="chips" style="margin:0"><a class="chip" href="#ch-06"><i>06</i>工具与 helpers</a><a class="chip" href="#ch-07"><i>07</i>安全</a></span></td></tr>
+      <tr><td>每个失败都是 eval</td><td><span class="chips" style="margin:0"><a class="chip" href="#ch-10"><i>10</i>训练飞轮</a></span></td></tr>
+    </tbody></table></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>讲者的收尾</b>：假设模型会大幅变强，围绕它尽量少造东西；代码越容易写，懂得部件怎么组合就越重要。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>25 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">例子</th></tr></thead>
+      <tbody>
+        <tr><td>Always-on agent</td><td>状态常驻服务器、由事件唤醒、能长期工作的 agent；没事时什么都不跑</td><td>Bot / GrokBot</td></tr>
+        <tr><td>Harness</td><td>包在模型外面的运行框架：工具、prompt、loop、状态管理</td><td>GrokBot harness</td></tr>
+        <tr><td>Agent loop</td><td>模型调工具、拿回结果、再调工具的循环</td><td>S03</td></tr>
+        <tr><td>Routine</td><td>按计划或由 webhook 触发的一段 prompt，类似 cron job</td><td>工作日 8:00 的晨报</td></tr>
+        <tr><td>Router</td><td>去重，并把事件分到正确会话的组件</td><td>S14</td></tr>
+        <tr><td>Turn</td><td>agent 处理一批消息的一轮运行</td><td>S19</td></tr>
+        <tr><td>Firecracker</td><td>轻量级虚拟机技术，便于快照和重启</td><td>agent 的云电脑</td></tr>
+        <tr><td>Thin client, thick server</td><td>客户端轻、服务器重的架构</td><td>S17</td></tr>
+        <tr><td>Durable workflow</td><td>每一步都有记录、崩溃后能从断点恢复的执行方式</td><td>Temporal</td></tr>
+        <tr><td>Idempotent 幂等</td><td>同一步执行两次，结果相同且无害</td><td>S20</td></tr>
+        <tr><td>SendToUser</td><td>agent 和你说话的唯一工具</td><td>S23</td></tr>
+        <tr><td>MCP / Connector</td><td>让模型调用外部应用的协议 / 接入某个 app API 的工具</td><td>Gmail、Plaid</td></tr>
+        <tr><td>Dynamic tool discovery</td><td>先只给工具名，用到时再加载细节</td><td>S25</td></tr>
+        <tr><td>Computer use</td><td>模型看屏幕，用鼠标和键盘操作电脑</td><td>1280×800 屏幕</td></tr>
+        <tr><td>Accessibility tree</td><td>页面元素的结构化列表，比截图省 token</td><td>S27</td></tr>
+        <tr><td>Grounding</td><td>把指令对应到屏幕上正确位置的能力</td><td>“点对位置”</td></tr>
+        <tr><td>Subagent / helper</td><td>主 agent 派出去的、有独立 context 的子 agent</td><td>Video helper</td></tr>
+        <tr><td>Auto-review</td><td>独立模型在执行前审查高风险操作；被拦下时请你批准</td><td>15 秒无回应就维持拦截</td></tr>
+        <tr><td>Prompt injection</td><td>外部文本里藏着骗 agent 的指令</td><td>钓鱼邮件</td></tr>
+        <tr><td>Context window</td><td>模型一次能处理的 token 上限</td><td>例：20 万 tokens</td></tr>
+        <tr><td>Prompt caching / cache miss</td><td>复用相同的前缀来降低费用 / 前缀变了，按全价计费</td><td>S32、S34</td></tr>
+        <tr><td>Compaction</td><td>把长对话压缩成总结，会有信息损失</td><td>S35</td></tr>
+        <tr><td>Eval</td><td>衡量模型或产品行为的测试用例</td><td>S38</td></tr>
+        <tr><td>SFT / RL</td><td>监督微调 / 强化学习</td><td>S37</td></tr>
+        <tr><td>Delete the product</td><td>假设模型会变强，尽量少造东西，及时删掉多余部分</td><td>S39</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">&#9680;</span>= 原幻灯片此处被画中画遮挡，已据残留文字或口播补全</div>
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于讲座内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>讲座与幻灯片</b>：讲者 Lee Robinson（<a href="https://x.com/leerob" rel="noopener">@leerob</a>），“How always-on agents work”，Stanford CS146S 嘉宾讲座，2026-10-08。原视频由讲者本人<a href="https://x.com/leerob/status/2108650243365736855" rel="noopener">发布于 X</a>。本页为个人学习笔记；幻灯片截图版权归原作者所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>讲者或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* back to panorama */
+$('#toc-fab').addEventListener('click',function(e){e.preventDefault();$('#contents').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});try{history.replaceState(null,'','#contents')}catch(_){}});
+
+/* rail scroll spy */
+(function(){
+  var links={};$$('#rail a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var secs=Object.keys(links).map(function(id){return document.getElementById(id)}).filter(Boolean),tick=false;
+  function upd(){tick=false;var line=innerHeight*.3,cur=null;
+    secs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s.id});
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)for(var j=secs.length-1;j>=0;j--){if(secs[j].getBoundingClientRect().top<innerHeight){cur=secs[j].id;break}}
+    Object.keys(links).forEach(function(k){links[k].classList.toggle('on',k===cur);if(k===cur)links[k].setAttribute('aria-current','true');else links[k].removeAttribute('aria-current')});}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener('resize',upd);upd();
+})();
+
+/* PiP marker: tap shows a fixed toast (title covers mouse hover) */
+(function(){var t=$('#pip-toast'),h;
+  $$('.pip').forEach(function(p){p.addEventListener('click',function(){t.hidden=false;clearTimeout(h);h=setTimeout(function(){t.hidden=true},2600)})});})();
+
+/* radio-group helper */
+function radios(root,attr,cb){var bs=$$('['+attr+']',root);bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(x){x.setAttribute('aria-checked',String(x===b))});cb(b.getAttribute(attr))})})}
+
+
+/* 01 · before / now tracks */
+(function(){var r=$('#v01b'),timers=[];
+  function clear(){timers.forEach(clearTimeout);timers=[];$$('.cell',r).forEach(function(c){c.classList.remove('on','wait')})}
+  function run(sel,steps){var t=0,cs=$$(sel+' .cell',r);cs.forEach(function(c){var ap=c.classList.contains('ap');
+    timers.push(setTimeout(function(){c.classList.add('on');if(ap)c.classList.add('wait')},t));
+    t+=ap?1400:450;if(ap)timers.push(setTimeout(function(){c.classList.remove('wait')},t-50));})}
+  $('[data-play]',r).addEventListener('click',function(){clear();run('[data-trk="before"]');run('[data-trk="now"]')});})();
+
+
+/* 03 · lifecycle simulator (rules from content.md 03) */
+(function(){var r=$('#v03a'),S,H,L,t;
+  var SH={init:'t0',msg:'消息',routine:'routine',tool:'工具',idle2:'2 分钟',idleN:'几分钟'};
+  function N(){return matchMedia('(max-width:760px)').matches?6:10}
+  function reset(){S={p:false,c:false};H=[{e:'init',p:false,c:false}];L=[];t=0;draw()}
+  function step(e){var m;
+    if(e==='msg'||e==='routine'){var lab=e==='msg'?'你发消息':'8:00 routine';m=lab+' → '+(S.p?'进程已在运行':'进程被触发，运行');S.p=true;
+      if(e==='routine'&&!S.c)m+='；routine 用不到电脑时，电脑保持休眠';}
+    else if(e==='tool'){if(!S.p)m='调用浏览器工具 → 进程没在运行时，不会有工具调用';else if(!S.c){S.c=true;m='调用浏览器工具 → 工具需要时才恢复：电脑恢复'}else m='调用浏览器工具 → 电脑已在运行'}
+    else if(e==='idle2'){if(S.p){S.p=false;m='空闲 2 分钟 → 进程停'}else m='空闲 2 分钟 → 进程本来就停着'}
+    else if(e==='idleN'){if(!S.c)m='空闲几分钟 → 电脑本来就在休眠';else if(S.p)m='空闲几分钟 → 电脑不睡：一轮正在进行时，电脑绝不休眠';else{S.c=false;m='空闲几分钟 → 电脑存快照并停'}}
+    t++;H.push({e:e,p:S.p,c:S.c});L.unshift([t,m]);draw()}
+  function cells(k){var n=N(),h=H.slice(-n),o='';for(var i=0;i<n;i++){var s=h[i];
+    if(!s){o+='<span class="empty"></span>';continue}
+    if(k==='ev')o+='<span class="'+(i===h.length-1?'last':'')+'">'+SH[s.e]+'</span>';
+    else if(k==='state')o+='<span class="keep"></span>';
+    else o+='<span class="'+(s[k]?'on':'off')+'"></span>'}return o}
+  function draw(){var n=N();[['ev','ev'],['proc','p'],['comp','c'],['state','state']].forEach(function(a){var tr=$('[data-track="'+a[0]+'"]',r);tr.style.setProperty('--n',n);tr.innerHTML=cells(a[1])});
+    var pp=$('[data-pill="proc"]',r),pc=$('[data-pill="comp"]',r);pp.textContent=S.p?'● 运行':'○ 停';pp.classList.toggle('on',S.p);pc.textContent=S.c?'● 运行':'○ 休眠';pc.classList.toggle('on',S.c);
+    $('[data-log]',r).innerHTML=L.length?L.slice(0,4).map(function(x){return '<li><span>t'+x[0]+'</span><span>'+x[1]+'</span></li>'}).join(''):'<li><span>t0</span><span>—</span></li>'}
+  $$('[data-ev]',r).forEach(function(b){b.addEventListener('click',function(){step(b.getAttribute('data-ev'))})});
+  $('[data-reset]',r).addEventListener('click',reset);addEventListener('resize',draw);reset();})();
+
+/* 03 · wake router */
+(function(){var r=$('#v03b'),rt=$('.rt',r),out=$('[data-rt-src]',r),sel=null,worth=true;
+  function draw(){rt.classList.toggle('has-sel',sel!==null);rt.setAttribute('data-worth',worth?'1':'0');$$('.arr',rt).forEach(function(a){a.classList.toggle('lit',sel!==null)});out.textContent=sel===null?'—':sel}
+  radios(r,'data-src',function(v){sel=$('[data-src="'+v+'"]',r).textContent;draw()});
+  radios(r,'data-worth',function(v){worth=v==='1';draw()});draw();})();
+
+/* 03 · system map */
+(function(){var f=$('#v03c .sys3'),pin=null;
+  function set(k){if(k)f.setAttribute('data-hl',k);else f.removeAttribute('data-hl')}
+  $$('.s3-col',f).forEach(function(c){var k=c.getAttribute('data-col');
+    c.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse')set(k)});
+    c.addEventListener('pointerleave',function(e){if(e.pointerType==='mouse')set(pin)});
+    c.addEventListener('focus',function(){set(k)});c.addEventListener('blur',function(){set(pin)});
+    c.addEventListener('click',function(){pin=pin===k?null:k;set(pin)})})})();
+
+/* 04 · crash simulator */
+(function(){var r=$('#v04a'),jq=$('[data-lane="jq"]',r),dw=$('[data-lane="dw"]',r),ctr=$('[data-ctr]',r),btn=$('[data-crash]',r),tm=[];
+  function c(txt,cls){var s=document.createElement('span');s.className='stp '+(cls||'');s.textContent=txt;return s}
+  function init(){tm.forEach(clearTimeout);tm=[];[jq,dw].forEach(function(l){l.innerHTML='';for(var i=1;i<=5;i++)l.appendChild(c('Step '+i))});ctr.textContent='0 / 0';btn.disabled=false}
+  function at(ms,fn){tm.push(setTimeout(fn,ms))}
+  btn.addEventListener('click',function(){init();btn.disabled=true;[jq,dw].forEach(function(l){l.innerHTML=''});
+    var seq=[[0,'Step 1','done','Step 1','done'],[350,'Step 2','done','Step 2','done'],[700,'✕ Step 3','x','✕ Step 3','x'],
+             [1300,'Step 1','redo','Step 3','go'],[1650,'Step 2','redo','Step 4','go'],[2000,'Step 3','go','Step 5','go'],[2350,'Step 4','go',null],[2700,'Step 5','go',null]];
+    seq.forEach(function(s){at(s[0],function(){jq.appendChild(c(s[1],s[2]));if(s[3])dw.appendChild(c(s[3],s[4]))})});
+    at(1300,function(){ctr.textContent='1 / 0'});at(1650,function(){ctr.textContent='2 / 0'});at(2750,function(){btn.disabled=false})});
+  $('[data-reset]',r).addEventListener('click',init);init();})();
+
+/* 04 · queue: jump & merge */
+(function(){var r=$('#v04b'),qa=$('[data-q="a"]',r),qb=$('[data-q="b"]',r),tm=[];
+  function c(txt,cls){var s=document.createElement('span');s.className='qc '+(cls||'');s.textContent=txt;return s}
+  function init(){tm.forEach(clearTimeout);tm=[];qa.innerHTML='';qb.innerHTML='';qa.appendChild(c('一轮','run'));qa.appendChild(c('消息'));qb.appendChild(c('一轮','run'));qb.appendChild(c('消息'))}
+  $$('[data-qa]',r).forEach(function(b){b.addEventListener('click',function(){init();var run=qa.firstChild;qa.insertBefore(c(b.getAttribute('data-qa'),'jump'),run);run.classList.add('cut');run.classList.remove('run')})});
+  $('[data-qb]',r).addEventListener('click',function(){init();var add=[];for(var i=0;i<3;i++)(function(i){tm.push(setTimeout(function(){var x=c('消息');qb.appendChild(x);add.push(x)},i*220))})(i);
+    tm.push(setTimeout(function(){add.forEach(function(x){x.remove()});qb.appendChild(c('3 条 → 1 轮','merge'))},1100))});
+  $('[data-reset]',r).addEventListener('click',init);init();})();
+
+/* 05 · UI controls */
+(function(){var r=$('#v05b');
+  $('[data-fill]',r).addEventListener('click',function(){var f=$('[data-pw]',r);f.textContent='1Password ••••••••';f.classList.add('filled')});
+  $$('[data-pick]',r).forEach(function(card){var bs=$$('button',card);bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(x){x.setAttribute('aria-pressed',String(x===b))})})})});
+  $$('[data-emo] button',r).forEach(function(b){b.addEventListener('click',function(){b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'))})});})();
+
+/* 06 · context grids (static, S25 proportions) */
+(function(){$$('#v06a [data-cg]').forEach(function(g){var n=g.getAttribute('data-cg').split(',').map(Number);['s','d','n','c','f'].forEach(function(c,i){for(var j=0;j<n[i];j++){var s=document.createElement('span');s.className=c;g.appendChild(s)}})})})();
+
+/* 06 · cost ladder */
+(function(){var r=$('#v06b'),b=$('[data-broken]',r);b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',String(on));$('[data-ladder]',r).classList.toggle('broken',on);$('[data-rule]',r).classList.toggle('hot',on)})})();
+
+/* 06 · main agent + helpers */
+(function(){var r=$('#v06c'),hp=$('[data-hp]',r);
+  function draw(v){var big=v==='b';$$('[data-n="task"],[data-n="rep"]',hp).forEach(function(x){x.classList.toggle('hot',big);x.classList.toggle('dim',!big)});
+    $('[data-n="help"]',hp).classList.toggle('dim',!big);$$('.arr',hp).forEach(function(a){a.classList.toggle('lit',big)})}
+  radios(r,'data-task',draw);draw('s');})();
+
+/* 07 · auto-review */
+(function(){var r=$('#v07'),sim=$('[data-sim]',r),ap=$('[data-approve]',r),cd=$('[data-cd]',r),iv=null,tm=[];
+  function n(k){return $('[data-n="'+k+'"]',r)}
+  function clear(){clearInterval(iv);iv=null;tm.forEach(clearTimeout);tm=[];$$('[data-n]',r).forEach(function(x){x.classList.remove('hot','lit','dim')});$$('.arr',r).forEach(function(a){a.classList.remove('lit')});cd.textContent='15';ap.disabled=true}
+  function lit(k,h){n(k).classList.add(h?'hot':'lit')}
+  sim.addEventListener('click',function(){clear();lit('op');
+    tm.push(setTimeout(function(){lit('rev')},500));
+    tm.push(setTimeout(function(){n('pass').classList.add('dim');n('exec').classList.add('dim');lit('blk',1)},1100));
+    tm.push(setTimeout(function(){lit('ask');lit('cd');ap.disabled=false;var s=15;
+      iv=setInterval(function(){s--;cd.textContent=String(s);if(s<=0){clearInterval(iv);iv=null;ap.disabled=true;lit('keep',1)}},1000)},1600))});
+  ap.addEventListener('click',function(){clearInterval(iv);iv=null;ap.disabled=true;n('exec').classList.remove('dim');lit('exec',1)});})();
+
+/* 08 · cache stack */
+(function(){var r=$('#v08'),fx=$('[data-layer="fixed"]',r),hi=$('[data-layer="hist"]',r),nw=$('[data-layer="new"]',r),base={};
+  base.f=fx.innerHTML;base.h=hi.innerHTML;base.n=nw.innerHTML;
+  function all(){return $$('.cs-c',r)}
+  function reset(){fx.innerHTML=base.f;hi.innerHTML=base.h;nw.innerHTML=base.n}
+  function append(txt){all().forEach(function(c){c.classList.remove('miss','new');c.classList.add('hit')});var s=document.createElement('span');s.className='cs-c new';s.textContent=txt;nw.appendChild(s)}
+  $$('[data-cache]',r).forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute('data-cache');
+    if(k==='msg')append('+ 你的话');else if(k==='note')append('+ 变化说明');else all().forEach(function(c){c.classList.remove('hit','new');c.classList.add('miss')})})});
+  $('[data-reset]',r).addEventListener('click',reset);})();
+
+/* 09 · compaction timeline */
+(function(){var r=$('#v09a'),bs=$$('[data-tl] .box',r),tm=[];
+  $('[data-play]',r).addEventListener('click',function(){tm.forEach(clearTimeout);tm=[];bs.forEach(function(b){b.classList.remove('hot','lit')});
+    bs.forEach(function(b,i){tm.push(setTimeout(function(){bs.forEach(function(x){if(x.classList.contains('hot')){x.classList.remove('hot');x.classList.add('lit')}});b.classList.add('hot')},i*900))})});})();
+
+/* 10 · double loop */
+(function(){var r=$('#v10'),tm=[];
+  function run(sel,dt,laps){var li=$$(sel+' li',r),k=0;for(var l=0;l<laps;l++)li.forEach(function(x,i){(function(at){tm.push(setTimeout(function(){li.forEach(function(y){y.classList.remove('hot')});x.classList.add('hot')},at))})(k++*dt)});
+    tm.push(setTimeout(function(){li.forEach(function(y){y.classList.remove('hot')})},k*dt))}
+  $('[data-play]',r).addEventListener('click',function(){tm.forEach(clearTimeout);tm=[];$$('li',r).forEach(function(y){y.classList.remove('hot')});run('[data-loop="in"]',380,3);run('[data-loop="out"]',1400,1)});})();
+
+
+/* 12 · checklist (no storage) */
+(function(){var r=$('#v12'),p=$('[data-prog] b',r),ins=$$('input[type=checkbox]',r);
+  ins.forEach(function(i){i.addEventListener('change',function(){i.closest('li').classList.toggle('done',i.checked);p.textContent=String(ins.filter(function(x){return x.checked}).length)})})})();
+})();
+</script>
+
+<div class="sv" id="sv" hidden role="dialog" aria-modal="true" aria-label="幻灯片查看器" tabindex="-1">
+  <div class="sv-backdrop"></div>
+  <figure class="sv-fig"><img alt=""><figcaption class="sv-cap"><b class="sv-id"></b><span class="sv-time"></span><span class="sv-n"></span><span class="sv-hint sv-hint-key">← → ↑ ↓ 切换 · 点击图片左 / 右半边切换 · Esc 关闭</span><span class="sv-hint sv-hint-touch">左右滑动切换 · 点背景关闭</span></figcaption></figure>
+  <button class="sv-btn sv-prev" type="button" aria-label="上一张">‹</button>
+  <button class="sv-btn sv-next" type="button" aria-label="下一张">›</button>
+  <button class="sv-close" type="button" aria-label="关闭">×</button>
+</div>
+<script>
+/* in-page slide viewer: per-chapter strip, mouse / arrow keys / swipe */
+(function(){
+  var sv=document.getElementById('sv'),img=sv.querySelector('img'),idE=sv.querySelector('.sv-id'),tmE=sv.querySelector('.sv-time'),nE=sv.querySelector('.sv-n'),
+      prev=sv.querySelector('.sv-prev'),next=sv.querySelector('.sv-next'),list=[],i=0,opener=null,x0=null;
+  function render(){var a=list[i],lab=(a.getAttribute('aria-label')||'').split(' ');
+    img.src=a.getAttribute('href');img.alt=a.getAttribute('aria-label')||'';idE.textContent=lab[0]||'';tmE.textContent=lab.slice(1).join(' ');
+    nE.textContent=(i+1)+' / '+list.length;prev.disabled=i===0;next.disabled=i===list.length-1;
+    [i-1,i+1].forEach(function(k){if(list[k]){var p=new Image();p.src=list[k].getAttribute('href')}})}
+  function open(l,k,a){list=l;i=k;opener=a;render();sv.hidden=false;document.documentElement.classList.add('sv-open');sv.focus()}
+  function close(){sv.hidden=true;document.documentElement.classList.remove('sv-open');img.removeAttribute('src');if(opener)opener.focus()}
+  function go(d){var k=i+d;if(k<0||k>=list.length)return;i=k;render()}
+  document.querySelectorAll('.strip').forEach(function(s){var l=[].slice.call(s.querySelectorAll('a.slide'));
+    l.forEach(function(a,k){a.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();open(l,k,a)})})});
+  prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});
+  sv.querySelector('.sv-close').addEventListener('click',close);sv.querySelector('.sv-backdrop').addEventListener('click',close);
+  img.addEventListener('click',function(e){var r=img.getBoundingClientRect();go(e.clientX<r.left+r.width/2?-1:1)});
+  document.addEventListener('keydown',function(e){if(sv.hidden)return;var k=e.key;
+    if(k==='Escape'){e.preventDefault();close()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();go(-1)}
+    else if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();go(1)}
+    else if(k==='Home'){e.preventDefault();i=0;render()}
+    else if(k==='End'){e.preventDefault();i=list.length-1;render()}
+    else if(k==='Tab'){var f=[].slice.call(sv.querySelectorAll('button:not([disabled])')),fi=f.indexOf(document.activeElement);
+      if(e.shiftKey&&fi<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(fi<0||fi===f.length-1)){e.preventDefault();f[0].focus()}}});
+  sv.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  sv.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(dx<0?1:-1);x0=null});
+})();
+</script>
+<script>
+/* language switch keeps the current section */
+document.querySelectorAll('#lang-switch a:not([aria-current])').forEach(function(a){
+  a.addEventListener('click',function(e){if(location.hash){e.preventDefault();location.href=a.getAttribute('href')+location.hash}});
+});
+</script>
+</body>
+</html>

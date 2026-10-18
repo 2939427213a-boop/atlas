@@ -1,0 +1,86 @@
+[
+ {
+  "id": "INTRO",
+  "start": 0.0,
+  "end": 55.0,
+  "file": "[cold open: teaser clips]"
+ },
+ {
+  "id": "C00",
+  "start": 55.0,
+  "end": 235.0,
+  "file": "Can open models keep up with the frontier? \u00b7 What it takes to reach the frontier"
+ },
+ {
+  "id": "C01",
+  "start": 235.0,
+  "end": 505.0,
+  "file": "Open weights and the fast-follower playbook"
+ },
+ {
+  "id": "C02",
+  "start": 505.0,
+  "end": 595.0,
+  "file": "Chinese labs: equal talent, less compute"
+ },
+ {
+  "id": "C03",
+  "start": 595.0,
+  "end": 895.0,
+  "file": "Why distillation is harder than it looks"
+ },
+ {
+  "id": "C04",
+  "start": 895.0,
+  "end": 980.0,
+  "file": "Is distillation theft or competition?"
+ },
+ {
+  "id": "C05",
+  "start": 980.0,
+  "end": 1305.0,
+  "file": "The lab flywheel vs owning your weights"
+ },
+ {
+  "id": "C06",
+  "start": 1305.0,
+  "end": 1590.0,
+  "file": "Can general models beat every specialist?"
+ },
+ {
+  "id": "C07",
+  "start": 1590.0,
+  "end": 1890.0,
+  "file": "AI at 1% of today's cost in 4 years \u00b7 The RL env boom and reward hacking"
+ },
+ {
+  "id": "C08",
+  "start": 1890.0,
+  "end": 2285.0,
+  "file": "What Trillium will build in the open \u00b7 Breaking into AI in the age of AI slop"
+ },
+ {
+  "id": "C09",
+  "start": 2285.0,
+  "end": 2665.0,
+  "file": "Open-sourcing how AI builds AI"
+ },
+ {
+  "id": "C10",
+  "start": 2665.0,
+  "end": 2985.0,
+  "file": "Why Nathan isn't pre-training"
+ },
+ {
+  "id": "C11",
+  "start": 2985.0,
+  "end": 3265.0,
+  "file": "Agent swarms and why lab secrets leak"
+ },
+ {
+  "id": "C12",
+  "start": 3265.0,
+  "end": 3529.0,
+  "file": "Fast takeoff vs risks already here"
+ }
+]

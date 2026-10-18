@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+.dev.vars
+.DS_Store
+scripts/__pycache__/
+sources/**/asr/
+sources/**/transcript.md
+sources/**/backup/
+.superpowers/
+sources/**/aligned.md
+sources/**/content_full.md
