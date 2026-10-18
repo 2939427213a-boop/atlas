@@ -19,7 +19,7 @@
 - wrangler 一律用项目里的 `./node_modules/.bin/wrangler`。`bunx wrangler` 会调到全局旧版，它的运行时不支持本项目的兼容日期。
 - `compatibility_date` 不能晚于本地 wrangler 运行时支持的日期（现为 2026-05-22）；升级 wrangler 后才能调。
 - 本地预览：先 `./node_modules/.bin/wrangler d1 migrations apply atlas --local`，再 `bun run dev`。本地后台 `http://127.0.0.1:8787/admin`（`.dev.vars` 里的 `DEV_ADMIN_OPEN=1` 只对 localhost 生效）。`bun run dev` 带 `--local-upstream 127.0.0.1:8787`；不带时 wrangler 会把主机名改写成正式域名，本地后台会返回 503。改了或新增 `public/` 里的文件后要重启 dev 服务，它不会自动读到。
-- 提交直接进 `main`（单人项目，没有远端）。
+- 提交直接进 `main`（单人项目）。远端 `origin` 是公开仓库 `github.com/2939427213a-boop/atlas`：只推 `main`（`git push origin main`），不推标签。本地标签 `archive/pre-public` 是带逐字稿的旧历史，永远不推。提交邮箱用仓库级的 GitHub noreply 地址。
 - 部署前检查：`bun run check`（所有讲座页的 `check_page.py`、首页是否链到每一篇、类型检查、测试；无副作用）。
 - 部署：先提交，再问用户（用 `git log --oneline live..HEAD` 说明这次会带上哪些提交），同意后 `bun run ship`：工作区不干净就拒绝 → check → `wrangler deploy` → git 标签 `live` 移到当前提交 → 线上冒烟检查（边缘缓存约半分钟才更新，所以带 60 秒重试）。只复查线上：`bash scripts/ship.sh smoke`。回滚 `./node_modules/.bin/wrangler rollback`。表结构变了才另跑 `wrangler d1 migrations apply atlas --remote`，同样先问。
 - 改已上线的页面：两种语言一起改，再用 `python3 -I scripts/add_atlas_hooks.py <page> talks/<slug> <当天日期>` 把 `data-v` 更新为当天（`<slug>` 不变），后台就能分开新旧版本。改首页同样要更新：`add_atlas_hooks.py public/index.html home <当天日期>`。小改只动 HTML；`sources/` 里的 `content.md` 是底稿，大改版才从它重来。
