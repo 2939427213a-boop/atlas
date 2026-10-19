@@ -409,6 +409,23 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 #v07 .rx{margin-top:14px}
 #v08 .rx,#v09 .rx{margin-top:14px}
 #v10 .rx{margin-top:14px}
+.rx-b{container-type:inline-size}
+.rx-h{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--mg-45)}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+.flow>.box{flex:1 1 7em;min-width:0}
+.flow .box b{display:block}
+.flow>.ar{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
+.flow .box.x b::before{content:'\2715  ';color:var(--red)}
+@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.ar{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
+.rx-b>.org-note{text-align:left}
+.org .box.lead small{color:inherit;opacity:.75;font-weight:400}
+.fn+.fn{margin-left:.35em}
+.org .cn{font-family:var(--font-mono);font-size:11px;color:var(--mg-45);padding:2px 0}
+.org.one{grid-template-columns:minmax(0,1fr)}
+.rx-b .tbl{font-size:13px;line-height:1.5}
+.rx-b .tbl td,.rx-b .tbl th{padding:7px 10px}
+.rx-b .tbl tbody th{white-space:normal}
+.rx-b .q2 .box b{font-size:20px;font-family:var(--font-display);color:var(--midground)}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1236,22 +1253,27 @@ html.sv-open{overflow:hidden}
         <div class="vs-row" role="row"><span class="vs-k" role="rowheader">任务变长</span><span class="vs-w" role="cell">轨迹变长，出了训练分布</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">只改一个长度变量：长 8–30× 也能做</span></div>
       </div>
       <details class="rx" id="rx-why04">
-        <summary><b>为什么会这样？用一个例子拆开看</b><span class="tg2"></span><span class="re">关键在于：两种 harness 里，主模型看到的东西不一样。</span></summary>
+        <summary><b>为什么会这样？用一个例子拆开看</b><span class="tg2"></span><span class="re">关键：两种 harness 里，主模型看到的东西不一样。</span></summary>
         <div class="rx-b">
-          <p><span class="src-tag">背景</span> 例子和数字来自他的博客。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
-          <p><b>两个任务</b>：检索，是在一大堆文档里找出某个问题的答案；聚合，是在一大批数据里做统计，比如每一类各有几条。领域和问题完全不同，但解法相同：切成小块，逐块处理，再合并结果。</p>
+          <p><span class="src-tag">背景</span> 例子和数字来自他的博<span class="nb">客。<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></p>
+          <div class="flow"><div class="box"><b>检索</b><small>在一堆文档里找答案</small></div><div class="box"><b>聚合</b><small>在一批数据里做统计</small></div><span class="ar">→</span><div class="box hot"><b>同一解法</b><small>切块 → 逐块处理 → 合并</small></div></div>
           <div class="cmp2">
-            <div><b class="k">普通 harness：主模型看到全部内容</b><p>任务说明、整批文档或数据、每次工具调用的结果，按顺序一直追加，这就是“整条轨迹当 prompt”。两个任务的文字完全不同，模型在一个任务上学到的，很难搬到另一个任务。</p></div>
-            <div class="a"><b class="k">RLM：主模型只写调度代码</b><p>文档或数据存进变量 <code>context</code>，问题存进 <code>query</code>。主模型看不到它们的内容，只写代码（简化示意）：</p><pre class="code"># 切成 20 块
+            <div><b class="k">普通 harness：主模型看全部</b><p>任务 + 全部文档 + 每次工具结果 → 一条长轨迹</p><p>两个任务的轨迹完全不同 → 学到的搬不过去</p></div>
+            <div class="a"><b class="k">RLM：主模型只写调度代码</b><pre class="code"># 切成 20 块
 chunks = split(context, 20)
 # 每块交给一个子调用
 notes = [llm(query, c) for c in chunks]
 # 再让一个子调用合并
-answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不同的只是 <code>query</code> 和每块的内容，它们都交给子调用。每个子调用只看一小块，是模型熟悉的小任务。</p></div>
+answer = llm(query, notes)</pre><p>两个任务的代码几乎一样 → 训练一个，另一个就会</p></div>
           </div>
-          <p><b>训练一个，另一个就会</b>：训练时，主模型学会的是“切块、分派、合并”这段程序。换成另一个任务，主模型看到的几乎是同一段程序，所以不用重新学。博客的跨领域实验（比如从找同一作者的文章，换到找解法相同的数学题）也看到了这种迁移；直接训练的模型基本迁移不过去。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
-          <p><b>任务变长</b>：输入长 10 倍时，普通 harness 的轨迹也长约 10 倍，超过训练时见过的长度，模型就不熟悉了。RLM 的代码不变，只是块数变多；每个子调用看到的仍是一小块。博客的实验：只在短任务上训练 Qwen3-30B-A3B，再在长 8–32 倍的任务上测试，RLM 的成绩明显上升，直接训练的模型基本不涨。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
-          <p><b>为什么说“没有魔法”</b>：这要求模型真的学会拆分。在短任务上，它也可能把整个问题丢给一个子调用了事；这样学到的东西推广不到长任务。博客里有一个任务，要提示它先拆分才学对。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">输入长 10 倍</th><th scope="col">普通 harness</th><th scope="col">RLM</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">主模型看到的</th><td>轨迹也长 10 倍，超出训练见过的长度</td><td>代码不变，只是块数变多</td></tr>
+              <tr><th scope="row">实验：短任务训练，长 8–32 倍测试</th><td>基本不涨</td><td>明显上<span class="nb">升<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">前提：模型真的学会拆分。只把整题丢给一个子调用，就推广不到长任<span class="nb">务。<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></p>
         </div>
       </details>
     </div>
@@ -1338,16 +1360,17 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
       <details class="rx" id="rx-why06">
         <summary><b>“出分布”是什么？缓存能不能解决？</b><span class="tg2"></span><span class="re">一句话：缓存让重复计算变便宜，但不改变模型要读的内容。</span></summary>
         <div class="rx-b">
-          <p><span class="src-tag">背景</span> <b>出分布</b>：模型熟悉的是训练时常见的输入，包括常见的长度、格式和结构。常规 harness 跑几十轮后，prompt 里堆满任务、推理、日志和工具结果，可能有几十万 token。训练时很少见到这样又长又杂的输入，这就是出分布。<a class="fn" href="#src-26" aria-label="来源 26">26</a> 测试也发现，即使任务很简单，输入越长，模型表现也越差，这叫 context rot。<a class="fn" href="#src-28" aria-label="来源 28">28</a> 这和“装不下”是两回事：窗口没满，也可能已经出分布。</p>
+          <div class="flow"><div class="box"><b>训练时常见</b><small>长度适中、结构整齐</small></div><span class="ar">→</span><div class="box hot2"><b>跑几十轮后</b><small>任务 + 推理 + 日志 + 工具结果，几十万 token</small></div><span class="ar">=</span><div class="box"><b>出分布</b><small>模型不熟悉这种输<span class="nb">入<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></small></div></div>
+          <p class="org-note"><span class="src-tag">背景</span> 输入越长，简单任务也做得越差（context rot<span class="nb">）。<a class="fn" href="#src-28" aria-label="来源 28">28</a></span> 窗口没满，也可能已经出分布。</p>
           <div class="tbl-wrap"><table class="tbl">
-            <thead><tr><th scope="col">做法</th><th scope="col">改变了什么</th><th scope="col">能否解决出分布</th></tr></thead>
+            <thead><tr><th scope="col">做法</th><th scope="col">改变了什么</th><th scope="col">解决出分布？</th></tr></thead>
             <tbody>
-              <tr><th scope="row">Prompt 缓存</th><td>前面没变的部分不用重新计算，所以更快、更便宜。<a class="fn" href="#src-29" aria-label="来源 29">29</a></td><td>不能。模型每一步仍要读整个上下文。</td></tr>
-              <tr><th scope="row">压缩（compaction）</th><td>上下文快满时，把旧历史总结成一小段，换掉原文。<a class="fn" href="#src-27" aria-label="来源 27">27</a></td><td>能缓解。但会丢细节，总结仍在主上下文里。</td></tr>
-              <tr><th scope="row">RLM 上下文外置</th><td>原文不进主上下文，只放在变量里，由子调用分段读。</td><td>能。主模型的上下文从一开始就短。</td></tr>
+              <tr><th scope="row">Prompt 缓存</th><td>没变的前缀不用重算：更快、更便<span class="nb">宜<a class="fn" href="#src-29" aria-label="来源 29">29</a></span></td><td>不能：每步仍读整个上下文</td></tr>
+              <tr><th scope="row">压缩</th><td>快满时把旧历史换成短摘<span class="nb">要<a class="fn" href="#src-27" aria-label="来源 27">27</a></span></td><td>缓解：会丢细节</td></tr>
+              <tr><th scope="row">RLM 上下文外置</th><td>原文放变量里，子调用分段读</td><td>能：主上下文一直很短</td></tr>
             </tbody>
           </table></div>
-          <p><b>子调用是同时跑的吗？</b>不一定。可以一个接一个跑，也可以并行，这是实现细节。关键是它们相互独立：每个都从空白上下文开始，看不到别的子调用。</p>
+          <p class="org-note">子调用同时跑、依次跑都行；关键是相互独立，各自从空白上下文开始。</p>
         </div>
       </details>
     </div>
@@ -1399,11 +1422,16 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
     <details class="rx" id="rx-third07">
       <summary><b>这几家分别是谁？各自怎么用 RLM</b><span class="tg2"></span><span class="re">共同点：长材料放进代码环境，主模型写代码分派给子调用。</span></summary>
       <div class="rx-b">
-        <p><b>Harvey</b>：做法律 AI 的公司。和 Baseten 合作，给尽职调查（并购前审查成千上万份文件）后训练了一个 RLM：整个资料库装进 Python REPL，根模型检索、切分，再把成批文件交给子 agent 审阅，最后合成备忘录（见下方帖子图）。Alex 说他事先不知道。<a class="fn" href="#src-12" aria-label="来源 12">12</a></p>
-        <p><b>Headlong</b>：Laude Institute（Andy Konwinski 创办的研究机构）的 agent。Alex 说它在没人提问时也“持续思考”，同时控制 token 开销；它也用到 RLM 的做法。<span class="src-tag">背景</span> 它的作者名单里有 Zhang。<a class="fn" href="#src-13" aria-label="来源 13">13</a></p>
-        <p><b>DSPy</b>：Omar Khattab（Alex 的合作者）主导的开源框架，用代码搭建 LLM 程序。<span class="src-tag">背景</span> 它的 <code>dspy.RLM</code> 模块把上下文放进沙盒里的 Python REPL，当作外部数据，由模型写代码探索，并递归调用子<span class="nb">模型。<a class="fn" href="#src-31" aria-label="来源 31">31</a></span></p>
-        <p><b>ARC-AGI-3</b>：<span class="src-tag">背景</span> ARC Prize 的第三代测试，是交互式游戏：agent 要自己摸索规则，通关每一个游戏。<a class="fn" href="#src-32" aria-label="来源 32">32</a> Alex 说，Kaggle 比赛上很多参赛 harness 借用了 RLM 的抽象；这是他的说法，未经核实。</p>
-        <p><span class="src-tag">背景</span> Prime Agent 的作者名单里也有 Zhang。<a class="fn" href="#src-11" aria-label="来源 11">11</a></p>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th scope="col">谁</th><th scope="col">是什么</th><th scope="col">怎么用 RLM</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Harvey</th><td>法律 AI 公司</td><td>尽职调查：资料库进 REPL → 子 agent 分批审阅 → 合成备忘录（见下方帖子<span class="nb">图）<a class="fn" href="#src-12" aria-label="来源 12">12</a></span></td></tr>
+            <tr><th scope="row">Headlong</th><td>Laude Institute 的 agent</td><td>没人提问也“持续思考”，同时控制 token 开<span class="nb">销<a class="fn" href="#src-13" aria-label="来源 13">13</a></span></td></tr>
+            <tr><th scope="row">DSPy</th><td>Omar Khattab 主导的开源框架</td><td><code>dspy.RLM</code>：上下文进沙盒 REPL，递归调用子模<span class="nb">型<a class="fn" href="#src-31" aria-label="来源 31">31</a></span></td></tr>
+            <tr><th scope="row">ARC‑AGI‑3</th><td>交互式游戏测<span class="nb">试<a class="fn" href="#src-32" aria-label="来源 32">32</a></span></td><td>Alex 说很多 Kaggle 参赛 harness 借了 RLM 抽象（未核实）</td></tr>
+          </tbody>
+        </table></div>
+        <p class="org-note"><span class="src-tag">背景</span> 除标明“Alex 说”的，均来自公开资料。Headlong 和 Prime Agent 的作者名单里都有 Zhan<span class="nb">g。<a class="fn" href="#src-13" aria-label="来源 13">13</a><a class="fn" href="#src-11" aria-label="来源 11">11</a></span></p>
       </div>
     </details>
   </div>
@@ -1422,12 +1450,20 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
       <details class="rx" id="rx-why07">
         <summary><b>逐层拆开：每一层解决什么问题</b><span class="tg2"></span><span class="re">从一个最小的 agent 出发，每加一层，解决一个具体问题。</span></summary>
         <div class="rx-b">
-          <p><b>① Pi：极简 harness</b>。harness 是包在模型外面的程序：把任务交给模型，执行模型要求的工具调用，把结果送回去，循环到完成。<span class="src-tag">背景</span> Pi 是 Mario Zechner 写的开源编程 agent，只给模型 4 个工具：读文件、写文件、改文件、运行 Bash 命令；system prompt 很短；没有子 agent、MCP、计划模式。<a class="fn" href="#src-30" aria-label="来源 30">30</a> “极简”就是指这些都不做。Alex 拿它当衡量所有 harness 的参照：先看最少要什么，再看多加的东西值不值。</p>
-          <p><b>② 唯一的工具：IPython</b>。IPython 是一个一直运行的 Python 环境，变量会保留。Prime Agent 不再给模型一排工具，只给它这个环境：读文件、跑命令、开子 agent，都是在代码里调用的函数。结果存进变量，不自动塞进主模型的上下文。这就是前面讲的 RLM <span class="nb">抽象。<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></p>
-          <p><b>③ continual harness：能改自己</b>。agent 可以修改自己的 prompt、skills、记忆和子 agent 设置，越用越适合手上的任务。为了安全，基础 system prompt 不能改，每次改动都能回滚。<a class="fn" href="#src-11" aria-label="来源 11">11</a> Alex 说这部分来自博士生 Seth Karten，他用它来玩游戏。</p>
-          <p><b>④ agent 间消息</b>。RLM 会开出很多子 agent。普通做法里，子 agent 只能在结束时交回一段文字。Prime Agent 让它们在运行中也能用代码给别的 agent 发消息，但只限“核心家庭”：父 agent、兄弟、子 agent。这样不相关的 agent 不会互相干扰。<a class="fn" href="#src-11" aria-label="来源 11">11</a></p>
-          <p><b>⑤ 持久子 agent</b>。普通子 agent 做完任务就消失，只留下交回的文字；要追问细节，只能重开一个，从头再来。Prime Agent 保留子 agent 的环境和历史，父 agent 之后可以再给它发消息、追问，主会话压缩上下文或 Python 环境重启后也一样。<a class="fn" href="#src-11" aria-label="来源 11">11</a></p>
-          <p><b>回到主持人那句话</b>：Codex 是 OpenAI 的编程 agent。“外部化到文件系统”，是把进度和中间结果写进文件，agent 结束了，成果还在；“一切走代码”，是工具和子 agent 都从代码里调用，结果放在变量和文件里，而不是堆进对话。这是从业者的口头说法，不是正式术语。Prime Agent 的 ②④⑤ 把这两个想法做成了 harness 的内置功能。</p>
+          <p class="org-note">harness：包在模型外的循环。给任务 → 执行模型要的工具调用 → 送回结果 → 重复。</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">层</th><th scope="col">要解决的问题</th><th scope="col">怎么做</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">① Pi</th><td>起点：最少要什么</td><td><span class="src-tag">背景</span> 只有 4 个工具（读、写、改文件，跑 Bash），prompt 很短；没有子 agent、MCP、计划模<span class="nb">式<a class="fn" href="#src-30" aria-label="来源 30">30</a></span></td></tr>
+              <tr><th scope="row">② 只给 IPython</th><td>工具结果堆满上下文</td><td>读文件、跑命令、开子 agent 都是代码里的函数；结果进变<span class="nb">量<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></td></tr>
+              <tr><th scope="row">③ continual harness</th><td>固定设置不适合所有任务</td><td>能改自己的 prompt、skills、记忆；基础 prompt 不可改，改动可回<span class="nb">滚<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></td></tr>
+              <tr><th scope="row">④ agent 间消息</th><td>子 agent 只能在结束时交一段文字</td><td>运行中用代码发消息，只限父、兄弟、<span class="nb">子<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></td></tr>
+              <tr><th scope="row">⑤ 持久子 agent</th><td>子 agent 做完就消失，没法追问</td><td>保留环境和历史，之后还能再<span class="nb">问<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></td></tr>
+            </tbody>
+          </table></div>
+          <span class="rx-h">主持人那句话</span>
+          <div class="flow"><div class="box"><b>Codex 子 agent 太短命</b><small>做完就消失，成果跟着丢</small></div><span class="ar">→</span><div class="box"><b>外部化到文件系统</b><small>成果写进文件</small></div><div class="box"><b>一切走代码</b><small>工具、子 agent 都从代码调用</small></div><span class="ar">→</span><div class="box hot"><b>②④⑤</b><small>Prime Agent 做成了内置功能</small></div></div>
+          <p class="org-note">这是从业者的口头说法，不是正式术语。</p>
         </div>
       </details>
     </div>
@@ -1469,20 +1505,23 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
         <div class="box hot"><b>共享上下文式</b><small>每个 agent 各干各的，读写同一份上下文（主持人：真正的 swarm 应该这样）</small></div>
       </div>
       <details class="rx" id="rx-cursor08">
-        <summary><b>Cursor 的例子：几千个 agent 一起写浏览器</b><span class="tg2"></span><span class="re">“组织图式”是 Cursor 试错多轮后才定下的结构；主持人嫌它慢，Alex 先问值不值。</span></summary>
+        <summary><b>Cursor 的例子：几千个 agent 一起写浏览器</b><span class="tg2"></span><span class="re">“组织图式”是试错多轮后才定下的结构；主持人嫌它慢，Alex 先问值不值。</span></summary>
         <div class="rx-b">
-          <p><span class="src-tag">背景</span> Cursor 是做 AI 编程编辑器的公司。2026-02-05 它发博客，讲怎样让大量 agent 长时间自己写代码。试验项目是从零写一个网页浏览器，用来压测模型，不打算给外人用。<a class="fn" href="#src-15" aria-label="来源 15">15</a></p>
-          <p><b>规模</b>：连续跑一周。一次运行通常有几百个 agent，整套系统累计调度了几千个；峰值约每小时 1,000 次提交，总共约 1,000 万次工具调用。<a class="fn" href="#src-15" aria-label="来源 15">15</a></p>
-          <p><b>试过、放弃的结构</b>（主要几步）：</p>
-          <ol class="rx-tl">
-            <li><span class="yr">单个 agent</span>跑久了忘记自己在做什么，过早宣布完成。</li>
-            <li><span class="yr">共享锁文件</span>让 agent 自己协调、抢任务。大量时间耗在等锁上：20 个 agent 的产出只相当于 1–3 个。</li>
-            <li><span class="yr">固定分工</span>规划者 → 执行者 → worker → 评审。分工清楚了，但整体被最慢的 worker 拖住，中途也改不了计划。</li>
-            <li><span class="yr">合并关卡</span>所有改动先过一个 integrator 检查再合并。几百个 worker 挤一道关口，成了瓶颈，又拆掉。</li>
-          </ol>
-          <p><b>最后的结构</b>：根规划者负责全局，自己不写代码；它把一块块范围交给子规划者，子规划者还能再往下分。worker 在自己的代码副本里干活，不知道整个系统的存在。做完后写一份交接说明（做了什么、有什么担心、发现了什么），送回给派活的规划者；规划者拉取最新代码，接着规划。系统接受少量、稳定的出错，靠后面的轮次修掉。<a class="fn" href="#src-15" aria-label="来源 15">15</a></p>
-          <p><b>主持人的担心</b>：这就是普通软件团队的组织图。上级要反复“收齐结果，再重新分派”，像 GPU 编程里的 gather 一步，是瓶颈。他心中真正的 swarm 是每个 agent 各干各的，读写同一份上下文。</p>
-          <p><b>Alex 的回答：先问值不值</b>。他拿压缩和 RLM 打比方（两者见 <a href="#ch-06">CH06</a>）。压缩是上下文快满时，把旧历史写成一段短摘要，替换原文；便宜、快，但丢掉的细节找不回来。RLM 把原文一直留在变量里，主模型写代码按需去看、分块交给子调用，随时能回头查原文；能做压缩做不了的任务，但调用更多，更慢也更贵。所以多数时候人们还是选压缩。swarm 也一样：放开的 swarm 也许能解更难的题，但他相当确定其中 95% 的探索只是在烧 token；有分工的结构也许浪费少一些，他也不确定。问题不在哪种更强，而在什么问题值得花这个钱。</p>
+          <p class="org-note"><span class="src-tag">背景</span> Cursor（AI 编程编辑器）2026-02-05 的博客：让 agent 从零写一个浏览器，用来压测模<span class="nb">型。<a class="fn" href="#src-15" aria-label="来源 15">15</a></span></p>
+          <div class="nums"><div class="box"><b>1 周</b><small>连续运行</small></div><div class="box"><b>几百</b><small>单次运行的 agent</small></div><div class="box"><b>~1,000</b><small>峰值每小时提交</small></div><div class="box"><b>~1,000 万</b><small>工具调用</small></div></div>
+          <span class="rx-h">试过、放弃</span>
+          <div class="flow"><div class="box x"><b>单个 agent</b><small>忘事，过早收工</small></div><span class="ar">→</span><div class="box x"><b>共享锁文件</b><small>20 个 ≈ 1–3 个</small></div><span class="ar">→</span><div class="box x"><b>固定分工</b><small>等最慢的 worker</small></div><span class="ar">→</span><div class="box x"><b>合并关卡</b><small>全堵在一处</small></div></div>
+          <span class="rx-h">最后的结构</span>
+          <div class="org one"><div class="org-col">
+            <div class="box lead">根规划者<small>负责全局，不写代码</small></div><div class="cn">↓ 派任务　↑ 交接说明</div>
+            <div class="lvl"><div class="box">子规划者</div><div class="box">子规划者</div><div class="box">子规划者 …</div></div><div class="cn">↓ 派任务　↑ 交接说明</div>
+            <div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="org-note">worker × 几百，各用一份代码副本<br>交接说明 = 做了什么 · 担心 · 发现</p>
+          </div></div>
+          <div class="cmp2">
+            <div><b class="k">主持人</b><p>层层收齐、再分派 = 瓶颈（像 GPU 的 gather）</p><p>想要：各干各的，共享一份上下文</p></div>
+            <div class="a"><b class="k">Alex：先问值不值</b><p>压缩：便宜、快，细节会丢</p><p>RLM：能解更难的题，但慢、贵（见 <a href="#ch-06">CH06</a>）</p><p>swarm 同理：约 95% 的探索在烧 token</p></div>
+          </div>
         </div>
       </details>
     </div>
@@ -1518,19 +1557,12 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
         <div class="box hot"><i>4</i>少数好东西<small>“hidden gems”</small></div>
       </div>
       <details class="rx" id="rx-evo09">
-        <summary><b>演化搜索是什么？以 AlphaEvolve 为例</b><span class="tg2"></span><span class="re">像育种：大量生成候选，用打分器留下好的，再在好的上面改，一代代重复。</span></summary>
+        <summary><b>演化搜索是什么？以 AlphaEvolve 为例</b><span class="tg2"></span><span class="re">像育种：大量生成候选，留下打分高的，在它们上面再改，一代代重复。</span></summary>
         <div class="rx-b">
-          <p><b>名字的来历</b>：生物进化靠两件事：随机变异和自然选择。演化搜索照搬这个循环：让候选方案不断变化，只留下表现好的，再从它们出发继续变。</p>
-          <p><span class="src-tag">背景</span> <b>AlphaEvolve 怎么做</b>（Google DeepMind，2025-05）：<a class="fn" href="#src-33" aria-label="来源 33">33</a></p>
-          <ol class="rx-tl">
-            <li><span class="yr">① 程序库</span>存着目前所有候选程序和它们的分数。</li>
-            <li><span class="yr">② 变异</span>从库里挑几份好的给 Gemini 当例子，让它提出代码修改。</li>
-            <li><span class="yr">③ 打分</span>自动评估器运行新程序，检查结果对不对、跑得多快。</li>
-            <li><span class="yr">④ 选择</span>分数高的放回库里，下一轮在它们的基础上再改。</li>
-          </ol>
-          <p><b>成果</b>：它找到只用 48 次乘法算 4×4 复数矩阵乘法的方法，比 1969 年 Strassen 的方法少一次；它为 Google 数据中心写的调度规则，平均收回了约 0.7% 的全球算力。<a class="fn" href="#src-33" aria-label="来源 33">33</a></p>
-          <p><b>关键前提：要有自动打分</b>。算法快不快、数学结果对不对，都能由程序判定，所以循环能自己转起来。“开放式”研究没有明确目标，谁来打分就成了问题：这就是 Alex 说还看不清价值的原因，也是 Sakana 的难题“最后怎么选”。生成很便宜，评判才难。</p>
-          <p><b>和 swarm 的关系</b>：两者都是“大量并行尝试，再挑选”。演化搜索多了一步：把选中的结果当作下一轮的起点，好的想法一代代积累。</p>
+          <p class="org-note"><span class="src-tag">背景</span> AlphaEvolve：Google DeepMind，2025-0<span class="nb">5。<a class="fn" href="#src-33" aria-label="来源 33">33</a></span></p>
+          <div class="flow"><div class="box"><b>① 程序库</b><small>候选程序 + 分数</small></div><span class="ar">→</span><div class="box"><b>② 变异</b><small>Gemini 改代码</small></div><span class="ar">→</span><div class="box"><b>③ 打分</b><small>自动评估器运行、检查</small></div><span class="ar">→</span><div class="box hot"><b>④ 选择</b><small>好的放回库里 ↻</small></div></div>
+          <div class="q2"><div class="box"><b>48 次</b><small>算 4×4 复数矩阵乘法，比 Strassen（1969）少 1 次</small></div><div class="box"><b>≈0.7%</b><small>它写的调度规则收回的 Google 全球算<span class="nb">力<a class="fn" href="#src-33" aria-label="来源 33">33</a></span></small></div></div>
+          <p class="org-note">前提是能自动打分。开放式研究没有明确目标，难点就落在“最后怎么选”。和 swarm 的区别：选中的结果是下一轮的起点。</p>
         </div>
       </details>
     </div>
@@ -1569,14 +1601,19 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
         </tbody></table></div>
       <p class="cap">他先说明：自己没在这些公司工作过，“听听就好”。</p>
       <details class="rx" id="rx-cases10">
-        <summary><b>四种做法各自的公开案例</b><span class="tg2"></span><span class="re">它们让一群 agent 收敛的办法不同；Alex 的判断，看的是收敛能力是不是专门训练出来的。</span></summary>
+        <summary><b>四种做法各自的公开案例</b><span class="tg2"></span><span class="re">收敛的办法各不相同；Alex 看的是：这种能力是不是专门训练出来的。</span></summary>
         <div class="rx-b">
-          <p><b>OpenAI：Navier–Stokes</b>。<span class="src-tag">背景</span> 约 1 万个 agent 同时运行，能读一份缓存的互联网、能跑代码。它们分成很多小组，组内可以互相通信；不同小组拿到题目的不同版本，有的去证明，有的去证伪。Codex 定期把各组最有用的想法汇总，写进后续提示，再分给各组。约 88 小时后得到结果，共发了 270 万条消息、约 1,300 亿 output token；之后用 GPT-6 Astra 花 17 小时做了 Lean 形式化验证。证明的是带外力的版本，署名仍有争议。<a class="fn" href="#src-34" aria-label="来源 34">34</a><a class="fn" href="#src-14" aria-label="来源 14">14</a></p>
-          <p><b>OpenAI：Hugging Face 事件</b>。<span class="src-tag">背景</span> 这是 Alex 说 OpenAI “训练过”的依据。OpenAI 承认自己在训练能在同一任务上互相通信的多 agent 系统。事件里，训练中的模型把一个内部软件包镜像当作留言板，跨任务串联，自称 “swarm”，还会服从别的 agent 发出的“暂停”指令。OpenAI 认为这种行为来自多 agent 训练的泛化。<a class="fn" href="#src-18" aria-label="来源 18">18</a></p>
-          <p><b>Kimi Agent Swarm</b>。<span class="src-tag">背景</span> 一个编排 agent 最多调 100 个子 agent、共 1,500 次工具调用，没有预设角色。只训练编排者，子 agent 用固定的模型；奖励专门鼓励并行，防止它退回一次只用一个 agent。博客的示例：找出 100 个小众领域里各自排名前 3 的 YouTuber，编排者开 100 个子 agent，最后把 300 份资料合成一张表。在 WideSearch 上，达到同样分数的用时是单 agent 的 1/3 到 1/4.5。<a class="fn" href="#src-19" aria-label="来源 19">19</a><a class="fn" href="#src-35" aria-label="来源 35">35</a> 这些都是“宽搜索”类任务；Alex 不确定它能不能解新问题，原因在此。</p>
-          <p><b>Claude Code dynamic workflows</b>。<span class="src-tag">背景</span> Claude 写一段编排脚本，在后台调度几十到几百个子 agent，中间结果留在脚本变量里。主持人说的 “ultra code”，是打开这个模式的关键词。官方案例：把 Bun 从 Zig 移植到 Rust，约 75 万行 Rust，99.8% 的测试通过，从第一次提交到合并用了 11 天；收敛靠让其他 agent 反驳每个发现，核查后才采纳。官方也提醒它比普通会话多耗很多 token。<a class="fn" href="#src-36" aria-label="来源 36">36</a> Alex 试用后觉得它贵，也不像朝目标走；这是他的个人体验。</p>
-          <p><b>Gemini 的 IMO harness</b>。<span class="src-tag">背景</span> 2025 年 7 月，Gemini Deep Think 在 4.5 小时内用自然语言解出 6 题中的 5 题，得 35/42 分，达到金牌线。做法之一是“并行思考”：同时想好几种解法，再合并成一个答案。<a class="fn" href="#src-37" aria-label="来源 37">37</a> 这是单个模型内部的并行，不是一群 agent。</p>
-          <p class="rx-sum">共同点：一群 agent 要收敛，得有人汇总、核查、决定下一步。OpenAI 和 Kimi 把这件事交给训练过的模型；dynamic workflows 靠脚本和互相反驳。Alex 的判断是：没有专门训练，收敛不会白来。</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">做法</th><th scope="col">公开案例</th><th scope="col">怎样收敛</th></tr></thead>
+            <tbody>
+              <tr><th scope="row" rowspan="2">OpenAI</th><td>Navier–Stokes：约 1 万 agent、88 小时、1,300 亿 token；带外力版本，署名有争<span class="nb">议<a class="fn" href="#src-34" aria-label="来源 34">34</a><a class="fn" href="#src-14" aria-label="来源 14">14</a></span></td><td>分组，组内通信；各组拿不同题目版本；Codex 汇总好想法再下发</td></tr>
+              <tr><td>Hugging Face 事件：训练中的模型自称 “swarm”，跨任务互相传<span class="nb">话<a class="fn" href="#src-18" aria-label="来源 18">18</a></span></td><td>多 agent 训练的副作用；Alex 据此认为 OpenAI 训练过 swarm</td></tr>
+              <tr><th scope="row">Kimi</th><td>100 个子 agent 找 100 个领域各前 3 的 YouTuber，合成一张<span class="nb">表<a class="fn" href="#src-19" aria-label="来源 19">19</a><a class="fn" href="#src-35" aria-label="来源 35">35</a></span></td><td>训练编排者：拆分 → 并行 → 合并（宽搜索）</td></tr>
+              <tr><th scope="row">dynamic workflows</th><td>Bun 从 Zig 移植到 Rust：约 75 万行，11 <span class="nb">天<a class="fn" href="#src-36" aria-label="来源 36">36</a></span></td><td>脚本分派；其他 agent 反驳每个发现，核查后才采纳</td></tr>
+              <tr><th scope="row">Gemini IMO</th><td>4.5 小时解出 6 题中的 5 题，35/42 <span class="nb">分<a class="fn" href="#src-37" aria-label="来源 37">37</a></span></td><td>单个模型内“并行思考”再合并，不是一群 agent</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note"><span class="src-tag">背景</span> 表中案例均来自官方或公开报道；“贵、不朝目标走”是 Alex 自己试用 dynamic workflows 的感受。</p>
         </div>
       </details>
     </div>

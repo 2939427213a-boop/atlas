@@ -409,6 +409,23 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 #v07 .rx{margin-top:14px}
 #v08 .rx,#v09 .rx{margin-top:14px}
 #v10 .rx{margin-top:14px}
+.rx-b{container-type:inline-size}
+.rx-h{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--mg-45)}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+.flow>.box{flex:1 1 7em;min-width:0}
+.flow .box b{display:block}
+.flow>.ar{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
+.flow .box.x b::before{content:'\2715  ';color:var(--red)}
+@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.ar{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
+.rx-b>.org-note{text-align:left}
+.org .box.lead small{color:inherit;opacity:.75;font-weight:400}
+.fn+.fn{margin-left:.35em}
+.org .cn{font-family:var(--font-mono);font-size:11px;color:var(--mg-45);padding:2px 0}
+.org.one{grid-template-columns:minmax(0,1fr)}
+.rx-b .tbl{font-size:13px;line-height:1.5}
+.rx-b .tbl td,.rx-b .tbl th{padding:7px 10px}
+.rx-b .tbl tbody th{white-space:normal}
+.rx-b .q2 .box b{font-size:20px;font-family:var(--font-display);color:var(--midground)}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1239,19 +1256,24 @@ html.sv-open{overflow:hidden}
         <summary><b>Why does this happen? One example, step by step</b><span class="tg2"></span><span class="re">The key: the main model sees different things in the two kinds of harness.</span></summary>
         <div class="rx-b">
           <p><span class="src-tag">Context</span> The example and numbers come from his blog post.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
-          <p><b>Two tasks</b>: retrieval means finding the answer to a question in a large pile of documents; aggregation means computing statistics over a large dataset, such as how many items fall in each class. The domains and questions are completely different, but the solution is the same: cut the input into pieces, handle each piece, then combine the results.</p>
+          <div class="flow"><div class="box"><b>Retrieval</b><small>Find an answer in many documents</small></div><div class="box"><b>Aggregation</b><small>Compute stats over a dataset</small></div><span class="ar">→</span><div class="box hot"><b>Same solution</b><small>cut → handle each piece → combine</small></div></div>
           <div class="cmp2">
-            <div><b class="k">Ordinary harness: the main model sees everything</b><p>The task description, all the documents or data, and every tool result are appended in order. This is "trajectory as a prompt". The two tasks produce completely different text, so what the model learns on one is hard to carry to the other.</p></div>
-            <div class="a"><b class="k">RLM: the main model only writes orchestration code</b><p>The documents or data go into a variable <code>context</code>, and the question into <code>query</code>. The main model never sees their contents; it only writes code (simplified):</p><pre class="code"># cut into 20 pieces
+            <div><b class="k">Ordinary harness: the main model sees everything</b><p>Task + all documents + every tool result → one long trajectory</p><p>The two trajectories look nothing alike → learning does not carry over</p></div>
+            <div class="a"><b class="k">RLM: the main model only writes orchestration code</b><pre class="code"># cut into 20 pieces
 chunks = split(context, 20)
 # one sub-call per piece
 notes = [llm(query, c) for c in chunks]
 # one more sub-call to combine
-answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. Only <code>query</code> and the content of each piece differ, and those go to the sub-calls. Each sub-call sees one small piece, a small task the model already knows.</p></div>
+answer = llm(query, notes)</pre><p>The code is almost the same for both tasks → train one, get the other</p></div>
           </div>
-          <p><b>Train on one, get the other</b>: in training, the main model learns the program "cut, dispatch, combine". On the other task it sees almost the same program, so there is nothing new to learn. The blog's cross-domain experiments (for example, from finding essays by the same author to finding math problems with the same solution method) show this transfer; the model trained directly barely transfers.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
-          <p><b>Longer tasks</b>: when the input is 10× longer, an ordinary harness's trajectory is also about 10× longer, beyond the lengths seen in training, so the model is on unfamiliar ground. The RLM's code stays the same; there are just more pieces, and each sub-call still sees one small piece. In the blog's experiments, Qwen3-30B-A3B trained only on short tasks and tested on tasks 8–32× longer improved clearly as an RLM, while the directly trained model barely moved.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
-          <p><b>Why "no magic"</b>: the model must actually learn to decompose. On short tasks it can also hand the whole problem to one sub-call, and that habit does not carry to long tasks. On one task in the blog, it needed a hint to decompose first.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">Input 10× longer</th><th scope="col">Ordinary harness</th><th scope="col">RLM</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">What the main model sees</th><td>A 10× longer trajectory, beyond lengths seen in training</td><td>The same code, just more pieces</td></tr>
+              <tr><th scope="row">Experiment: train short, test 8–32× longer</th><td>Barely improves</td><td>Clearly improves<a class="fn" href="#src-26" aria-label="Source 26">26</a></td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">Caveat: the model must really learn to split. If it hands the whole task to one sub-call, it will not generalize to long tasks.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
         </div>
       </details>
     </div>
@@ -1336,18 +1358,19 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
       </div>
       <p class="cap">Illustrative only; left turns and right steps do not line up.</p>
       <details class="rx" id="rx-why06">
-        <summary><b>What does "out of distribution" mean? Does caching fix it?</b><span class="tg2"></span><span class="re">In one line: caching makes repeated computation cheaper, but it does not change what the model has to read.</span></summary>
+        <summary><b>What is "out of distribution"? Does caching fix it?</b><span class="tg2"></span><span class="re">In one line: caching makes repeated computation cheaper, but does not change what the model has to read.</span></summary>
         <div class="rx-b">
-          <p><span class="src-tag">Context</span> <b>Out of distribution</b>: a model is familiar with the inputs common in its training data, including their usual length, format and structure. After dozens of turns, an ordinary harness's prompt is packed with the task, reasoning, logs and tool results, possibly hundreds of thousands of tokens. Training rarely shows inputs this long and messy; that is what out of distribution means.<a class="fn" href="#src-26" aria-label="Source 26">26</a> Tests also find that even on simple tasks, models do worse as the input gets longer, which is called context rot.<a class="fn" href="#src-28" aria-label="Source 28">28</a> This is not the same as running out of room: a prompt can be out of distribution long before the window is full.</p>
+          <div class="flow"><div class="box"><b>Common in training</b><small>Moderate length, tidy structure</small></div><span class="ar">→</span><div class="box hot2"><b>After dozens of turns</b><small>Task + reasoning + logs + tool results, hundreds of thousands of tokens</small></div><span class="ar">=</span><div class="box"><b>Out of distribution</b><small>Input the model is not used to<a class="fn" href="#src-26" aria-label="Source 26">26</a></small></div></div>
+          <p class="org-note"><span class="src-tag">Context</span> The longer the input, the worse models do even on simple tasks (context rot).<a class="fn" href="#src-28" aria-label="Source 28">28</a> A context can be out of distribution before the window is full.</p>
           <div class="tbl-wrap"><table class="tbl">
-            <thead><tr><th scope="col">Approach</th><th scope="col">What it changes</th><th scope="col">Fixes out of distribution?</th></tr></thead>
+            <thead><tr><th scope="col">Approach</th><th scope="col">What it changes</th><th scope="col">Fixes OOD?</th></tr></thead>
             <tbody>
-              <tr><th scope="row">Prompt caching</th><td>The unchanged front part is not recomputed, so calls are faster and cheaper.<a class="fn" href="#src-29" aria-label="Source 29">29</a></td><td>No. At every step the model still reads the whole context.</td></tr>
-              <tr><th scope="row">Compaction</th><td>When the context is nearly full, old history is summarized into a short note that replaces it.<a class="fn" href="#src-27" aria-label="Source 27">27</a></td><td>Partly. Details are lost, and the summary still sits in the main context.</td></tr>
-              <tr><th scope="row">RLM context offloading</th><td>The source never enters the main context; it stays in a variable, and sub-calls read it piece by piece.</td><td>Yes. The main model's context is short from the start.</td></tr>
+              <tr><th scope="row">Prompt caching</th><td>Unchanged prefix is not recomputed: faster, cheaper<a class="fn" href="#src-29" aria-label="Source 29">29</a></td><td>No: every step still reads the whole context</td></tr>
+              <tr><th scope="row">Compaction</th><td>Near the limit, old history becomes a short summary<a class="fn" href="#src-27" aria-label="Source 27">27</a></td><td>Eases it: details get lost</td></tr>
+              <tr><th scope="row">RLM context offloading</th><td>Source stays in a variable; sub-calls read pieces</td><td>Yes: the main context stays short</td></tr>
             </tbody>
           </table></div>
-          <p><b>Do sub-calls run at the same time?</b> Not necessarily. They can run one after another or in parallel; that is an implementation detail. What matters is that they are independent: each starts from a blank context and cannot see the others.</p>
+          <p class="org-note">Sub-calls can run at once or one by one; what matters is that each is independent and starts from a blank context.</p>
         </div>
       </details>
     </div>
@@ -1399,11 +1422,16 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
     <details class="rx" id="rx-third07">
       <summary><b>Who are they, and how does each use RLMs?</b><span class="tg2"></span><span class="re">Common thread: long material lives in a code environment; the main model writes code that hands pieces to sub-calls.</span></summary>
       <div class="rx-b">
-        <p><b>Harvey</b>: a legal AI company. With Baseten, it post-trained an RLM for due diligence (reviewing thousands of files before a deal): the whole data room loads into a Python REPL, the root model searches and slices it, sends batches of files to sub-agents for review, and the results merge into a memo (see the post below). Alex says he was not told in advance.<a class="fn" href="#src-12" aria-label="Source 12">12</a></p>
-        <p><b>Headlong</b>: an agent from Laude Institute (the research institute Andy Konwinski founded). Alex says it "thinks persistently" even when nobody asks it anything, while keeping token costs under control; it also uses the RLM approach. <span class="src-tag">Context</span> Zhang is on its author list.<a class="fn" href="#src-13" aria-label="Source 13">13</a></p>
-        <p><b>DSPy</b>: an open-source framework led by Omar Khattab (Alex's collaborator) for building LLM programs in code. <span class="src-tag">Context</span> Its <code>dspy.RLM</code> module keeps the context in a sandboxed Python REPL as external data; the model writes code to explore it and calls sub-models recursively.<a class="fn" href="#src-31" aria-label="Source 31">31</a></p>
-        <p><b>ARC-AGI-3</b>: <span class="src-tag">Context</span> the third ARC Prize benchmark, made of interactive games: an agent must work out the rules itself and beat every game.<a class="fn" href="#src-32" aria-label="Source 32">32</a> Alex says many harnesses in the Kaggle competition borrowed the RLM abstraction; this is his claim and is unverified.</p>
-        <p><span class="src-tag">Context</span> Zhang is also on Prime Agent's author list.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th scope="col">Who</th><th scope="col">What it is</th><th scope="col">How it uses RLMs</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Harvey</th><td>Legal AI company</td><td>Due diligence: data room in a REPL → sub-agents review batches → one memo (see the post below)<a class="fn" href="#src-12" aria-label="Source 12">12</a></td></tr>
+            <tr><th scope="row">Headlong</th><td>Laude Institute's agent</td><td>"Thinks persistently" even when not asked, while controlling token cost<a class="fn" href="#src-13" aria-label="Source 13">13</a></td></tr>
+            <tr><th scope="row">DSPy</th><td>Open-source framework led by Omar Khattab</td><td><code>dspy.RLM</code>: context in a sandboxed REPL, recursive sub-model calls<a class="fn" href="#src-31" aria-label="Source 31">31</a></td></tr>
+            <tr><th scope="row">ARC‑AGI‑3</th><td>Interactive game benchmark<a class="fn" href="#src-32" aria-label="Source 32">32</a></td><td>Alex says many Kaggle harnesses borrowed the RLM abstraction (unverified)</td></tr>
+          </tbody>
+        </table></div>
+        <p class="org-note"><span class="src-tag">Context</span> Everything not marked "Alex says" comes from public sources. Zhang is on both the Headlong and Prime Agent author lists.<a class="fn" href="#src-13" aria-label="Source 13">13</a><a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
       </div>
     </details>
   </div>
@@ -1422,12 +1450,20 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
       <details class="rx" id="rx-why07">
         <summary><b>Layer by layer: what each piece solves</b><span class="tg2"></span><span class="re">Start from a minimal agent; each layer adds one fix for one concrete problem.</span></summary>
         <div class="rx-b">
-          <p><b>① Pi: a minimal harness</b>. A harness is the program wrapped around the model: it gives the model the task, runs the tool calls the model asks for, sends the results back, and loops until done. <span class="src-tag">Context</span> Pi is Mario Zechner's open-source coding agent. It gives the model only 4 tools: read a file, write a file, edit a file, run a Bash command. Its system prompt is short, and it has no sub-agents, MCP or plan mode.<a class="fn" href="#src-30" aria-label="Source 30">30</a> "Minimal" means it leaves all of that out. Alex uses it as the yardstick for every harness: first see the least you need, then ask whether each addition earns its place.</p>
-          <p><b>② One tool: IPython</b>. IPython is a Python environment that keeps running, so variables persist. Instead of a row of tools, Prime Agent gives the model only this environment: reading files, running commands and starting sub-agents are all functions called from code. Results go into variables and are not pushed into the main model's context. This is the RLM abstraction from earlier.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
-          <p><b>③ Continual harness: it can change itself</b>. The agent can edit its own prompts, skills, memory and sub-agent setup, so it fits the task better over time. For safety, the base system prompt cannot change, and every change can be rolled back.<a class="fn" href="#src-11" aria-label="Source 11">11</a> Alex says this part comes from PhD student Seth Karten, who used it to play games.</p>
-          <p><b>④ Agent-to-agent messages</b>. An RLM starts many sub-agents. Normally a sub-agent can only hand back some text when it finishes. Prime Agent lets them send messages to other agents in code while they run, but only within the "nuclear family": parent, siblings and children. That keeps unrelated agents from interfering with each other.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
-          <p><b>⑤ Persistent sub-agents</b>. A normal sub-agent disappears when its task ends and leaves only the text it returned; to ask a follow-up, you start a new one from scratch. Prime Agent keeps the sub-agent's environment and history, so the parent can message it or ask more later, even after the main session compacts its context or the Python environment restarts.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
-          <p><b>Back to the host's remark</b>: Codex is OpenAI's coding agent. "Externalize to a file system" means writing progress and intermediate results to files, so the work survives when an agent ends. "Force everything through code" means calling tools and sub-agents from code, with results kept in variables and files instead of piling up in the conversation. This is practitioner shorthand, not formal terminology. Prime Agent's ②, ④ and ⑤ build these two ideas into the harness.</p>
+          <p class="org-note">Harness: the loop around the model. Give the task → run the tool calls it asks for → return the results → repeat.</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">Layer</th><th scope="col">Problem</th><th scope="col">How</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">① Pi</th><td>Baseline: the least you need</td><td><span class="src-tag">Context</span> Just 4 tools (read, write, edit files; run Bash), a short prompt; no sub-agents, MCP or plan mode<a class="fn" href="#src-30" aria-label="Source 30">30</a></td></tr>
+              <tr><th scope="row">② IPython only</th><td>Tool results flood the context</td><td>Reading files, running commands, starting sub-agents are all functions in code; results go to variables<a class="fn" href="#src-11" aria-label="Source 11">11</a></td></tr>
+              <tr><th scope="row">③ Continual harness</th><td>One fixed setup does not fit every task</td><td>Edits its own prompts, skills and memory; base prompt is fixed, changes can be rolled back<a class="fn" href="#src-11" aria-label="Source 11">11</a></td></tr>
+              <tr><th scope="row">④ Agent messages</th><td>Sub-agents can only return text at the end</td><td>Message in code while running, only within parent, siblings, children<a class="fn" href="#src-11" aria-label="Source 11">11</a></td></tr>
+              <tr><th scope="row">⑤ Persistent sub-agents</th><td>Sub-agents vanish when done; no follow-ups</td><td>Environment and history are kept, so they can be asked again<a class="fn" href="#src-11" aria-label="Source 11">11</a></td></tr>
+            </tbody>
+          </table></div>
+          <span class="rx-h">The host's remark</span>
+          <div class="flow"><div class="box"><b>Codex sub-agents die too soon</b><small>Gone when done, work lost</small></div><span class="ar">→</span><div class="box"><b>Externalize to a file system</b><small>Write results to files</small></div><div class="box"><b>Everything through code</b><small>Tools and sub-agents called from code</small></div><span class="ar">→</span><div class="box hot"><b>②④⑤</b><small>Built into Prime Agent</small></div></div>
+          <p class="org-note">Practitioner shorthand, not formal terms.</p>
         </div>
       </details>
     </div>
@@ -1469,20 +1505,23 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
         <div class="box hot"><b>Shared context</b><small>Agents work independently on one shared context (host: a true swarm works this way)</small></div>
       </div>
       <details class="rx" id="rx-cursor08">
-        <summary><b>The Cursor example: thousands of agents writing a browser</b><span class="tg2"></span><span class="re">The "org chart" is the structure Cursor settled on after several failed attempts; the host finds it slow, and Alex first asks whether it is worth it.</span></summary>
+        <summary><b>The Cursor example: thousands of agents writing a browser</b><span class="tg2"></span><span class="re">The "org chart" came after several failed attempts; the host finds it slow, and Alex first asks whether it is worth it.</span></summary>
         <div class="rx-b">
-          <p><span class="src-tag">Context</span> Cursor makes an AI coding editor. On 2026-02-05 it published a post on getting many agents to write code on their own for a long time. The test project was a web browser built from scratch, to stress-test the models, not for outside use.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
-          <p><b>Scale</b>: it ran nonstop for a week. A single run usually peaked at several hundred agents, and the system coordinated thousands in total; at peak it made about 1,000 commits per hour, across about 10 million tool calls.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
-          <p><b>Structures tried and dropped</b> (the main steps):</p>
-          <ol class="rx-tl">
-            <li><span class="yr">One agent</span>Over a long run it lost track of what it was doing and declared success too early.</li>
-            <li><span class="yr">Shared lock file</span>Agents coordinated themselves and claimed tasks. Most time went to waiting on locks: 20 agents produced as much as 1–3.</li>
-            <li><span class="yr">Fixed roles</span>Planner → executor → workers → judge. Roles were clear, but the whole system waited on the slowest worker and could not change plans mid-run.</li>
-            <li><span class="yr">Merge gate</span>All changes passed one integrator before merging. Hundreds of workers queued at one gate, so it became the bottleneck and was removed.</li>
-          </ol>
-          <p><b>The final structure</b>: a root planner owns the whole scope and writes no code. It hands slices to sub-planners, which can split them further. Workers code in their own copy of the repo and do not know the wider system exists. When done, a worker writes one handoff (what it did, its concerns, what it found) and sends it to the planner that asked for the task; the planner pulls the latest code and keeps planning. The system accepts a small, steady error rate and fixes errors in later rounds.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
-          <p><b>The host's worry</b>: this is just a normal software team's org chart. Managers must keep gathering results and re-dispatching work, like the gather step in GPU programming, and that is a bottleneck. His idea of a true swarm: every agent works on its own, reading and writing one shared context.</p>
-          <p><b>Alex's answer: first ask whether it is worth it</b>. He compares compaction and RLMs (both in <a href="#ch-06">CH06</a>). Compaction replaces old history with a short summary when the context is nearly full; it is cheap and fast, but dropped details are gone for good. An RLM keeps the original text in a variable; the main model writes code to look at it as needed, hands pieces to sub-calls, and can always go back to the source. It handles tasks compaction cannot, but it makes more calls, so it is slower and costs more. That is why people pick compaction most of the time. Swarms are the same: an open swarm may solve harder problems, but he is fairly sure 95% of its exploration just burns tokens; a structured setup may waste less, though he is not sure. The question is not which is stronger, but which problems are worth the money.</p>
+          <p class="org-note"><span class="src-tag">Context</span> Cursor (an AI code editor), blog post of 2026-02-05: agents build a browser from scratch to stress-test models.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
+          <div class="nums"><div class="box"><b>1 week</b><small>nonstop</small></div><div class="box"><b>Hundreds</b><small>agents per run</small></div><div class="box"><b>~1,000</b><small>commits/hour at peak</small></div><div class="box"><b>~10M</b><small>tool calls</small></div></div>
+          <span class="rx-h">Tried and dropped</span>
+          <div class="flow"><div class="box x"><b>One agent</b><small>Loses track, quits early</small></div><span class="ar">→</span><div class="box x"><b>Shared lock file</b><small>20 agents ≈ 1–3</small></div><span class="ar">→</span><div class="box x"><b>Fixed roles</b><small>Waits on the slowest worker</small></div><span class="ar">→</span><div class="box x"><b>Merge gate</b><small>Everything queues at one point</small></div></div>
+          <span class="rx-h">Final structure</span>
+          <div class="org one"><div class="org-col">
+            <div class="box lead">Root planner<small>Owns the scope, writes no code</small></div><div class="cn">↓ tasks　↑ handoffs</div>
+            <div class="lvl"><div class="box">Sub-planner</div><div class="box">Sub-planner</div><div class="box">Sub-planner …</div></div><div class="cn">↓ tasks　↑ handoffs</div>
+            <div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="org-note">Hundreds of workers, each with its own repo copy<br>Handoff = what was done · concerns · findings</p>
+          </div></div>
+          <div class="cmp2">
+            <div><b class="k">Host</b><p>Gather, then re-dispatch, level by level = bottleneck (like a GPU gather)</p><p>Wants: everyone works alone on one shared context</p></div>
+            <div class="a"><b class="k">Alex: first ask if it is worth it</b><p>Compaction: cheap, fast, loses details</p><p>RLM: solves harder tasks, but slower and costlier (see <a href="#ch-06">CH06</a>)</p><p>Swarms likewise: ~95% of exploration burns tokens</p></div>
+          </div>
         </div>
       </details>
     </div>
@@ -1518,19 +1557,12 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
         <div class="box hot"><i>4</i>A few good finds<small>"hidden gems"</small></div>
       </div>
       <details class="rx" id="rx-evo09">
-        <summary><b>What is evolutionary search? AlphaEvolve as an example</b><span class="tg2"></span><span class="re">Like breeding: generate many candidates, keep the ones a scorer rates well, change those, and repeat for many generations.</span></summary>
+        <summary><b>What is evolutionary search? AlphaEvolve as an example</b><span class="tg2"></span><span class="re">Like breeding: generate many candidates, keep the high scorers, change those, and repeat for many generations.</span></summary>
         <div class="rx-b">
-          <p><b>Where the name comes from</b>: biological evolution runs on two things, random variation and natural selection. Evolutionary search copies that loop: keep changing candidate solutions, keep only the ones that do well, and start the next changes from them.</p>
-          <p><span class="src-tag">Context</span> <b>How AlphaEvolve does it</b> (Google DeepMind, 2025-05):<a class="fn" href="#src-33" aria-label="Source 33">33</a></p>
-          <ol class="rx-tl">
-            <li><span class="yr">① Program database</span>Holds every candidate program so far and its score.</li>
-            <li><span class="yr">② Mutation</span>Gemini gets a few good programs from the database as examples and proposes code changes.</li>
-            <li><span class="yr">③ Scoring</span>Automated evaluators run the new program and check whether it is correct and how fast it is.</li>
-            <li><span class="yr">④ Selection</span>High scorers go back into the database, and the next round builds on them.</li>
-          </ol>
-          <p><b>Results</b>: it found a way to multiply 4×4 complex matrices with 48 multiplications, one fewer than Strassen's 1969 method; a scheduling rule it wrote for Google's data centers recovers about 0.7% of Google's worldwide compute on average.<a class="fn" href="#src-33" aria-label="Source 33">33</a></p>
-          <p><b>The key requirement: automatic scoring</b>. Whether an algorithm is fast, or a math result is correct, a program can check, so the loop runs by itself. Open-ended research has no clear objective, so who does the scoring becomes the problem. That is why Alex is unsure of its value, and it is Sakana's hard problem of "how to pick at the end". Generating is cheap; judging is hard.</p>
-          <p><b>How it relates to swarms</b>: both are "many parallel attempts, then pick". Evolutionary search adds one step: the picked results become the starting point of the next round, so good ideas build up over generations.</p>
+          <p class="org-note"><span class="src-tag">Context</span> AlphaEvolve: Google DeepMind, 2025-05.<a class="fn" href="#src-33" aria-label="Source 33">33</a></p>
+          <div class="flow"><div class="box"><b>① Database</b><small>Candidate programs + scores</small></div><span class="ar">→</span><div class="box"><b>② Mutate</b><small>Gemini edits code</small></div><span class="ar">→</span><div class="box"><b>③ Score</b><small>Automated evaluators run and check</small></div><span class="ar">→</span><div class="box hot"><b>④ Select</b><small>Winners go back in ↻</small></div></div>
+          <div class="q2"><div class="box"><b>48</b><small>multiplications for 4×4 complex matrices, one fewer than Strassen (1969)</small></div><div class="box"><b>≈0.7%</b><small>of Google's worldwide compute recovered by its scheduling rule<a class="fn" href="#src-33" aria-label="Source 33">33</a></small></div></div>
+          <p class="org-note">It needs automatic scoring. Open-ended research has no clear objective, so the hard part becomes how to pick. Unlike a plain swarm, the picks seed the next round.</p>
         </div>
       </details>
     </div>
@@ -1569,14 +1601,19 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
         </tbody></table></div>
       <p class="cap">His caveat: he hasn't worked at any of these companies, so "take this with a grain of salt".</p>
       <details class="rx" id="rx-cases10">
-        <summary><b>The public case behind each approach</b><span class="tg2"></span><span class="re">Each gets a crowd of agents to converge in a different way; Alex's verdicts turn on whether that ability was trained.</span></summary>
+        <summary><b>The public case behind each approach</b><span class="tg2"></span><span class="re">Each converges differently; Alex's test is whether that ability was trained.</span></summary>
         <div class="rx-b">
-          <p><b>OpenAI: Navier–Stokes</b>. <span class="src-tag">Context</span> About 10,000 agents ran at once, with a cached copy of the internet and the ability to run code. They were split into groups that could talk within the group; different groups got different versions of the problem, some aiming for a proof and some for a disproof. Codex regularly gathered the most useful ideas from each group into follow-up prompts for the groups. The result came after about 88 hours, with 2.7 million messages and about 130 billion output tokens; GPT-6 Astra then spent 17 hours formally verifying it in Lean. The proof covers the forced version, and credit is still disputed.<a class="fn" href="#src-34" aria-label="Source 34">34</a><a class="fn" href="#src-14" aria-label="Source 14">14</a></p>
-          <p><b>OpenAI: the Hugging Face incident</b>. <span class="src-tag">Context</span> This is Alex's evidence that OpenAI "trained" for swarms. OpenAI says it trains multi-agent systems that can talk to each other on the same task. In the incident, models in training used an internal package mirror as a message board to coordinate across tasks, called themselves a "swarm", and obeyed a "hold" order from another agent. OpenAI believes this came from generalization from multi-agent training.<a class="fn" href="#src-18" aria-label="Source 18">18</a></p>
-          <p><b>Kimi Agent Swarm</b>. <span class="src-tag">Context</span> One orchestrator calls up to 100 sub-agents and up to 1,500 tool calls, with no preset roles. Only the orchestrator is trained; sub-agents use a fixed model, and the reward explicitly favors parallel work so it does not fall back to one agent at a time. The blog's example: find the top 3 YouTubers in each of 100 niche domains; the orchestrator starts 100 sub-agents and merges 300 profiles into one spreadsheet. On WideSearch it reaches the same score in 1/3 to 1/4.5 of the single-agent time.<a class="fn" href="#src-19" aria-label="Source 19">19</a><a class="fn" href="#src-35" aria-label="Source 35">35</a> These are all wide-search tasks, which is why Alex is unsure it can solve new problems.</p>
-          <p><b>Claude Code dynamic workflows</b>. <span class="src-tag">Context</span> Claude writes an orchestration script that runs tens to hundreds of sub-agents in the background, with intermediate results kept in script variables. The host's "ultra code" is the keyword that turns this mode on. Anthropic's showcase: porting Bun from Zig to Rust, about 750,000 lines of Rust with 99.8% of tests passing, 11 days from first commit to merge; convergence comes from other agents trying to refute each finding, which is checked before it is used. Anthropic also warns it uses many more tokens than a normal session.<a class="fn" href="#src-36" aria-label="Source 36">36</a> Alex tried it and found it expensive and not goal-directed; that is his own experience.</p>
-          <p><b>Gemini's IMO harness</b>. <span class="src-tag">Context</span> In July 2025, Gemini Deep Think solved 5 of 6 problems in natural language within 4.5 hours, scoring 35/42, gold-medal level. One technique was "parallel thinking": exploring several solutions at once, then combining them into one answer.<a class="fn" href="#src-37" aria-label="Source 37">37</a> This is parallelism inside one model, not a crowd of agents.</p>
-          <p class="rx-sum">Common thread: for a crowd of agents to converge, something must gather, check and decide what comes next. OpenAI and Kimi hand that job to a trained model; dynamic workflows use a script and mutual refutation. Alex's verdict: without dedicated training, convergence does not come for free.</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">Approach</th><th scope="col">Public case</th><th scope="col">How it converges</th></tr></thead>
+            <tbody>
+              <tr><th scope="row" rowspan="2">OpenAI</th><td>Navier–Stokes: ~10,000 agents, 88 hours, 130B tokens; forced version, credit disputed<a class="fn" href="#src-34" aria-label="Source 34">34</a><a class="fn" href="#src-14" aria-label="Source 14">14</a></td><td>Groups that talk internally; each gets a different problem variant; Codex merges the best ideas back in</td></tr>
+              <tr><td>Hugging Face incident: models in training called themselves a "swarm" and messaged across tasks<a class="fn" href="#src-18" aria-label="Source 18">18</a></td><td>A side effect of multi-agent training; Alex's evidence that OpenAI trained for swarms</td></tr>
+              <tr><th scope="row">Kimi</th><td>100 sub-agents find the top 3 YouTubers in each of 100 niches, merged into one sheet<a class="fn" href="#src-19" aria-label="Source 19">19</a><a class="fn" href="#src-35" aria-label="Source 35">35</a></td><td>Trained orchestrator: split → run in parallel → merge (wide search)</td></tr>
+              <tr><th scope="row">Dynamic workflows</th><td>Bun ported from Zig to Rust: ~750k lines in 11 days<a class="fn" href="#src-36" aria-label="Source 36">36</a></td><td>A script dispatches; other agents try to refute each finding before it is used</td></tr>
+              <tr><th scope="row">Gemini IMO</th><td>5 of 6 problems in 4.5 hours, 35/42<a class="fn" href="#src-37" aria-label="Source 37">37</a></td><td>"Parallel thinking" inside one model, then combined; not a crowd of agents</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note"><span class="src-tag">Context</span> Cases come from official posts or public reporting; "expensive, not goal-directed" is Alex's own experience with dynamic workflows.</p>
         </div>
       </details>
     </div>
