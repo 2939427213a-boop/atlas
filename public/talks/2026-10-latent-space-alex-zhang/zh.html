@@ -398,6 +398,28 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 @container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
 .q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.rx-list{display:grid;gap:8px}
+.rx{border:1px solid var(--line-2);background:var(--background-base)}
+.rx.hot{border-color:var(--midground)}
+.rx summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 12px;cursor:pointer;list-style:none}
+.rx summary::-webkit-details-marker{display:none}
+.rx summary:hover{background:var(--fill)}
+.rx[open] summary{border-bottom:1px solid var(--line)}
+.rx .yr{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.rx summary b{font-size:14px}
+.rx .who{font-size:11.5px;color:var(--mg-65)}
+.rx .tg2{margin-left:auto;padding:0 7px;border:1px solid var(--line-2);color:var(--midground);font-family:var(--font-mono);font-size:11px}
+.rx .tg2::after{content:'+'}
+.rx[open] .tg2::after{content:'\2212'}
+.rx .re{flex-basis:100%;font-size:13.5px;line-height:1.55}
+.rx-b{padding:10px 12px 12px;font-size:13.5px;line-height:1.65}
+.rx-b p{margin:0}
+.rx-b>*+*,.rx-b>*+p{margin-top:8px}
+.rx-tl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rx-tl .yr{margin-right:8px}
+.rx-b .analysis .an-tag{padding:6px 12px 0}
+.rx-b .analysis .lst{padding:2px 12px 8px}
+.rx-sum{margin:0;padding:4px 0 4px 12px;border-left:2px solid var(--midground);font-size:14px;line-height:1.6}
 .qbox{border:1px solid var(--line);padding:12px}
 .qbox>*+*{margin-top:10px}
 .qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
@@ -1087,14 +1109,45 @@ html.sv-open{overflow:hidden}
   </ol></div>
   <div class="grp"><span class="gt">可视化</span></div>
   <article class="panel viz" id="v02">
-    <div class="bar"><span class="k">初见反应 → 后来</span><span>18:03–19:30</span></div>
+    <div class="bar"><span class="k">初见反应 → 后来</span><span>18:03–21:56</span></div>
     <div class="vz">
-      <div class="q2">
-        <div class="box"><b>SWE-bench</b><small>“不可能的任务，没人在乎” → Devin 出来后，人人都来爬榜</small></div>
-        <div class="box"><b>STaR / Quiet-STaR · chain of thought · ReAct</b><small>“这不是很显然吗” → 改变了领域的方向</small></div>
-        <div class="box hot"><b>RLM</b><small>“这不就是 subagents 吗？” → 他说：这样的反应是好信号</small></div>
-        <div class="box"><b>Jev（见 03）</b><small>“我们早就有了” → 打开新的设计空间</small></div>
+      <div class="rx-list">
+        <details class="rx" id="rx-reasoning">
+          <summary><span class="yr">2022–24</span><b>CoT · STaR · ReAct · Quiet-STaR</b><span class="who">Alex 初读时</span><span class="tg2"></span><span class="re">“这不是很显然吗？” → 后来他想明白：这些论文的价值在于讲清了“领域该往哪走”。</span></summary>
+          <div class="rx-b">
+            <span class="src-tag">背景</span>
+            <ol class="rx-tl">
+              <li><span class="yr">2022-01</span><b>Chain-of-Thought</b>：Google 的 Jason Wei 等人发现，在提示的示例里写出中间推理步骤，大模型也会先写推理、再给答案。<a class="fn" href="#src-20" aria-label="来源 20">20</a></li>
+              <li><span class="yr">2022-03</span><b>STaR</b>：Stanford 的 Eric Zelikman 等人让模型自己写推理过程，只保留推出正确答案的那些，用来微调自己，再反复迭代。<a class="fn" href="#src-21" aria-label="来源 21">21</a></li>
+              <li><span class="yr">2022-10</span><b>ReAct</b>：Princeton 和 Google 的 Shunyu Yao 等人让推理和行动交替进行：想一步，调一次工具（比如搜索），读到结果再想。<a class="fn" href="#src-22" aria-label="来源 22">22</a></li>
+              <li><span class="yr">2024-03</span><b>Quiet-STaR</b>：Zelikman 等人把 STaR 推广到任意文本。模型在预测后文之前先生成内部“思考”，并学会哪些思考有用。<a class="fn" href="#src-24" aria-label="来源 24">24</a></li>
+            </ol>
+            <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>回头看，这几条线都成了今天的基础：先推理再回答（CoT）；用对错筛选自己的推理来训练自己（STaR、Quiet-STaR），和推理模型的训练思路相通；“想、调工具、看结果”的循环（ReAct），就是 agent harness 的基本形状。</li></ul></aside>
+          </div>
+        </details>
+        <details class="rx" id="rx-swebench">
+          <summary><span class="yr">2023-10</span><b>SWE-bench</b><span class="who">发布时的反应（Ofir Press 常讲）</span><span class="tg2"></span><span class="re">“不可能的任务，为什么要拿它当 benchmark？” → 发布时最好的模型只解出 1.96% 的题；2024-03 Devin 宣称解出 13.86%，大家才开始刷这个榜。<a class="fn" href="#src-25" aria-label="来源 25">25</a></span></summary>
+          <div class="rx-b">
+            <p><span class="src-tag">背景</span> Princeton 的 Carlos Jimenez、John Yang、Ofir Press 等人发布。2,294 道题都来自 12 个热门 Python 仓库的真实 GitHub issue，模型要写出能通过仓库测试的补丁。<a class="fn" href="#src-23" aria-label="来源 23">23</a></p>
+            <p>Devin 是 Cognition 的编程 agent。它的 13.86% 是在随机抽取的 25% 题目上测的。<a class="fn" href="#src-25" aria-label="来源 25">25</a></p>
+          </div>
+        </details>
+        <details class="rx hot" id="rx-rlm">
+          <summary><span class="yr">2025-12</span><b>RLM</b><span class="who">别人的反应（Alex 转述）</span><span class="tg2"></span><span class="re">“这有什么用？不就是 subagents 吗？” → 他说这种反应是好信号：大家还没想清它要解决什么问题。</span></summary>
+          <div class="rx-b">
+            <p>RLM 确实会派子调用。他在 06 里的定义是：唯一的工具是代码，派子调用（包括调用自己）是代码里的函数，上下文一直存在代码环境里，比如文件系统。</p>
+            <p>差别在编排方式：常规 harness 每轮调一个工具，把轨迹不断追加进 prompt；RLM 用代码编排子调用，守着一份能随时回查的中央上下文，每个子调用只看局部。<a href="#ch-06">→ 06 RLM 是什么</a></p>
+            <p><span class="src-tag">背景</span> 论文 arXiv 首版 2025-12-31，作者 Alex Zhang、Tim Kraska、Omar Khattab。<a class="fn" href="#src-2" aria-label="来源 2">2</a></p>
+          </div>
+        </details>
+        <details class="rx" id="rx-jev">
+          <summary><span class="yr">2026-09</span><b>Jev</b><span class="who">网上的讨论（Alex 转述，21:24）</span><span class="tg2"></span><span class="re">“这是早就有的东西，不就是个 NLP 分类器吗？” → 他认为它提出了新问题：语言模型一定要“文本进、文本出”吗？</span></summary>
+          <div class="rx-b">
+            <p><span class="src-tag">背景</span> Jev 是 TypeSafe AI 的模型，不是 Alex 的工作。“早就有了”也不是 TypeSafe 说的，而是网上对它的评价。<a class="fn" href="#src-7" aria-label="来源 7">7</a> <a href="#ch-03">→ 03 重想“语言模型”</a></p>
+          </div>
+        </details>
       </div>
+      <p class="rx-sum"><b>他的结论</b>：这些都不是马上能用的产品，而是大注。“不可能”“太显然”“有什么用”这类反应，说明大家还没想清它的用途。能押这种注，是博士生最大的优势。</p>
     </div>
   </article>
 </section>
@@ -1535,6 +1588,12 @@ for p in parts:
       <li id="src-17"><a href="https://sakana.ai/namazu/" rel="noopener">Sakana AI · Namazu</a></li>
       <li id="src-18"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
       <li id="src-19"><a href="https://www.kimi.com/blog/kimi-k2-5" rel="noopener">Kimi · Kimi K2.5 · 2026-01-27</a></li>
+      <li id="src-20"><a href="https://arxiv.org/abs/2201.11903" rel="noopener">Wei et al. · Chain-of-Thought Prompting Elicits Reasoning in Large Language Models · arXiv 2201.11903 · 2022-01-28</a></li>
+      <li id="src-21"><a href="https://arxiv.org/abs/2203.14465" rel="noopener">Zelikman et al. · STaR: Bootstrapping Reasoning With Reasoning · arXiv 2203.14465 · 2022-03-28</a></li>
+      <li id="src-22"><a href="https://arxiv.org/abs/2210.03629" rel="noopener">Yao et al. · ReAct: Synergizing Reasoning and Acting in Language Models · arXiv 2210.03629 · 2022-10-06</a></li>
+      <li id="src-23"><a href="https://arxiv.org/abs/2310.06770" rel="noopener">Jimenez et al. · SWE-bench: Can Language Models Resolve Real-World GitHub Issues? · arXiv 2310.06770 · 2023-10-10</a></li>
+      <li id="src-24"><a href="https://arxiv.org/abs/2403.09629" rel="noopener">Zelikman et al. · Quiet-STaR: Language Models Can Teach Themselves to Think Before Speaking · arXiv 2403.09629 · 2024-03-14</a></li>
+      <li id="src-25"><a href="https://cognition.ai/blog/introducing-devin" rel="noopener">Cognition · Introducing Devin · 2024-03-12</a></li>
     </ol>
     <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
   </section>

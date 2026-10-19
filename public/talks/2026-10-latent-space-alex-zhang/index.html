@@ -398,6 +398,28 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 @container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
 .q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.rx-list{display:grid;gap:8px}
+.rx{border:1px solid var(--line-2);background:var(--background-base)}
+.rx.hot{border-color:var(--midground)}
+.rx summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 12px;cursor:pointer;list-style:none}
+.rx summary::-webkit-details-marker{display:none}
+.rx summary:hover{background:var(--fill)}
+.rx[open] summary{border-bottom:1px solid var(--line)}
+.rx .yr{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.rx summary b{font-size:14px}
+.rx .who{font-size:11.5px;color:var(--mg-65)}
+.rx .tg2{margin-left:auto;padding:0 7px;border:1px solid var(--line-2);color:var(--midground);font-family:var(--font-mono);font-size:11px}
+.rx .tg2::after{content:'+'}
+.rx[open] .tg2::after{content:'\2212'}
+.rx .re{flex-basis:100%;font-size:13.5px;line-height:1.55}
+.rx-b{padding:10px 12px 12px;font-size:13.5px;line-height:1.65}
+.rx-b p{margin:0}
+.rx-b>*+*,.rx-b>*+p{margin-top:8px}
+.rx-tl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rx-tl .yr{margin-right:8px}
+.rx-b .analysis .an-tag{padding:6px 12px 0}
+.rx-b .analysis .lst{padding:2px 12px 8px}
+.rx-sum{margin:0;padding:4px 0 4px 12px;border-left:2px solid var(--midground);font-size:14px;line-height:1.6}
 .qbox{border:1px solid var(--line);padding:12px}
 .qbox>*+*{margin-top:10px}
 .qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
@@ -1087,14 +1109,45 @@ html.sv-open{overflow:hidden}
   </ol></div>
   <div class="grp"><span class="gt">Visuals</span></div>
   <article class="panel viz" id="v02">
-    <div class="bar"><span class="k">First reaction → later</span><span>18:03–19:30</span></div>
+    <div class="bar"><span class="k">First reaction → later</span><span>18:03–21:56</span></div>
     <div class="vz">
-      <div class="q2">
-        <div class="box"><b>SWE-bench</b><small>"An impossible task; nobody cares" → after Devin, everyone hill-climbs it</small></div>
-        <div class="box"><b>STaR / Quiet-STaR · chain of thought · ReAct</b><small>"Isn't this obvious?" → changed the field's direction</small></div>
-        <div class="box hot"><b>RLM</b><small>"Isn't this just subagents?" → he calls that a good sign</small></div>
-        <div class="box"><b>Jev (see 03)</b><small>"We've had this for years" → opens a new design space</small></div>
+      <div class="rx-list">
+        <details class="rx" id="rx-reasoning">
+          <summary><span class="yr">2022–24</span><b>CoT · STaR · ReAct · Quiet-STaR</b><span class="who">Alex, on first reading</span><span class="tg2"></span><span class="re">"Isn't this an obvious idea?" → What he came to see: their value is the story they tell about where the field should go.</span></summary>
+          <div class="rx-b">
+            <span class="src-tag">Context</span>
+            <ol class="rx-tl">
+              <li><span class="yr">2022-01</span><b>Chain-of-Thought</b>: Jason Wei et al. at Google found that when the prompt's examples spell out intermediate reasoning steps, large models also reason step by step before they answer.<a class="fn" href="#src-20" aria-label="Source 20">20</a></li>
+              <li><span class="yr">2022-03</span><b>STaR</b>: Eric Zelikman et al. at Stanford had the model write its own reasoning, kept only the reasoning that reached the right answer, fine-tuned on it, and repeated.<a class="fn" href="#src-21" aria-label="Source 21">21</a></li>
+              <li><span class="yr">2022-10</span><b>ReAct</b>: Shunyu Yao et al. at Princeton and Google interleaved reasoning and acting: think a step, call a tool (such as search), read the result, think again.<a class="fn" href="#src-22" aria-label="Source 22">22</a></li>
+              <li><span class="yr">2024-03</span><b>Quiet-STaR</b>: Zelikman et al. extended STaR to any text. The model generates internal "thoughts" before it predicts what comes next, and learns which thoughts help.<a class="fn" href="#src-24" aria-label="Source 24">24</a></li>
+            </ol>
+            <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst"><li>In hindsight each line became a foundation: reason before answering (CoT); train on your own reasoning, filtered by whether it was right (STaR, Quiet-STaR), which is close to how reasoning models are trained; and the think, call a tool, observe loop (ReAct), which is the basic shape of an agent harness.</li></ul></aside>
+          </div>
+        </details>
+        <details class="rx" id="rx-swebench">
+          <summary><span class="yr">2023-10</span><b>SWE-bench</b><span class="who">reaction at release (a story Ofir Press likes to tell)</span><span class="tg2"></span><span class="re">"An impossible task. Why would we ever consider this as a benchmark?" → At release the best model solved 1.96% of the issues; in March 2024 Devin claimed 13.86%, and then everyone wanted to hill-climb it.<a class="fn" href="#src-25" aria-label="Source 25">25</a></span></summary>
+          <div class="rx-b">
+            <p><span class="src-tag">Context</span> Released by Carlos Jimenez, John Yang, Ofir Press and others at Princeton. Its 2,294 tasks are real GitHub issues from 12 popular Python repositories; the model must write a patch that passes the repository's tests.<a class="fn" href="#src-23" aria-label="Source 23">23</a></p>
+            <p>Devin is Cognition's coding agent. Its 13.86% was measured on a random 25% subset of the tasks.<a class="fn" href="#src-25" aria-label="Source 25">25</a></p>
+          </div>
+        </details>
+        <details class="rx hot" id="rx-rlm">
+          <summary><span class="yr">2025-12</span><b>RLM</b><span class="who">other people's reaction (as Alex tells it)</span><span class="tg2"></span><span class="re">"What is even the purpose of this? This is just subagents, right?" → He calls that reaction a good sign: people have not yet thought about what it is for.</span></summary>
+          <div class="rx-b">
+            <p>An RLM does spawn sub-calls. His definition in 06: the only tool is code; sub-calls, including calls to itself, are functions in that code; and the context always lives in the code environment, such as a file system.</p>
+            <p>The difference is orchestration: a typical harness calls one tool per turn and keeps appending the trajectory to the prompt; an RLM orchestrates sub-calls in code around one central context it can always look back at, and each sub-call sees only a local piece. <a href="#ch-06">→ 06 RLMs explained</a></p>
+            <p><span class="src-tag">Context</span> First arXiv version 2025-12-31, by Alex Zhang, Tim Kraska and Omar Khattab.<a class="fn" href="#src-2" aria-label="Source 2">2</a></p>
+          </div>
+        </details>
+        <details class="rx" id="rx-jev">
+          <summary><span class="yr">2026-09</span><b>Jev</b><span class="who">online discourse (as Alex tells it, 21:24)</span><span class="tg2"></span><span class="re">"Something we've known for years; just an NLP classifier." → He sees a new question in it: must a language model be text in, text out?</span></summary>
+          <div class="rx-b">
+            <p><span class="src-tag">Context</span> Jev is TypeSafe AI's model, not Alex's work. "Known for years" was not TypeSafe's claim; it was the online verdict on Jev.<a class="fn" href="#src-7" aria-label="Source 7">7</a> <a href="#ch-03">→ 03 Rethinking the language model</a></p>
+          </div>
+        </details>
       </div>
+      <p class="rx-sum"><b>His conclusion</b>: none of these was a ready-to-use product; each was a big bet. Reactions like "impossible", "obvious" or "what is this for" mean people have not yet worked out its purpose. The freedom to make such bets is a PhD student's biggest advantage.</p>
     </div>
   </article>
 </section>
@@ -1535,6 +1588,12 @@ for p in parts:
       <li id="src-17"><a href="https://sakana.ai/namazu/" rel="noopener">Sakana AI · Namazu</a></li>
       <li id="src-18"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
       <li id="src-19"><a href="https://www.kimi.com/blog/kimi-k2-5" rel="noopener">Kimi · Kimi K2.5 · 2026-01-27</a></li>
+      <li id="src-20"><a href="https://arxiv.org/abs/2201.11903" rel="noopener">Wei et al. · Chain-of-Thought Prompting Elicits Reasoning in Large Language Models · arXiv 2201.11903 · 2022-01-28</a></li>
+      <li id="src-21"><a href="https://arxiv.org/abs/2203.14465" rel="noopener">Zelikman et al. · STaR: Bootstrapping Reasoning With Reasoning · arXiv 2203.14465 · 2022-03-28</a></li>
+      <li id="src-22"><a href="https://arxiv.org/abs/2210.03629" rel="noopener">Yao et al. · ReAct: Synergizing Reasoning and Acting in Language Models · arXiv 2210.03629 · 2022-10-06</a></li>
+      <li id="src-23"><a href="https://arxiv.org/abs/2310.06770" rel="noopener">Jimenez et al. · SWE-bench: Can Language Models Resolve Real-World GitHub Issues? · arXiv 2310.06770 · 2023-10-10</a></li>
+      <li id="src-24"><a href="https://arxiv.org/abs/2403.09629" rel="noopener">Zelikman et al. · Quiet-STaR: Language Models Can Teach Themselves to Think Before Speaking · arXiv 2403.09629 · 2024-03-14</a></li>
+      <li id="src-25"><a href="https://cognition.ai/blog/introducing-devin" rel="noopener">Cognition · Introducing Devin · 2024-03-12</a></li>
     </ol>
     <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
   </section>
