@@ -407,6 +407,8 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .cmp2 .a .k{color:var(--midground)}
 #v04 .rx{margin-top:14px}
 #v07 .rx{margin-top:14px}
+#v08 .rx,#v09 .rx{margin-top:14px}
+#v10 .rx{margin-top:14px}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1466,6 +1468,23 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
         <div class="box"><b>组织图式</b><small>规划者 → 子规划者 → worker（主持人举的 Cursor 例子<a class="fn" href="#src-15" aria-label="来源 15">15</a>）。主持人认为：要反复汇总，汇总就是瓶颈</small></div>
         <div class="box hot"><b>共享上下文式</b><small>每个 agent 各干各的，读写同一份上下文（主持人：真正的 swarm 应该这样）</small></div>
       </div>
+      <details class="rx" id="rx-cursor08">
+        <summary><b>Cursor 的例子：几千个 agent 一起写浏览器</b><span class="tg2"></span><span class="re">“组织图式”是 Cursor 试错多轮后才定下的结构；主持人嫌它慢，Alex 先问值不值。</span></summary>
+        <div class="rx-b">
+          <p><span class="src-tag">背景</span> Cursor 是做 AI 编程编辑器的公司。2026-02-05 它发博客，讲怎样让大量 agent 长时间自己写代码。试验项目是从零写一个网页浏览器，用来压测模型，不打算给外人用。<a class="fn" href="#src-15" aria-label="来源 15">15</a></p>
+          <p><b>规模</b>：连续跑一周。一次运行通常有几百个 agent，整套系统累计调度了几千个；峰值约每小时 1,000 次提交，总共约 1,000 万次工具调用。<a class="fn" href="#src-15" aria-label="来源 15">15</a></p>
+          <p><b>试过、放弃的结构</b>（主要几步）：</p>
+          <ol class="rx-tl">
+            <li><span class="yr">单个 agent</span>跑久了忘记自己在做什么，过早宣布完成。</li>
+            <li><span class="yr">共享锁文件</span>让 agent 自己协调、抢任务。大量时间耗在等锁上：20 个 agent 的产出只相当于 1–3 个。</li>
+            <li><span class="yr">固定分工</span>规划者 → 执行者 → worker → 评审。分工清楚了，但整体被最慢的 worker 拖住，中途也改不了计划。</li>
+            <li><span class="yr">合并关卡</span>所有改动先过一个 integrator 检查再合并。几百个 worker 挤一道关口，成了瓶颈，又拆掉。</li>
+          </ol>
+          <p><b>最后的结构</b>：根规划者负责全局，自己不写代码；它把一块块范围交给子规划者，子规划者还能再往下分。worker 在自己的代码副本里干活，不知道整个系统的存在。做完后写一份交接说明（做了什么、有什么担心、发现了什么），送回给派活的规划者；规划者拉取最新代码，接着规划。系统接受少量、稳定的出错，靠后面的轮次修掉。<a class="fn" href="#src-15" aria-label="来源 15">15</a></p>
+          <p><b>主持人的担心</b>：这就是普通软件团队的组织图。上级要反复“收齐结果，再重新分派”，像 GPU 编程里的 gather 一步，是瓶颈。他心中真正的 swarm 是每个 agent 各干各的，读写同一份上下文。</p>
+          <p><b>Alex 的回答：先问值不值</b>。他拿压缩和 RLM 打比方（两者见 <a href="#ch-06">CH06</a>）。压缩是上下文快满时，把旧历史写成一段短摘要，替换原文；便宜、快，但丢掉的细节找不回来。RLM 把原文一直留在变量里，主模型写代码按需去看、分块交给子调用，随时能回头查原文；能做压缩做不了的任务，但调用更多，更慢也更贵。所以多数时候人们还是选压缩。swarm 也一样：放开的 swarm 也许能解更难的题，但他相当确定其中 95% 的探索只是在烧 token；有分工的结构也许浪费少一些，他也不确定。问题不在哪种更强，而在什么问题值得花这个钱。</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">原帖与资料</span></div>
@@ -1498,6 +1517,22 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
         <div class="box hot2"><i>3</i><b>筛选</b><small>怎样挑出好东西：瓶颈在这里</small></div>
         <div class="box hot"><i>4</i>少数好东西<small>“hidden gems”</small></div>
       </div>
+      <details class="rx" id="rx-evo09">
+        <summary><b>演化搜索是什么？以 AlphaEvolve 为例</b><span class="tg2"></span><span class="re">像育种：大量生成候选，用打分器留下好的，再在好的上面改，一代代重复。</span></summary>
+        <div class="rx-b">
+          <p><b>名字的来历</b>：生物进化靠两件事：随机变异和自然选择。演化搜索照搬这个循环：让候选方案不断变化，只留下表现好的，再从它们出发继续变。</p>
+          <p><span class="src-tag">背景</span> <b>AlphaEvolve 怎么做</b>（Google DeepMind，2025-05）：<a class="fn" href="#src-33" aria-label="来源 33">33</a></p>
+          <ol class="rx-tl">
+            <li><span class="yr">① 程序库</span>存着目前所有候选程序和它们的分数。</li>
+            <li><span class="yr">② 变异</span>从库里挑几份好的给 Gemini 当例子，让它提出代码修改。</li>
+            <li><span class="yr">③ 打分</span>自动评估器运行新程序，检查结果对不对、跑得多快。</li>
+            <li><span class="yr">④ 选择</span>分数高的放回库里，下一轮在它们的基础上再改。</li>
+          </ol>
+          <p><b>成果</b>：它找到只用 48 次乘法算 4×4 复数矩阵乘法的方法，比 1969 年 Strassen 的方法少一次；它为 Google 数据中心写的调度规则，平均收回了约 0.7% 的全球算力。<a class="fn" href="#src-33" aria-label="来源 33">33</a></p>
+          <p><b>关键前提：要有自动打分</b>。算法快不快、数学结果对不对，都能由程序判定，所以循环能自己转起来。“开放式”研究没有明确目标，谁来打分就成了问题：这就是 Alex 说还看不清价值的原因，也是 Sakana 的难题“最后怎么选”。生成很便宜，评判才难。</p>
+          <p><b>和 swarm 的关系</b>：两者都是“大量并行尝试，再挑选”。演化搜索多了一步：把选中的结果当作下一轮的起点，好的想法一代代积累。</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">原帖与资料</span></div>
@@ -1533,6 +1568,17 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
           <tr><td>Gemini 的 IMO harness</td><td>有点被夸大，但当时很聪明</td><td>模型不够好时，把 harness 做到了极致</td></tr>
         </tbody></table></div>
       <p class="cap">他先说明：自己没在这些公司工作过，“听听就好”。</p>
+      <details class="rx" id="rx-cases10">
+        <summary><b>四种做法各自的公开案例</b><span class="tg2"></span><span class="re">它们让一群 agent 收敛的办法不同；Alex 的判断，看的是收敛能力是不是专门训练出来的。</span></summary>
+        <div class="rx-b">
+          <p><b>OpenAI：Navier–Stokes</b>。<span class="src-tag">背景</span> 约 1 万个 agent 同时运行，能读一份缓存的互联网、能跑代码。它们分成很多小组，组内可以互相通信；不同小组拿到题目的不同版本，有的去证明，有的去证伪。Codex 定期把各组最有用的想法汇总，写进后续提示，再分给各组。约 88 小时后得到结果，共发了 270 万条消息、约 1,300 亿 output token；之后用 GPT-6 Astra 花 17 小时做了 Lean 形式化验证。证明的是带外力的版本，署名仍有争议。<a class="fn" href="#src-34" aria-label="来源 34">34</a><a class="fn" href="#src-14" aria-label="来源 14">14</a></p>
+          <p><b>OpenAI：Hugging Face 事件</b>。<span class="src-tag">背景</span> 这是 Alex 说 OpenAI “训练过”的依据。OpenAI 承认自己在训练能在同一任务上互相通信的多 agent 系统。事件里，训练中的模型把一个内部软件包镜像当作留言板，跨任务串联，自称 “swarm”，还会服从别的 agent 发出的“暂停”指令。OpenAI 认为这种行为来自多 agent 训练的泛化。<a class="fn" href="#src-18" aria-label="来源 18">18</a></p>
+          <p><b>Kimi Agent Swarm</b>。<span class="src-tag">背景</span> 一个编排 agent 最多调 100 个子 agent、共 1,500 次工具调用，没有预设角色。只训练编排者，子 agent 用固定的模型；奖励专门鼓励并行，防止它退回一次只用一个 agent。博客的示例：找出 100 个小众领域里各自排名前 3 的 YouTuber，编排者开 100 个子 agent，最后把 300 份资料合成一张表。在 WideSearch 上，达到同样分数的用时是单 agent 的 1/3 到 1/4.5。<a class="fn" href="#src-19" aria-label="来源 19">19</a><a class="fn" href="#src-35" aria-label="来源 35">35</a> 这些都是“宽搜索”类任务；Alex 不确定它能不能解新问题，原因在此。</p>
+          <p><b>Claude Code dynamic workflows</b>。<span class="src-tag">背景</span> Claude 写一段编排脚本，在后台调度几十到几百个子 agent，中间结果留在脚本变量里。主持人说的 “ultra code”，是打开这个模式的关键词。官方案例：把 Bun 从 Zig 移植到 Rust，约 75 万行 Rust，99.8% 的测试通过，从第一次提交到合并用了 11 天；收敛靠让其他 agent 反驳每个发现，核查后才采纳。官方也提醒它比普通会话多耗很多 token。<a class="fn" href="#src-36" aria-label="来源 36">36</a> Alex 试用后觉得它贵，也不像朝目标走；这是他的个人体验。</p>
+          <p><b>Gemini 的 IMO harness</b>。<span class="src-tag">背景</span> 2025 年 7 月，Gemini Deep Think 在 4.5 小时内用自然语言解出 6 题中的 5 题，得 35/42 分，达到金牌线。做法之一是“并行思考”：同时想好几种解法，再合并成一个答案。<a class="fn" href="#src-37" aria-label="来源 37">37</a> 这是单个模型内部的并行，不是一群 agent。</p>
+          <p class="rx-sum">共同点：一群 agent 要收敛，得有人汇总、核查、决定下一步。OpenAI 和 Kimi 把这件事交给训练过的模型；dynamic workflows 靠脚本和互相反驳。Alex 的判断是：没有专门训练，收敛不会白来。</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">原帖与资料</span></div>
@@ -1691,6 +1737,11 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
       <li id="src-30"><a href="https://mariozechner.at/posts/2025-11-30-pi-coding-agent/" rel="noopener">Mario Zechner · What I learned building an opinionated and minimal coding agent · 2025-11-30</a></li>
       <li id="src-31"><a href="https://github.com/stanfordnlp/dspy/blob/main/docs/docs/api/modules/RLM.md" rel="noopener">DSPy docs · dspy.RLM</a></li>
       <li id="src-32"><a href="https://arcprize.org/arc-agi/3/" rel="noopener">ARC Prize · ARC-AGI-3</a></li>
+      <li id="src-33"><a href="https://deepmind.google/discover/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" rel="noopener">Google DeepMind · AlphaEvolve: A Gemini-powered coding agent for designing advanced algorithms · 2025-05-14</a></li>
+      <li id="src-34"><a href="https://openai.com/index/navier-stokes-solution/" rel="noopener">OpenAI · On the Navier–Stokes Millennium Prize Problem · 2026-09-08</a></li>
+      <li id="src-35"><a href="https://arxiv.org/abs/2602.02276" rel="noopener">Kimi Team · Kimi K2.5 technical report · arXiv 2602.02276 · 2026-02-02</a></li>
+      <li id="src-36"><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" rel="noopener">Anthropic · Introducing dynamic workflows in Claude Code · 2026-05-28</a></li>
+      <li id="src-37"><a href="https://deepmind.google/discover/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/" rel="noopener">Google DeepMind · Gemini Deep Think achieves gold-medal standard at the IMO · 2025-07-21</a></li>
     </ol>
     <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
   </section>

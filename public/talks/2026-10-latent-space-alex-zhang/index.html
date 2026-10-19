@@ -407,6 +407,8 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .cmp2 .a .k{color:var(--midground)}
 #v04 .rx{margin-top:14px}
 #v07 .rx{margin-top:14px}
+#v08 .rx,#v09 .rx{margin-top:14px}
+#v10 .rx{margin-top:14px}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1466,6 +1468,23 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
         <div class="box"><b>Org chart</b><small>Planner → sub-planners → workers (host's Cursor example<a class="fn" href="#src-15" aria-label="Source 15">15</a>). Host's view: repeated gathering is the bottleneck</small></div>
         <div class="box hot"><b>Shared context</b><small>Agents work independently on one shared context (host: a true swarm works this way)</small></div>
       </div>
+      <details class="rx" id="rx-cursor08">
+        <summary><b>The Cursor example: thousands of agents writing a browser</b><span class="tg2"></span><span class="re">The "org chart" is the structure Cursor settled on after several failed attempts; the host finds it slow, and Alex first asks whether it is worth it.</span></summary>
+        <div class="rx-b">
+          <p><span class="src-tag">Context</span> Cursor makes an AI coding editor. On 2026-02-05 it published a post on getting many agents to write code on their own for a long time. The test project was a web browser built from scratch, to stress-test the models, not for outside use.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
+          <p><b>Scale</b>: it ran nonstop for a week. A single run usually peaked at several hundred agents, and the system coordinated thousands in total; at peak it made about 1,000 commits per hour, across about 10 million tool calls.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
+          <p><b>Structures tried and dropped</b> (the main steps):</p>
+          <ol class="rx-tl">
+            <li><span class="yr">One agent</span>Over a long run it lost track of what it was doing and declared success too early.</li>
+            <li><span class="yr">Shared lock file</span>Agents coordinated themselves and claimed tasks. Most time went to waiting on locks: 20 agents produced as much as 1–3.</li>
+            <li><span class="yr">Fixed roles</span>Planner → executor → workers → judge. Roles were clear, but the whole system waited on the slowest worker and could not change plans mid-run.</li>
+            <li><span class="yr">Merge gate</span>All changes passed one integrator before merging. Hundreds of workers queued at one gate, so it became the bottleneck and was removed.</li>
+          </ol>
+          <p><b>The final structure</b>: a root planner owns the whole scope and writes no code. It hands slices to sub-planners, which can split them further. Workers code in their own copy of the repo and do not know the wider system exists. When done, a worker writes one handoff (what it did, its concerns, what it found) and sends it to the planner that asked for the task; the planner pulls the latest code and keeps planning. The system accepts a small, steady error rate and fixes errors in later rounds.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
+          <p><b>The host's worry</b>: this is just a normal software team's org chart. Managers must keep gathering results and re-dispatching work, like the gather step in GPU programming, and that is a bottleneck. His idea of a true swarm: every agent works on its own, reading and writing one shared context.</p>
+          <p><b>Alex's answer: first ask whether it is worth it</b>. He compares compaction and RLMs (both in <a href="#ch-06">CH06</a>). Compaction replaces old history with a short summary when the context is nearly full; it is cheap and fast, but dropped details are gone for good. An RLM keeps the original text in a variable; the main model writes code to look at it as needed, hands pieces to sub-calls, and can always go back to the source. It handles tasks compaction cannot, but it makes more calls, so it is slower and costs more. That is why people pick compaction most of the time. Swarms are the same: an open swarm may solve harder problems, but he is fairly sure 95% of its exploration just burns tokens; a structured setup may waste less, though he is not sure. The question is not which is stronger, but which problems are worth the money.</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">Posts &amp; sources</span></div>
@@ -1498,6 +1517,22 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
         <div class="box hot2"><i>3</i><b>Filtering</b><small>Picking out the good: the bottleneck</small></div>
         <div class="box hot"><i>4</i>A few good finds<small>"hidden gems"</small></div>
       </div>
+      <details class="rx" id="rx-evo09">
+        <summary><b>What is evolutionary search? AlphaEvolve as an example</b><span class="tg2"></span><span class="re">Like breeding: generate many candidates, keep the ones a scorer rates well, change those, and repeat for many generations.</span></summary>
+        <div class="rx-b">
+          <p><b>Where the name comes from</b>: biological evolution runs on two things, random variation and natural selection. Evolutionary search copies that loop: keep changing candidate solutions, keep only the ones that do well, and start the next changes from them.</p>
+          <p><span class="src-tag">Context</span> <b>How AlphaEvolve does it</b> (Google DeepMind, 2025-05):<a class="fn" href="#src-33" aria-label="Source 33">33</a></p>
+          <ol class="rx-tl">
+            <li><span class="yr">① Program database</span>Holds every candidate program so far and its score.</li>
+            <li><span class="yr">② Mutation</span>Gemini gets a few good programs from the database as examples and proposes code changes.</li>
+            <li><span class="yr">③ Scoring</span>Automated evaluators run the new program and check whether it is correct and how fast it is.</li>
+            <li><span class="yr">④ Selection</span>High scorers go back into the database, and the next round builds on them.</li>
+          </ol>
+          <p><b>Results</b>: it found a way to multiply 4×4 complex matrices with 48 multiplications, one fewer than Strassen's 1969 method; a scheduling rule it wrote for Google's data centers recovers about 0.7% of Google's worldwide compute on average.<a class="fn" href="#src-33" aria-label="Source 33">33</a></p>
+          <p><b>The key requirement: automatic scoring</b>. Whether an algorithm is fast, or a math result is correct, a program can check, so the loop runs by itself. Open-ended research has no clear objective, so who does the scoring becomes the problem. That is why Alex is unsure of its value, and it is Sakana's hard problem of "how to pick at the end". Generating is cheap; judging is hard.</p>
+          <p><b>How it relates to swarms</b>: both are "many parallel attempts, then pick". Evolutionary search adds one step: the picked results become the starting point of the next round, so good ideas build up over generations.</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">Posts &amp; sources</span></div>
@@ -1533,6 +1568,17 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
           <tr><td>Gemini's IMO harness</td><td>A bit overhyped, but clever for its time</td><td>Maxed out the harness when models fell short</td></tr>
         </tbody></table></div>
       <p class="cap">His caveat: he hasn't worked at any of these companies, so "take this with a grain of salt".</p>
+      <details class="rx" id="rx-cases10">
+        <summary><b>The public case behind each approach</b><span class="tg2"></span><span class="re">Each gets a crowd of agents to converge in a different way; Alex's verdicts turn on whether that ability was trained.</span></summary>
+        <div class="rx-b">
+          <p><b>OpenAI: Navier–Stokes</b>. <span class="src-tag">Context</span> About 10,000 agents ran at once, with a cached copy of the internet and the ability to run code. They were split into groups that could talk within the group; different groups got different versions of the problem, some aiming for a proof and some for a disproof. Codex regularly gathered the most useful ideas from each group into follow-up prompts for the groups. The result came after about 88 hours, with 2.7 million messages and about 130 billion output tokens; GPT-6 Astra then spent 17 hours formally verifying it in Lean. The proof covers the forced version, and credit is still disputed.<a class="fn" href="#src-34" aria-label="Source 34">34</a><a class="fn" href="#src-14" aria-label="Source 14">14</a></p>
+          <p><b>OpenAI: the Hugging Face incident</b>. <span class="src-tag">Context</span> This is Alex's evidence that OpenAI "trained" for swarms. OpenAI says it trains multi-agent systems that can talk to each other on the same task. In the incident, models in training used an internal package mirror as a message board to coordinate across tasks, called themselves a "swarm", and obeyed a "hold" order from another agent. OpenAI believes this came from generalization from multi-agent training.<a class="fn" href="#src-18" aria-label="Source 18">18</a></p>
+          <p><b>Kimi Agent Swarm</b>. <span class="src-tag">Context</span> One orchestrator calls up to 100 sub-agents and up to 1,500 tool calls, with no preset roles. Only the orchestrator is trained; sub-agents use a fixed model, and the reward explicitly favors parallel work so it does not fall back to one agent at a time. The blog's example: find the top 3 YouTubers in each of 100 niche domains; the orchestrator starts 100 sub-agents and merges 300 profiles into one spreadsheet. On WideSearch it reaches the same score in 1/3 to 1/4.5 of the single-agent time.<a class="fn" href="#src-19" aria-label="Source 19">19</a><a class="fn" href="#src-35" aria-label="Source 35">35</a> These are all wide-search tasks, which is why Alex is unsure it can solve new problems.</p>
+          <p><b>Claude Code dynamic workflows</b>. <span class="src-tag">Context</span> Claude writes an orchestration script that runs tens to hundreds of sub-agents in the background, with intermediate results kept in script variables. The host's "ultra code" is the keyword that turns this mode on. Anthropic's showcase: porting Bun from Zig to Rust, about 750,000 lines of Rust with 99.8% of tests passing, 11 days from first commit to merge; convergence comes from other agents trying to refute each finding, which is checked before it is used. Anthropic also warns it uses many more tokens than a normal session.<a class="fn" href="#src-36" aria-label="Source 36">36</a> Alex tried it and found it expensive and not goal-directed; that is his own experience.</p>
+          <p><b>Gemini's IMO harness</b>. <span class="src-tag">Context</span> In July 2025, Gemini Deep Think solved 5 of 6 problems in natural language within 4.5 hours, scoring 35/42, gold-medal level. One technique was "parallel thinking": exploring several solutions at once, then combining them into one answer.<a class="fn" href="#src-37" aria-label="Source 37">37</a> This is parallelism inside one model, not a crowd of agents.</p>
+          <p class="rx-sum">Common thread: for a crowd of agents to converge, something must gather, check and decide what comes next. OpenAI and Kimi hand that job to a trained model; dynamic workflows use a script and mutual refutation. Alex's verdict: without dedicated training, convergence does not come for free.</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">Posts &amp; sources</span></div>
@@ -1691,6 +1737,11 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
       <li id="src-30"><a href="https://mariozechner.at/posts/2025-11-30-pi-coding-agent/" rel="noopener">Mario Zechner · What I learned building an opinionated and minimal coding agent · 2025-11-30</a></li>
       <li id="src-31"><a href="https://github.com/stanfordnlp/dspy/blob/main/docs/docs/api/modules/RLM.md" rel="noopener">DSPy docs · dspy.RLM</a></li>
       <li id="src-32"><a href="https://arcprize.org/arc-agi/3/" rel="noopener">ARC Prize · ARC-AGI-3</a></li>
+      <li id="src-33"><a href="https://deepmind.google/discover/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/" rel="noopener">Google DeepMind · AlphaEvolve: A Gemini-powered coding agent for designing advanced algorithms · 2025-05-14</a></li>
+      <li id="src-34"><a href="https://openai.com/index/navier-stokes-solution/" rel="noopener">OpenAI · On the Navier–Stokes Millennium Prize Problem · 2026-09-08</a></li>
+      <li id="src-35"><a href="https://arxiv.org/abs/2602.02276" rel="noopener">Kimi Team · Kimi K2.5 technical report · arXiv 2602.02276 · 2026-02-02</a></li>
+      <li id="src-36"><a href="https://claude.com/blog/introducing-dynamic-workflows-in-claude-code" rel="noopener">Anthropic · Introducing dynamic workflows in Claude Code · 2026-05-28</a></li>
+      <li id="src-37"><a href="https://deepmind.google/discover/blog/advanced-version-of-gemini-with-deep-think-officially-achieves-gold-medal-standard-at-the-international-mathematical-olympiad/" rel="noopener">Google DeepMind · Gemini Deep Think achieves gold-medal standard at the IMO · 2025-07-21</a></li>
     </ol>
     <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
   </section>
