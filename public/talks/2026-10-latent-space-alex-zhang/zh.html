@@ -406,6 +406,7 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .cmp2 .k{display:block;font-size:13px;color:var(--mg-80)}
 .cmp2 .a .k{color:var(--midground)}
 #v04 .rx{margin-top:14px}
+#v07 .rx{margin-top:14px}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1389,22 +1390,44 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
   <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Prime Agent 在 Pi 上加了 RLM 抽象：唯一的工具是 IPython，harness 能改自己，子 agent 能长期存在并用代码互相通信。</p></div>
   <div class="grp"><span class="gt">要点</span></div>
   <div class="panel pts"><ol class="lst">
-    <li><b>来历</b>：Prime Intellect 先发文说 RLM 是未来，后经 GPU Mode 的朋友牵线合作。Prime 训练自己的模型；他不参与训练，把博士时间押在别的大注上。</li>
-    <li><b>子 agent 太短命</b>：<span class="host">主持人</span>这是 Codex 的痛点，诀窍是外部化到文件系统，一切走代码。他同意。</li>
-    <li><b>第三方</b>：Harvey 给法律工作后训练 RLM；Laude Institute 的 Headlong 能“持续思考”；DSPy 有 RLM 模块；ARC-AGI-3 Kaggle 赛上很多 harness 借了 RLM 抽象<span class="gl">（Prime Agent 和 Headlong 的作者都包括 Zhang<a class="fn" href="#src-11" aria-label="来源 11">11</a><a class="fn" href="#src-13" aria-label="来源 13">13</a>）</span>。</li>
-  </ol></div>
+    <li><b>来历</b>：Prime Intellect 先发文说 RLM 是未来，后经 GPU Mode 的朋友牵线合作。Prime 训练自己的模型；Alex 不参与训练，把博士时间押在别的大注上。</li>
+    <li><b>子 agent 太短命</b>：<span class="host">主持人</span>Codex 的子 agent 做完就消失，成果也跟着丢；他的办法是把成果写进文件、操作都走代码。Alex 同意，Prime Agent 就是这么做的（见下方拆解）。</li>
+    <li><b>第三方</b>：法律 AI 公司 Harvey、Laude Institute 的 Headlong、开源框架 DSPy、ARC-AGI-3 的参赛者，都在用 RLM 的做法。</li>
+  </ol>
+    <details class="rx" id="rx-third07">
+      <summary><b>这几家分别是谁？各自怎么用 RLM</b><span class="tg2"></span><span class="re">共同点：长材料放进代码环境，主模型写代码分派给子调用。</span></summary>
+      <div class="rx-b">
+        <p><b>Harvey</b>：做法律 AI 的公司。和 Baseten 合作，给尽职调查（并购前审查成千上万份文件）后训练了一个 RLM：整个资料库装进 Python REPL，根模型检索、切分，再把成批文件交给子 agent 审阅，最后合成备忘录（见下方帖子图）。Alex 说他事先不知道。<a class="fn" href="#src-12" aria-label="来源 12">12</a></p>
+        <p><b>Headlong</b>：Laude Institute（Andy Konwinski 创办的研究机构）的 agent。Alex 说它在没人提问时也“持续思考”，同时控制 token 开销；它也用到 RLM 的做法。<span class="src-tag">背景</span> 它的作者名单里有 Zhang。<a class="fn" href="#src-13" aria-label="来源 13">13</a></p>
+        <p><b>DSPy</b>：Omar Khattab（Alex 的合作者）主导的开源框架，用代码搭建 LLM 程序。<span class="src-tag">背景</span> 它的 <code>dspy.RLM</code> 模块把上下文放进沙盒里的 Python REPL，当作外部数据，由模型写代码探索，并递归调用子<span class="nb">模型。<a class="fn" href="#src-31" aria-label="来源 31">31</a></span></p>
+        <p><b>ARC-AGI-3</b>：<span class="src-tag">背景</span> ARC Prize 的第三代测试，是交互式游戏：agent 要自己摸索规则，通关每一个游戏。<a class="fn" href="#src-32" aria-label="来源 32">32</a> Alex 说，Kaggle 比赛上很多参赛 harness 借用了 RLM 的抽象；这是他的说法，未经核实。</p>
+        <p><span class="src-tag">背景</span> Prime Agent 的作者名单里也有 Zhang。<a class="fn" href="#src-11" aria-label="来源 11">11</a></p>
+      </div>
+    </details>
+  </div>
   <div class="grp"><span class="gt">可视化</span></div>
   <article class="panel viz" id="v07">
     <div class="bar"><span class="k">Prime Agent 拆解</span><span>55:32–58:06</span></div>
     <div class="vz">
       <ol class="steps">
-        <li><b>Pi 核心循环</b><small>极简 harness，他拿它当所有 harness 的参照</small></li>
-        <li class="hot"><b>唯一工具：IPython</b><small>其他工具是 Python 模块或 Bash 脚本</small></li>
+        <li><b>Pi 核心循环</b><small>极简 harness：只有 4 个基础工具</small></li>
+        <li class="hot"><b>唯一工具：IPython</b><small>其他工具都变成可调用的 Python 函数</small></li>
         <li><b>continual harness</b><small>能改自己的 skills、子 agent、prompt（背景：基础 system prompt 不可改，改动可回滚<a class="fn" href="#src-11" aria-label="来源 11">11</a>）</small></li>
-        <li><b>agent 间消息</b><small>通信也写在代码里</small></li>
-        <li><b>持久子 agent</b><small>跑完后还能继续追问</small></li>
+        <li><b>agent 间消息</b><small>子 agent 之间用代码互发消息</small></li>
+        <li><b>持久子 agent</b><small>任务结束后仍保留，可以再追问</small></li>
       </ol>
       <p class="cap">他的话：除了这些，Prime Agent 其余部分都是“标准的”。</p>
+      <details class="rx" id="rx-why07">
+        <summary><b>逐层拆开：每一层解决什么问题</b><span class="tg2"></span><span class="re">从一个最小的 agent 出发，每加一层，解决一个具体问题。</span></summary>
+        <div class="rx-b">
+          <p><b>① Pi：极简 harness</b>。harness 是包在模型外面的程序：把任务交给模型，执行模型要求的工具调用，把结果送回去，循环到完成。<span class="src-tag">背景</span> Pi 是 Mario Zechner 写的开源编程 agent，只给模型 4 个工具：读文件、写文件、改文件、运行 Bash 命令；system prompt 很短；没有子 agent、MCP、计划模式。<a class="fn" href="#src-30" aria-label="来源 30">30</a> “极简”就是指这些都不做。Alex 拿它当衡量所有 harness 的参照：先看最少要什么，再看多加的东西值不值。</p>
+          <p><b>② 唯一的工具：IPython</b>。IPython 是一个一直运行的 Python 环境，变量会保留。Prime Agent 不再给模型一排工具，只给它这个环境：读文件、跑命令、开子 agent，都是在代码里调用的函数。结果存进变量，不自动塞进主模型的上下文。这就是前面讲的 RLM <span class="nb">抽象。<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></p>
+          <p><b>③ continual harness：能改自己</b>。agent 可以修改自己的 prompt、skills、记忆和子 agent 设置，越用越适合手上的任务。为了安全，基础 system prompt 不能改，每次改动都能回滚。<a class="fn" href="#src-11" aria-label="来源 11">11</a> Alex 说这部分来自博士生 Seth Karten，他用它来玩游戏。</p>
+          <p><b>④ agent 间消息</b>。RLM 会开出很多子 agent。普通做法里，子 agent 只能在结束时交回一段文字。Prime Agent 让它们在运行中也能用代码给别的 agent 发消息，但只限“核心家庭”：父 agent、兄弟、子 agent。这样不相关的 agent 不会互相干扰。<a class="fn" href="#src-11" aria-label="来源 11">11</a></p>
+          <p><b>⑤ 持久子 agent</b>。普通子 agent 做完任务就消失，只留下交回的文字；要追问细节，只能重开一个，从头再来。Prime Agent 保留子 agent 的环境和历史，父 agent 之后可以再给它发消息、追问，主会话压缩上下文或 Python 环境重启后也一样。<a class="fn" href="#src-11" aria-label="来源 11">11</a></p>
+          <p><b>回到主持人那句话</b>：Codex 是 OpenAI 的编程 agent。“外部化到文件系统”，是把进度和中间结果写进文件，agent 结束了，成果还在；“一切走代码”，是工具和子 agent 都从代码里调用，结果放在变量和文件里，而不是堆进对话。这是从业者的口头说法，不是正式术语。Prime Agent 的 ②④⑤ 把这两个想法做成了 harness 的内置功能。</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">原帖与资料</span></div>
@@ -1665,6 +1688,9 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
       <li id="src-27"><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" rel="noopener">Anthropic · Effective context engineering for AI agents · 2025-09-29</a></li>
       <li id="src-28"><a href="https://research.trychroma.com/context-rot" rel="noopener">Chroma · Context Rot: How Increasing Input Tokens Impacts LLM Performance · 2025-07-14</a></li>
       <li id="src-29"><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" rel="noopener">Claude Docs · Prompt caching</a></li>
+      <li id="src-30"><a href="https://mariozechner.at/posts/2025-11-30-pi-coding-agent/" rel="noopener">Mario Zechner · What I learned building an opinionated and minimal coding agent · 2025-11-30</a></li>
+      <li id="src-31"><a href="https://github.com/stanfordnlp/dspy/blob/main/docs/docs/api/modules/RLM.md" rel="noopener">DSPy docs · dspy.RLM</a></li>
+      <li id="src-32"><a href="https://arcprize.org/arc-agi/3/" rel="noopener">ARC Prize · ARC-AGI-3</a></li>
     </ol>
     <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
   </section>

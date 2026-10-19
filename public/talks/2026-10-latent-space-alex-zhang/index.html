@@ -406,6 +406,7 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .cmp2 .k{display:block;font-size:13px;color:var(--mg-80)}
 .cmp2 .a .k{color:var(--midground)}
 #v04 .rx{margin-top:14px}
+#v07 .rx{margin-top:14px}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1389,22 +1390,44 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
   <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Prime Agent adds the RLM abstraction to Pi: IPython is the only tool, the harness can modify itself, and sub-agents persist and talk in code.</p></div>
   <div class="grp"><span class="gt">Key points</span></div>
   <div class="panel pts"><ol class="lst">
-    <li><b>Origin</b>: Prime Intellect posted that RLMs were the future; a GPU Mode friend connected them. Prime trains its own models; he stays out, saving PhD time for other big bets.</li>
-    <li><b>Sub-agents die too soon</b>: <span class="host">Host</span>A Codex pain point; the trick is to externalize to a file system and run everything through code. He agrees.</li>
-    <li><b>Third parties</b>: Harvey post-trained an RLM for legal work; Laude Institute's Headlong "thinks persistently"; DSPy has an RLM module; many ARC-AGI-3 Kaggle harnesses borrowed the RLM abstraction<span class="gl"> (Zhang co-authored both Prime Agent and Headlong<a class="fn" href="#src-11" aria-label="Source 11">11</a><a class="fn" href="#src-13" aria-label="Source 13">13</a>)</span>.</li>
-  </ol></div>
+    <li><b>Origin</b>: Prime Intellect posted that RLMs were the future; a GPU Mode friend connected them. Prime trains its own models; Alex stays out, saving PhD time for other big bets.</li>
+    <li><b>Sub-agents die too soon</b>: <span class="host">Host</span>Codex sub-agents vanish when done, and their work goes with them. His fix: write results to files and do everything in code. Alex agrees; Prime Agent's persistent sub-agents address this (see the breakdown below).</li>
+    <li><b>Third parties</b>: legal AI company Harvey, Laude Institute's Headlong, the open-source framework DSPy and ARC-AGI-3 contestants all use the RLM approach.</li>
+  </ol>
+    <details class="rx" id="rx-third07">
+      <summary><b>Who are they, and how does each use RLMs?</b><span class="tg2"></span><span class="re">Common thread: long material lives in a code environment; the main model writes code that hands pieces to sub-calls.</span></summary>
+      <div class="rx-b">
+        <p><b>Harvey</b>: a legal AI company. With Baseten, it post-trained an RLM for due diligence (reviewing thousands of files before a deal): the whole data room loads into a Python REPL, the root model searches and slices it, sends batches of files to sub-agents for review, and the results merge into a memo (see the post below). Alex says he was not told in advance.<a class="fn" href="#src-12" aria-label="Source 12">12</a></p>
+        <p><b>Headlong</b>: an agent from Laude Institute (the research institute Andy Konwinski founded). Alex says it "thinks persistently" even when nobody asks it anything, while keeping token costs under control; it also uses the RLM approach. <span class="src-tag">Context</span> Zhang is on its author list.<a class="fn" href="#src-13" aria-label="Source 13">13</a></p>
+        <p><b>DSPy</b>: an open-source framework led by Omar Khattab (Alex's collaborator) for building LLM programs in code. <span class="src-tag">Context</span> Its <code>dspy.RLM</code> module keeps the context in a sandboxed Python REPL as external data; the model writes code to explore it and calls sub-models recursively.<a class="fn" href="#src-31" aria-label="Source 31">31</a></p>
+        <p><b>ARC-AGI-3</b>: <span class="src-tag">Context</span> the third ARC Prize benchmark, made of interactive games: an agent must work out the rules itself and beat every game.<a class="fn" href="#src-32" aria-label="Source 32">32</a> Alex says many harnesses in the Kaggle competition borrowed the RLM abstraction; this is his claim and is unverified.</p>
+        <p><span class="src-tag">Context</span> Zhang is also on Prime Agent's author list.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
+      </div>
+    </details>
+  </div>
   <div class="grp"><span class="gt">Visuals</span></div>
   <article class="panel viz" id="v07">
     <div class="bar"><span class="k">Prime Agent, piece by piece</span><span>55:32–58:06</span></div>
     <div class="vz">
       <ol class="steps">
-        <li><b>Pi core loop</b><small>Minimalist; his reference for all harnesses</small></li>
-        <li class="hot"><b>Only tool: IPython</b><small>Other tools are Python modules or Bash scripts</small></li>
+        <li><b>Pi core loop</b><small>Minimal harness: just 4 basic tools</small></li>
+        <li class="hot"><b>Only tool: IPython</b><small>Other tools become Python functions</small></li>
         <li><b>continual harness</b><small>Can modify its own skills, sub-agents and prompt (context: the base system prompt is fixed; changes can be rolled back<a class="fn" href="#src-11" aria-label="Source 11">11</a>)</small></li>
-        <li><b>Agent-to-agent messages</b><small>Also written in code</small></li>
-        <li><b>Persistent sub-agents</b><small>Can still be prompted after finishing</small></li>
+        <li><b>Agent-to-agent messages</b><small>Sub-agents message each other in code</small></li>
+        <li><b>Persistent sub-agents</b><small>Kept after the task; can be asked again</small></li>
       </ol>
       <p class="cap">In his words: apart from these, the rest of Prime Agent is "standard".</p>
+      <details class="rx" id="rx-why07">
+        <summary><b>Layer by layer: what each piece solves</b><span class="tg2"></span><span class="re">Start from a minimal agent; each layer adds one fix for one concrete problem.</span></summary>
+        <div class="rx-b">
+          <p><b>① Pi: a minimal harness</b>. A harness is the program wrapped around the model: it gives the model the task, runs the tool calls the model asks for, sends the results back, and loops until done. <span class="src-tag">Context</span> Pi is Mario Zechner's open-source coding agent. It gives the model only 4 tools: read a file, write a file, edit a file, run a Bash command. Its system prompt is short, and it has no sub-agents, MCP or plan mode.<a class="fn" href="#src-30" aria-label="Source 30">30</a> "Minimal" means it leaves all of that out. Alex uses it as the yardstick for every harness: first see the least you need, then ask whether each addition earns its place.</p>
+          <p><b>② One tool: IPython</b>. IPython is a Python environment that keeps running, so variables persist. Instead of a row of tools, Prime Agent gives the model only this environment: reading files, running commands and starting sub-agents are all functions called from code. Results go into variables and are not pushed into the main model's context. This is the RLM abstraction from earlier.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
+          <p><b>③ Continual harness: it can change itself</b>. The agent can edit its own prompts, skills, memory and sub-agent setup, so it fits the task better over time. For safety, the base system prompt cannot change, and every change can be rolled back.<a class="fn" href="#src-11" aria-label="Source 11">11</a> Alex says this part comes from PhD student Seth Karten, who used it to play games.</p>
+          <p><b>④ Agent-to-agent messages</b>. An RLM starts many sub-agents. Normally a sub-agent can only hand back some text when it finishes. Prime Agent lets them send messages to other agents in code while they run, but only within the "nuclear family": parent, siblings and children. That keeps unrelated agents from interfering with each other.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
+          <p><b>⑤ Persistent sub-agents</b>. A normal sub-agent disappears when its task ends and leaves only the text it returned; to ask a follow-up, you start a new one from scratch. Prime Agent keeps the sub-agent's environment and history, so the parent can message it or ask more later, even after the main session compacts its context or the Python environment restarts.<a class="fn" href="#src-11" aria-label="Source 11">11</a></p>
+          <p><b>Back to the host's remark</b>: Codex is OpenAI's coding agent. "Externalize to a file system" means writing progress and intermediate results to files, so the work survives when an agent ends. "Force everything through code" means calling tools and sub-agents from code, with results kept in variables and files instead of piling up in the conversation. This is practitioner shorthand, not formal terminology. Prime Agent's ②, ④ and ⑤ build these two ideas into the harness.</p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">Posts &amp; sources</span></div>
@@ -1665,6 +1688,9 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
       <li id="src-27"><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" rel="noopener">Anthropic · Effective context engineering for AI agents · 2025-09-29</a></li>
       <li id="src-28"><a href="https://research.trychroma.com/context-rot" rel="noopener">Chroma · Context Rot: How Increasing Input Tokens Impacts LLM Performance · 2025-07-14</a></li>
       <li id="src-29"><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" rel="noopener">Claude Docs · Prompt caching</a></li>
+      <li id="src-30"><a href="https://mariozechner.at/posts/2025-11-30-pi-coding-agent/" rel="noopener">Mario Zechner · What I learned building an opinionated and minimal coding agent · 2025-11-30</a></li>
+      <li id="src-31"><a href="https://github.com/stanfordnlp/dspy/blob/main/docs/docs/api/modules/RLM.md" rel="noopener">DSPy docs · dspy.RLM</a></li>
+      <li id="src-32"><a href="https://arcprize.org/arc-agi/3/" rel="noopener">ARC Prize · ARC-AGI-3</a></li>
     </ol>
     <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
   </section>
