@@ -414,9 +414,9 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
 .flow>.box{flex:1 1 7em;min-width:0}
 .flow .box b{display:block}
-.flow>.ar{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
+.flow>.fa{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
 .flow .box.x b::before{content:'\2715  ';color:var(--red)}
-@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.ar{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
+@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.fa{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
 .rx-b>.org-note{text-align:left}
 .org .box.lead small{color:inherit;opacity:.75;font-weight:400}
 .fn+.fn{margin-left:.35em}
@@ -1256,7 +1256,7 @@ html.sv-open{overflow:hidden}
         <summary><b>Why does this happen? One example, step by step</b><span class="tg2"></span><span class="re">The key: the main model sees different things in the two kinds of harness.</span></summary>
         <div class="rx-b">
           <p><span class="src-tag">Context</span> The example and numbers come from his blog post.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
-          <div class="flow"><div class="box"><b>Retrieval</b><small>Find an answer in many documents</small></div><div class="box"><b>Aggregation</b><small>Compute stats over a dataset</small></div><span class="ar">→</span><div class="box hot"><b>Same solution</b><small>cut → handle each piece → combine</small></div></div>
+          <div class="flow"><div class="box"><b>Retrieval</b><small>Find an answer in many documents</small></div><div class="box"><b>Aggregation</b><small>Compute stats over a dataset</small></div><span class="fa">→</span><div class="box hot"><b>Same solution</b><small>cut → handle each piece → combine</small></div></div>
           <div class="cmp2">
             <div><b class="k">Ordinary harness: the main model sees everything</b><p>Task + all documents + every tool result → one long trajectory</p><p>The two trajectories look nothing alike → learning does not carry over</p></div>
             <div class="a"><b class="k">RLM: the main model only writes orchestration code</b><pre class="code"># cut into 20 pieces
@@ -1360,7 +1360,7 @@ answer = llm(query, notes)</pre><p>The code is almost the same for both tasks �
       <details class="rx" id="rx-why06">
         <summary><b>What is "out of distribution"? Does caching fix it?</b><span class="tg2"></span><span class="re">In one line: caching makes repeated computation cheaper, but does not change what the model has to read.</span></summary>
         <div class="rx-b">
-          <div class="flow"><div class="box"><b>Common in training</b><small>Moderate length, tidy structure</small></div><span class="ar">→</span><div class="box hot2"><b>After dozens of turns</b><small>Task + reasoning + logs + tool results, hundreds of thousands of tokens</small></div><span class="ar">=</span><div class="box"><b>Out of distribution</b><small>Input the model is not used to<a class="fn" href="#src-26" aria-label="Source 26">26</a></small></div></div>
+          <div class="flow"><div class="box"><b>Common in training</b><small>Moderate length, tidy structure</small></div><span class="fa">→</span><div class="box hot2"><b>After dozens of turns</b><small>Task + reasoning + logs + tool results, hundreds of thousands of tokens</small></div><span class="fa">=</span><div class="box"><b>Out of distribution</b><small>Input the model is not used to<a class="fn" href="#src-26" aria-label="Source 26">26</a></small></div></div>
           <p class="org-note"><span class="src-tag">Context</span> The longer the input, the worse models do even on simple tasks (context rot).<a class="fn" href="#src-28" aria-label="Source 28">28</a> A context can be out of distribution before the window is full.</p>
           <div class="tbl-wrap"><table class="tbl">
             <thead><tr><th scope="col">Approach</th><th scope="col">What it changes</th><th scope="col">Fixes OOD?</th></tr></thead>
@@ -1462,7 +1462,7 @@ answer = llm(query, notes)</pre><p>The code is almost the same for both tasks �
             </tbody>
           </table></div>
           <span class="rx-h">The host's remark</span>
-          <div class="flow"><div class="box"><b>Codex sub-agents die too soon</b><small>Gone when done, work lost</small></div><span class="ar">→</span><div class="box"><b>Externalize to a file system</b><small>Write results to files</small></div><div class="box"><b>Everything through code</b><small>Tools and sub-agents called from code</small></div><span class="ar">→</span><div class="box hot"><b>②④⑤</b><small>Built into Prime Agent</small></div></div>
+          <div class="flow"><div class="box"><b>Codex sub-agents die too soon</b><small>Gone when done, work lost</small></div><span class="fa">→</span><div class="box"><b>Externalize to a file system</b><small>Write results to files</small></div><div class="box"><b>Everything through code</b><small>Tools and sub-agents called from code</small></div><span class="fa">→</span><div class="box hot"><b>②④⑤</b><small>Built into Prime Agent</small></div></div>
           <p class="org-note">Practitioner shorthand, not formal terms.</p>
         </div>
       </details>
@@ -1510,7 +1510,7 @@ answer = llm(query, notes)</pre><p>The code is almost the same for both tasks �
           <p class="org-note"><span class="src-tag">Context</span> Cursor (an AI code editor), blog post of 2026-02-05: agents build a browser from scratch to stress-test models.<a class="fn" href="#src-15" aria-label="Source 15">15</a></p>
           <div class="nums"><div class="box"><b>1 week</b><small>nonstop</small></div><div class="box"><b>Hundreds</b><small>agents per run</small></div><div class="box"><b>~1,000</b><small>commits/hour at peak</small></div><div class="box"><b>~10M</b><small>tool calls</small></div></div>
           <span class="rx-h">Tried and dropped</span>
-          <div class="flow"><div class="box x"><b>One agent</b><small>Loses track, quits early</small></div><span class="ar">→</span><div class="box x"><b>Shared lock file</b><small>20 agents ≈ 1–3</small></div><span class="ar">→</span><div class="box x"><b>Fixed roles</b><small>Waits on the slowest worker</small></div><span class="ar">→</span><div class="box x"><b>Merge gate</b><small>Everything queues at one point</small></div></div>
+          <div class="flow"><div class="box x"><b>One agent</b><small>Loses track, quits early</small></div><span class="fa">→</span><div class="box x"><b>Shared lock file</b><small>20 agents ≈ 1–3</small></div><span class="fa">→</span><div class="box x"><b>Fixed roles</b><small>Waits on the slowest worker</small></div><span class="fa">→</span><div class="box x"><b>Merge gate</b><small>Everything queues at one point</small></div></div>
           <span class="rx-h">Final structure</span>
           <div class="org one"><div class="org-col">
             <div class="box lead">Root planner<small>Owns the scope, writes no code</small></div><div class="cn">↓ tasks　↑ handoffs</div>
@@ -1560,7 +1560,7 @@ answer = llm(query, notes)</pre><p>The code is almost the same for both tasks �
         <summary><b>What is evolutionary search? AlphaEvolve as an example</b><span class="tg2"></span><span class="re">Like breeding: generate many candidates, keep the high scorers, change those, and repeat for many generations.</span></summary>
         <div class="rx-b">
           <p class="org-note"><span class="src-tag">Context</span> AlphaEvolve: Google DeepMind, 2025-05.<a class="fn" href="#src-33" aria-label="Source 33">33</a></p>
-          <div class="flow"><div class="box"><b>① Database</b><small>Candidate programs + scores</small></div><span class="ar">→</span><div class="box"><b>② Mutate</b><small>Gemini edits code</small></div><span class="ar">→</span><div class="box"><b>③ Score</b><small>Automated evaluators run and check</small></div><span class="ar">→</span><div class="box hot"><b>④ Select</b><small>Winners go back in ↻</small></div></div>
+          <div class="flow"><div class="box"><b>① Database</b><small>Candidate programs + scores</small></div><span class="fa">→</span><div class="box"><b>② Mutate</b><small>Gemini edits code</small></div><span class="fa">→</span><div class="box"><b>③ Score</b><small>Automated evaluators run and check</small></div><span class="fa">→</span><div class="box hot"><b>④ Select</b><small>Winners go back in ↻</small></div></div>
           <div class="q2"><div class="box"><b>48</b><small>multiplications for 4×4 complex matrices, one fewer than Strassen (1969)</small></div><div class="box"><b>≈0.7%</b><small>of Google's worldwide compute recovered by its scheduling rule<a class="fn" href="#src-33" aria-label="Source 33">33</a></small></div></div>
           <p class="org-note">It needs automatic scoring. Open-ended research has no clear objective, so the hard part becomes how to pick. Unlike a plain swarm, the picks seed the next round.</p>
         </div>

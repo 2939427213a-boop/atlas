@@ -414,9 +414,9 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
 .flow>.box{flex:1 1 7em;min-width:0}
 .flow .box b{display:block}
-.flow>.ar{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
+.flow>.fa{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
 .flow .box.x b::before{content:'\2715  ';color:var(--red)}
-@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.ar{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
+@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.fa{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
 .rx-b>.org-note{text-align:left}
 .org .box.lead small{color:inherit;opacity:.75;font-weight:400}
 .fn+.fn{margin-left:.35em}
@@ -1256,7 +1256,7 @@ html.sv-open{overflow:hidden}
         <summary><b>为什么会这样？用一个例子拆开看</b><span class="tg2"></span><span class="re">关键：两种 harness 里，主模型看到的东西不一样。</span></summary>
         <div class="rx-b">
           <p><span class="src-tag">背景</span> 例子和数字来自他的博<span class="nb">客。<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></p>
-          <div class="flow"><div class="box"><b>检索</b><small>在一堆文档里找答案</small></div><div class="box"><b>聚合</b><small>在一批数据里做统计</small></div><span class="ar">→</span><div class="box hot"><b>同一解法</b><small>切块 → 逐块处理 → 合并</small></div></div>
+          <div class="flow"><div class="box"><b>检索</b><small>在一堆文档里找答案</small></div><div class="box"><b>聚合</b><small>在一批数据里做统计</small></div><span class="fa">→</span><div class="box hot"><b>同一解法</b><small>切块 → 逐块处理 → 合并</small></div></div>
           <div class="cmp2">
             <div><b class="k">普通 harness：主模型看全部</b><p>任务 + 全部文档 + 每次工具结果 → 一条长轨迹</p><p>两个任务的轨迹完全不同 → 学到的搬不过去</p></div>
             <div class="a"><b class="k">RLM：主模型只写调度代码</b><pre class="code"># 切成 20 块
@@ -1360,7 +1360,7 @@ answer = llm(query, notes)</pre><p>两个任务的代码几乎一样 → 训练�
       <details class="rx" id="rx-why06">
         <summary><b>“出分布”是什么？缓存能不能解决？</b><span class="tg2"></span><span class="re">一句话：缓存让重复计算变便宜，但不改变模型要读的内容。</span></summary>
         <div class="rx-b">
-          <div class="flow"><div class="box"><b>训练时常见</b><small>长度适中、结构整齐</small></div><span class="ar">→</span><div class="box hot2"><b>跑几十轮后</b><small>任务 + 推理 + 日志 + 工具结果，几十万 token</small></div><span class="ar">=</span><div class="box"><b>出分布</b><small>模型不熟悉这种输<span class="nb">入<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></small></div></div>
+          <div class="flow"><div class="box"><b>训练时常见</b><small>长度适中、结构整齐</small></div><span class="fa">→</span><div class="box hot2"><b>跑几十轮后</b><small>任务 + 推理 + 日志 + 工具结果，几十万 token</small></div><span class="fa">=</span><div class="box"><b>出分布</b><small>模型不熟悉这种输<span class="nb">入<a class="fn" href="#src-26" aria-label="来源 26">26</a></span></small></div></div>
           <p class="org-note"><span class="src-tag">背景</span> 输入越长，简单任务也做得越差（context rot<span class="nb">）。<a class="fn" href="#src-28" aria-label="来源 28">28</a></span> 窗口没满，也可能已经出分布。</p>
           <div class="tbl-wrap"><table class="tbl">
             <thead><tr><th scope="col">做法</th><th scope="col">改变了什么</th><th scope="col">解决出分布？</th></tr></thead>
@@ -1462,7 +1462,7 @@ answer = llm(query, notes)</pre><p>两个任务的代码几乎一样 → 训练�
             </tbody>
           </table></div>
           <span class="rx-h">主持人那句话</span>
-          <div class="flow"><div class="box"><b>Codex 子 agent 太短命</b><small>做完就消失，成果跟着丢</small></div><span class="ar">→</span><div class="box"><b>外部化到文件系统</b><small>成果写进文件</small></div><div class="box"><b>一切走代码</b><small>工具、子 agent 都从代码调用</small></div><span class="ar">→</span><div class="box hot"><b>②④⑤</b><small>Prime Agent 做成了内置功能</small></div></div>
+          <div class="flow"><div class="box"><b>Codex 子 agent 太短命</b><small>做完就消失，成果跟着丢</small></div><span class="fa">→</span><div class="box"><b>外部化到文件系统</b><small>成果写进文件</small></div><div class="box"><b>一切走代码</b><small>工具、子 agent 都从代码调用</small></div><span class="fa">→</span><div class="box hot"><b>②④⑤</b><small>Prime Agent 做成了内置功能</small></div></div>
           <p class="org-note">这是从业者的口头说法，不是正式术语。</p>
         </div>
       </details>
@@ -1510,7 +1510,7 @@ answer = llm(query, notes)</pre><p>两个任务的代码几乎一样 → 训练�
           <p class="org-note"><span class="src-tag">背景</span> Cursor（AI 编程编辑器）2026-02-05 的博客：让 agent 从零写一个浏览器，用来压测模<span class="nb">型。<a class="fn" href="#src-15" aria-label="来源 15">15</a></span></p>
           <div class="nums"><div class="box"><b>1 周</b><small>连续运行</small></div><div class="box"><b>几百</b><small>单次运行的 agent</small></div><div class="box"><b>~1,000</b><small>峰值每小时提交</small></div><div class="box"><b>~1,000 万</b><small>工具调用</small></div></div>
           <span class="rx-h">试过、放弃</span>
-          <div class="flow"><div class="box x"><b>单个 agent</b><small>忘事，过早收工</small></div><span class="ar">→</span><div class="box x"><b>共享锁文件</b><small>20 个 ≈ 1–3 个</small></div><span class="ar">→</span><div class="box x"><b>固定分工</b><small>等最慢的 worker</small></div><span class="ar">→</span><div class="box x"><b>合并关卡</b><small>全堵在一处</small></div></div>
+          <div class="flow"><div class="box x"><b>单个 agent</b><small>忘事，过早收工</small></div><span class="fa">→</span><div class="box x"><b>共享锁文件</b><small>20 个 ≈ 1–3 个</small></div><span class="fa">→</span><div class="box x"><b>固定分工</b><small>等最慢的 worker</small></div><span class="fa">→</span><div class="box x"><b>合并关卡</b><small>全堵在一处</small></div></div>
           <span class="rx-h">最后的结构</span>
           <div class="org one"><div class="org-col">
             <div class="box lead">根规划者<small>负责全局，不写代码</small></div><div class="cn">↓ 派任务　↑ 交接说明</div>
@@ -1560,7 +1560,7 @@ answer = llm(query, notes)</pre><p>两个任务的代码几乎一样 → 训练�
         <summary><b>演化搜索是什么？以 AlphaEvolve 为例</b><span class="tg2"></span><span class="re">像育种：大量生成候选，留下打分高的，在它们上面再改，一代代重复。</span></summary>
         <div class="rx-b">
           <p class="org-note"><span class="src-tag">背景</span> AlphaEvolve：Google DeepMind，2025-0<span class="nb">5。<a class="fn" href="#src-33" aria-label="来源 33">33</a></span></p>
-          <div class="flow"><div class="box"><b>① 程序库</b><small>候选程序 + 分数</small></div><span class="ar">→</span><div class="box"><b>② 变异</b><small>Gemini 改代码</small></div><span class="ar">→</span><div class="box"><b>③ 打分</b><small>自动评估器运行、检查</small></div><span class="ar">→</span><div class="box hot"><b>④ 选择</b><small>好的放回库里 ↻</small></div></div>
+          <div class="flow"><div class="box"><b>① 程序库</b><small>候选程序 + 分数</small></div><span class="fa">→</span><div class="box"><b>② 变异</b><small>Gemini 改代码</small></div><span class="fa">→</span><div class="box"><b>③ 打分</b><small>自动评估器运行、检查</small></div><span class="fa">→</span><div class="box hot"><b>④ 选择</b><small>好的放回库里 ↻</small></div></div>
           <div class="q2"><div class="box"><b>48 次</b><small>算 4×4 复数矩阵乘法，比 Strassen（1969）少 1 次</small></div><div class="box"><b>≈0.7%</b><small>它写的调度规则收回的 Google 全球算<span class="nb">力<a class="fn" href="#src-33" aria-label="来源 33">33</a></span></small></div></div>
           <p class="org-note">前提是能自动打分。开放式研究没有明确目标，难点就落在“最后怎么选”。和 swarm 的区别：选中的结果是下一轮的起点。</p>
         </div>
