@@ -411,6 +411,7 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .rx .tg2{margin-left:auto;padding:0 7px;border:1px solid var(--line-2);color:var(--midground);font-family:var(--font-mono);font-size:11px}
 .rx .tg2::after{content:'+'}
 .rx[open] .tg2::after{content:'\2212'}
+.rx .nb{white-space:nowrap}
 .rx .re{flex-basis:100%;font-size:13.5px;line-height:1.55}
 .rx-b{padding:10px 12px 12px;font-size:13.5px;line-height:1.65}
 .rx-b p{margin:0}
@@ -419,7 +420,7 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 .rx-tl .yr{margin-right:8px}
 .rx-b .analysis .an-tag{padding:6px 12px 0}
 .rx-b .analysis .lst{padding:2px 12px 8px}
-.rx-sum{margin:0;padding:4px 0 4px 12px;border-left:2px solid var(--midground);font-size:14px;line-height:1.6}
+.rx-sum{margin:14px 0 0;padding:4px 0 4px 12px;border-left:2px solid var(--midground);font-size:14px;line-height:1.6}
 .qbox{border:1px solid var(--line);padding:12px}
 .qbox>*+*{margin-top:10px}
 .qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
@@ -1126,7 +1127,7 @@ html.sv-open{overflow:hidden}
           </div>
         </details>
         <details class="rx" id="rx-swebench">
-          <summary><span class="yr">2023-10</span><b>SWE-bench</b><span class="who">发布时的反应（Ofir Press 常讲）</span><span class="tg2"></span><span class="re">“不可能的任务，为什么要拿它当 benchmark？” → 发布时最好的模型只解出 1.96% 的题；2024-03 Devin 宣称解出 13.86%，大家才开始刷这个榜。<a class="fn" href="#src-25" aria-label="来源 25">25</a></span></summary>
+          <summary><span class="yr">2023-10</span><b>SWE-bench</b><span class="who">发布时的反应（Ofir Press 常讲）</span><span class="tg2"></span><span class="re">“不可能的任务，为什么要拿它当 benchmark？” → 发布时最好的模型只解出 1.96% 的题；2024-03 Devin 宣称解出 13.86%，大家才开始<span class="nb">刷这个榜。<a class="fn" href="#src-25" aria-label="来源 25">25</a></span></span></summary>
           <div class="rx-b">
             <p><span class="src-tag">背景</span> Princeton 的 Carlos Jimenez、John Yang、Ofir Press 等人发布。2,294 道题都来自 12 个热门 Python 仓库的真实 GitHub issue，模型要写出能通过仓库测试的补丁。<a class="fn" href="#src-23" aria-label="来源 23">23</a></p>
             <p>Devin 是 Cognition 的编程 agent。它的 13.86% 是在随机抽取的 25% 题目上测的。<a class="fn" href="#src-25" aria-label="来源 25">25</a></p>
