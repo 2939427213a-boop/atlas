@@ -933,6 +933,19 @@ html.sv-open{overflow:hidden}
 .g-bar.end{border:0;background:transparent;color:var(--midground);font-weight:700}
 .ctxw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @container (max-width:640px){.ctxw{grid-template-columns:minmax(0,1fr)}}
+.ctxw .btn-row{margin-top:4px;align-items:center}
+.repl span{display:block}
+.repl span.cur{color:var(--midground);background:color-mix(in srgb,var(--midground) 12%,transparent)}
+.repl span.dim{opacity:.4}
+.meter{display:grid;gap:3px;font-size:12px;color:var(--mg-65)}
+.meter i{display:block;height:6px;border:1px solid var(--line-2)}
+.meter i b{display:block;height:100%;background:var(--mg-65);transition:width .25s}
+.meter.hi i b{background:var(--red)}
+.meter.ok i b{background:var(--midground)}
+.subs-note{font-size:12px;line-height:1.5;color:var(--midground);border-left:2px solid var(--midground);padding-left:8px}
+.subs-note[hidden]{display:none}
+.subs .merge{grid-column:1/-1}
+#v06 .rx{margin-top:14px}
 .ctxw .side{border:1px solid var(--line-2);background:var(--background-base);padding:10px;display:grid;gap:6px;align-content:start}
 .ctxw .side>b{font-size:13.5px}
 .ctxw .side>small{font-size:12px;color:var(--mg-65)}
@@ -1303,30 +1316,56 @@ answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不
         <div class="side">
           <b>trajectory as a prompt</b><small>整条轨迹不断追加进 prompt</small>
           <div class="seg-stack" data-left></div>
+          <div class="meter" data-lm><span>主模型上下文：每轮都变长</span><i><b></b></i></div>
           <span class="verdict bad" data-lv></span>
+          <div class="btn-row"><button type="button" class="h-btn solid" data-lnext>下一轮 <i>→</i></button><button type="button" class="h-btn" data-lreset>重置</button><span class="cap" data-lstep></span></div>
         </div>
         <div class="side">
           <b>RLM</b><small>上下文是代码里的一个变量</small>
-<pre class="repl">context = load(...)   # 存在内存 / 磁盘
-parts = split(context)
-for p in parts:
-    llm_query(p)       # 调用自己</pre>
+          <pre class="repl" data-code><span>context = load(...)  # 原文存进变量</span><span>parts = split(context)  # 切块</span><span>notes = [llm_query(p) for p in parts]</span><span>answer = llm_query(notes)  # 合并</span></pre>
+          <p class="cap" data-rtxt style="margin:0"></p>
+          <div class="subs-note" data-subnote></div>
           <div class="subs" data-subs></div>
-          <span class="verdict ok" data-rv></span>
+          <div class="meter ok"><span>主模型上下文：始终很短</span><i><b style="width:15%"></b></i></div>
+          <span class="verdict ok">每次调用都在分布内</span>
+          <div class="btn-row"><button type="button" class="h-btn solid" data-rnext>下一步 <i>→</i></button><button type="button" class="h-btn" data-rreset>重置</button><span class="cap" data-rstep></span></div>
         </div>
       </div>
-      <div class="btn-row" style="margin-top:10px"><button type="button" class="h-btn solid" data-next>下一步 <i>→</i></button><button type="button" class="h-btn" data-reset>重置</button><span class="cap" data-step style="align-self:center"></span></div>
-      <p class="cap">示意：代码、轮数和子调用数是虚构的，只用来说明两种上下文的差别。</p>
+      <p class="cap">示意：代码和数字是虚构的；左边的“轮”和右边的“步”互不对应。</p>
+      <details class="rx" id="rx-why06">
+        <summary><b>“出分布”是什么？缓存能不能解决？</b><span class="tg2"></span><span class="re">一句话：缓存让重复计算变便宜，但不改变模型要读的内容。</span></summary>
+        <div class="rx-b">
+          <p><span class="src-tag">背景</span> <b>出分布</b>：模型熟悉的是训练时常见的输入，包括常见的长度、格式和结构。常规 harness 跑几十轮后，prompt 里堆满任务、推理、日志和工具结果，可能有几十万 token。训练时很少见到这样又长又杂的输入，这就是出分布。<a class="fn" href="#src-26" aria-label="来源 26">26</a> 测试也发现，即使任务很简单，输入越长，模型表现也越差，这叫 context rot。<a class="fn" href="#src-28" aria-label="来源 28">28</a> 这和“装不下”是两回事：窗口没满，也可能已经出分布。</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">做法</th><th scope="col">改变了什么</th><th scope="col">能否解决出分布</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Prompt 缓存</th><td>前面没变的部分不用重新计算，所以更快、更便宜。<a class="fn" href="#src-29" aria-label="来源 29">29</a></td><td>不能。模型每一步仍要读整个上下文。</td></tr>
+              <tr><th scope="row">压缩（compaction）</th><td>上下文快满时，把旧历史总结成一小段，换掉原文。<a class="fn" href="#src-27" aria-label="来源 27">27</a></td><td>能缓解。但会丢细节，总结仍在主上下文里。</td></tr>
+              <tr><th scope="row">RLM 上下文外置</th><td>原文不进主上下文，只放在变量里，由子调用分段读。</td><td>能。主模型的上下文从一开始就短。</td></tr>
+            </tbody>
+          </table></div>
+          <p><b>子调用是同时跑的吗？</b>不一定。可以一个接一个跑，也可以并行，这是实现细节。关键是它们相互独立：每个都从空白上下文开始，看不到别的子调用。</p>
+        </div>
+      </details>
     </div>
   </article>
   <script>
-  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;var v=r.closest('.vz'),L=r.querySelector('[data-left]'),S=r.querySelector('[data-subs]'),lv=r.querySelector('[data-lv]'),rv=r.querySelector('[data-rv]'),st=v.querySelector('[data-step]'),n=4;
+  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;
+  var L=r.querySelector('[data-left]'),lm=r.querySelector('[data-lm]'),lb=lm.querySelector('b'),lv=r.querySelector('[data-lv]'),ls=r.querySelector('[data-lstep]'),n=4;
   var segs=['任务','工具结果 1','第 2 轮','工具结果 2','第 3 轮','工具结果 3','第 4 轮','工具结果 4'];
-  function draw(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
-  S.innerHTML='';for(var k=1;k<=3;k++){var t=document.createElement('span');t.textContent='子调用 '+k+' · 只看一小段';if(k>n-1&&n<4)t.hidden=true;S.appendChild(t)}
-  lv.textContent=n>=3?'越来越出分布':'还在分布内';rv.textContent='每次调用都在分布内';st.textContent='第 '+n+' 轮 / 共 4 轮'}
-  v.querySelector('[data-next]').addEventListener('click',function(){n=n>=4?1:n+1;draw()});
-  v.querySelector('[data-reset]').addEventListener('click',function(){n=1;draw()});draw()});
+  function drawL(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
+  lb.style.width=(n*25)+'%';lm.classList.toggle('hi',n>=3);lv.textContent=n>=3?'越来越出分布':'还在分布内';ls.textContent='第 '+n+' 轮 / 共 4 轮'}
+  r.querySelector('[data-lnext]').addEventListener('click',function(){n=n>=4?1:n+1;drawL()});
+  r.querySelector('[data-lreset]').addEventListener('click',function(){n=1;drawL()});
+  var C=r.querySelectorAll('[data-code] span'),S=r.querySelector('[data-subs]'),sn=r.querySelector('[data-subnote]'),rt=r.querySelector('[data-rtxt]'),rs=r.querySelector('[data-rstep]'),m=4;
+  var txt=['第 1 步：原文存进变量 context。主模型只看到变量名和长度，看不到内容。', '第 2 步：主模型写代码，把原文切成 3 段。', '第 3 步：派出 3 个子调用。结果存进变量 notes，不进主模型的上下文。', '第 4 步：再派一个子调用合并 notes。主模型只读最后的答案。'];
+  function drawR(){for(var i=0;i<C.length;i++)C[i].className=i===m-1?'cur':(i>=m?'dim':'');
+  S.innerHTML='';if(m>=3){for(var k=1;k<=3;k++){var s=document.createElement('span');s.textContent='子调用 '+k+' · 只看第 '+k+' 段';S.appendChild(s)}}
+  if(m>=4){var g=document.createElement('span');g.className='merge';g.textContent='合并子调用 · 只看 notes';S.appendChild(g)}
+  sn.hidden=m<3;sn.textContent='相互独立：各自从空白上下文开始，彼此看不到；可以依次跑，也可以并行。';rt.textContent=txt[m-1];rs.textContent='第 '+m+' 步 / 共 4 步'}
+  r.querySelector('[data-rnext]').addEventListener('click',function(){m=m>=4?1:m+1;drawR()});
+  r.querySelector('[data-rreset]').addEventListener('click',function(){m=1;drawR()});
+  drawL();drawR()});
   </script>
   <div class="grp"><span class="gt">原帖与资料</span></div>
   <figure class="panel xpost">
@@ -1623,6 +1662,9 @@ for p in parts:
       <li id="src-24"><a href="https://arxiv.org/abs/2403.09629" rel="noopener">Zelikman et al. · Quiet-STaR: Language Models Can Teach Themselves to Think Before Speaking · arXiv 2403.09629 · 2024-03-14</a></li>
       <li id="src-25"><a href="https://cognition.ai/blog/introducing-devin" rel="noopener">Cognition · Introducing Devin · 2024-03-12</a></li>
       <li id="src-26"><a href="https://alexzhang13.github.io/blog/2026/harness/" rel="noopener">Zhang, Khattab · Language model harnesses are compositional generalizers · 2026-07-20</a></li>
+      <li id="src-27"><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" rel="noopener">Anthropic · Effective context engineering for AI agents · 2025-09-29</a></li>
+      <li id="src-28"><a href="https://research.trychroma.com/context-rot" rel="noopener">Chroma · Context Rot: How Increasing Input Tokens Impacts LLM Performance · 2025-07-14</a></li>
+      <li id="src-29"><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" rel="noopener">Claude Docs · Prompt caching</a></li>
     </ol>
     <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
   </section>

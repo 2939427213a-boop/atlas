@@ -933,6 +933,19 @@ html.sv-open{overflow:hidden}
 .g-bar.end{border:0;background:transparent;color:var(--midground);font-weight:700}
 .ctxw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @container (max-width:640px){.ctxw{grid-template-columns:minmax(0,1fr)}}
+.ctxw .btn-row{margin-top:4px;align-items:center}
+.repl span{display:block}
+.repl span.cur{color:var(--midground);background:color-mix(in srgb,var(--midground) 12%,transparent)}
+.repl span.dim{opacity:.4}
+.meter{display:grid;gap:3px;font-size:12px;color:var(--mg-65)}
+.meter i{display:block;height:6px;border:1px solid var(--line-2)}
+.meter i b{display:block;height:100%;background:var(--mg-65);transition:width .25s}
+.meter.hi i b{background:var(--red)}
+.meter.ok i b{background:var(--midground)}
+.subs-note{font-size:12px;line-height:1.5;color:var(--midground);border-left:2px solid var(--midground);padding-left:8px}
+.subs-note[hidden]{display:none}
+.subs .merge{grid-column:1/-1}
+#v06 .rx{margin-top:14px}
 .ctxw .side{border:1px solid var(--line-2);background:var(--background-base);padding:10px;display:grid;gap:6px;align-content:start}
 .ctxw .side>b{font-size:13.5px}
 .ctxw .side>small{font-size:12px;color:var(--mg-65)}
@@ -1156,7 +1169,7 @@ html.sv-open{overflow:hidden}
           </div>
         </details>
       </div>
-      <p class="rx-sum"><b>His conclusion</b>: none of these was a ready-to-use product; each was a big bet. Reactions like "impossible", "obvious" or "what is this for" mean people have not yet worked out its purpose. The freedom to make such bets is a PhD student's biggest advantage.</p>
+      <p class="rx-sum"><b>His conclusion</b>: none of these was a ready-to-use product; each was a big bet. Reactions like "impossible", "obvious" or "what is this for" mean its purpose is not yet clear. Freedom to bet like this is a PhD student's biggest edge.</p>
     </div>
   </article>
 </section>
@@ -1301,32 +1314,58 @@ answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. 
     <div class="vz">
       <div class="ctxw" data-ctxw>
         <div class="side">
-          <b>trajectory as a prompt</b><small>the whole trajectory keeps being appended to the prompt</small>
+          <b>trajectory as a prompt</b><small>the whole trajectory is appended to the prompt</small>
           <div class="seg-stack" data-left></div>
+          <div class="meter" data-lm><span>Main context: longer every turn</span><i><b></b></i></div>
           <span class="verdict bad" data-lv></span>
+          <div class="btn-row"><button type="button" class="h-btn solid" data-lnext>Next turn <i>→</i></button><button type="button" class="h-btn" data-lreset>Reset</button><span class="cap" data-lstep></span></div>
         </div>
         <div class="side">
           <b>RLM</b><small>context is a variable in code</small>
-<pre class="repl">context = load(...)   # in memory / on disk
-parts = split(context)
-for p in parts:
-    llm_query(p)       # calls itself</pre>
+          <pre class="repl" data-code><span>context = load(...)  # source goes into a variable</span><span>parts = split(context)  # cut into pieces</span><span>notes = [llm_query(p) for p in parts]</span><span>answer = llm_query(notes)  # combine</span></pre>
+          <p class="cap" data-rtxt style="margin:0"></p>
+          <div class="subs-note" data-subnote></div>
           <div class="subs" data-subs></div>
-          <span class="verdict ok" data-rv></span>
+          <div class="meter ok"><span>Main context: always short</span><i><b style="width:15%"></b></i></div>
+          <span class="verdict ok">Every call stays in distribution</span>
+          <div class="btn-row"><button type="button" class="h-btn solid" data-rnext>Next step <i>→</i></button><button type="button" class="h-btn" data-rreset>Reset</button><span class="cap" data-rstep></span></div>
         </div>
       </div>
-      <div class="btn-row" style="margin-top:10px"><button type="button" class="h-btn solid" data-next>Next <i>→</i></button><button type="button" class="h-btn" data-reset>Reset</button><span class="cap" data-step style="align-self:center"></span></div>
-      <p class="cap">Illustrative: code, turns and sub-calls are made up, only to contrast the two kinds of context.</p>
+      <p class="cap">Illustrative only; left turns and right steps do not line up.</p>
+      <details class="rx" id="rx-why06">
+        <summary><b>What does "out of distribution" mean? Does caching fix it?</b><span class="tg2"></span><span class="re">In one line: caching makes repeated computation cheaper, but it does not change what the model has to read.</span></summary>
+        <div class="rx-b">
+          <p><span class="src-tag">Context</span> <b>Out of distribution</b>: a model is familiar with the inputs common in its training data, including their usual length, format and structure. After dozens of turns, an ordinary harness's prompt is packed with the task, reasoning, logs and tool results, possibly hundreds of thousands of tokens. Training rarely shows inputs this long and messy; that is what out of distribution means.<a class="fn" href="#src-26" aria-label="Source 26">26</a> Tests also find that even on simple tasks, models do worse as the input gets longer, which is called context rot.<a class="fn" href="#src-28" aria-label="Source 28">28</a> This is not the same as running out of room: a prompt can be out of distribution long before the window is full.</p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">Approach</th><th scope="col">What it changes</th><th scope="col">Fixes out of distribution?</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Prompt caching</th><td>The unchanged front part is not recomputed, so calls are faster and cheaper.<a class="fn" href="#src-29" aria-label="Source 29">29</a></td><td>No. At every step the model still reads the whole context.</td></tr>
+              <tr><th scope="row">Compaction</th><td>When the context is nearly full, old history is summarized into a short note that replaces it.<a class="fn" href="#src-27" aria-label="Source 27">27</a></td><td>Partly. Details are lost, and the summary still sits in the main context.</td></tr>
+              <tr><th scope="row">RLM context offloading</th><td>The source never enters the main context; it stays in a variable, and sub-calls read it piece by piece.</td><td>Yes. The main model's context is short from the start.</td></tr>
+            </tbody>
+          </table></div>
+          <p><b>Do sub-calls run at the same time?</b> Not necessarily. They can run one after another or in parallel; that is an implementation detail. What matters is that they are independent: each starts from a blank context and cannot see the others.</p>
+        </div>
+      </details>
     </div>
   </article>
   <script>
-  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;var v=r.closest('.vz'),L=r.querySelector('[data-left]'),S=r.querySelector('[data-subs]'),lv=r.querySelector('[data-lv]'),rv=r.querySelector('[data-rv]'),st=v.querySelector('[data-step]'),n=4;
+  document.addEventListener('DOMContentLoaded',function(){var r=document.querySelector('[data-ctxw]');if(!r)return;
+  var L=r.querySelector('[data-left]'),lm=r.querySelector('[data-lm]'),lb=lm.querySelector('b'),lv=r.querySelector('[data-lv]'),ls=r.querySelector('[data-lstep]'),n=4;
   var segs=['Task','Tool result 1','Turn 2','Tool result 2','Turn 3','Tool result 3','Turn 4','Tool result 4'];
-  function draw(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
-  S.innerHTML='';for(var k=1;k<=3;k++){var t=document.createElement('span');t.textContent='Sub-call '+k+' · sees one small slice';if(k>n-1&&n<4)t.hidden=true;S.appendChild(t)}
-  lv.textContent=n>=3?'Drifting out of distribution':'Still in distribution';rv.textContent='Every call stays in distribution';st.textContent='Turn '+n+' of 4'}
-  v.querySelector('[data-next]').addEventListener('click',function(){n=n>=4?1:n+1;draw()});
-  v.querySelector('[data-reset]').addEventListener('click',function(){n=1;draw()});draw()});
+  function drawL(){L.innerHTML='';for(var i=0;i<n*2;i++){var s=document.createElement('span');s.textContent=segs[i];s.className=i<3?'in':(i<5?'':'out');L.appendChild(s)}
+  lb.style.width=(n*25)+'%';lm.classList.toggle('hi',n>=3);lv.textContent=n>=3?'Drifting out of distribution':'Still in distribution';ls.textContent='Turn '+n+' of 4'}
+  r.querySelector('[data-lnext]').addEventListener('click',function(){n=n>=4?1:n+1;drawL()});
+  r.querySelector('[data-lreset]').addEventListener('click',function(){n=1;drawL()});
+  var C=r.querySelectorAll('[data-code] span'),S=r.querySelector('[data-subs]'),sn=r.querySelector('[data-subnote]'),rt=r.querySelector('[data-rtxt]'),rs=r.querySelector('[data-rstep]'),m=4;
+  var txt=['Step 1: the source goes into the variable context. The main model sees only its name and length, not its content.', 'Step 2: the main model writes code that cuts the source into 3 pieces.', "Step 3: it sends out 3 sub-calls. Their results go into the variable notes, not into the main model's context.", 'Step 4: one more sub-call merges notes. The main model reads only the final answer.'];
+  function drawR(){for(var i=0;i<C.length;i++)C[i].className=i===m-1?'cur':(i>=m?'dim':'');
+  S.innerHTML='';if(m>=3){for(var k=1;k<=3;k++){var s=document.createElement('span');s.textContent='Sub-call '+k+' · sees piece '+k+' only';S.appendChild(s)}}
+  if(m>=4){var g=document.createElement('span');g.className='merge';g.textContent='Merge sub-call · sees notes only';S.appendChild(g)}
+  sn.hidden=m<3;sn.textContent='Independent: each starts from a blank context and cannot see the others; they can run in sequence or in parallel.';rt.textContent=txt[m-1];rs.textContent='Step '+m+' of 4'}
+  r.querySelector('[data-rnext]').addEventListener('click',function(){m=m>=4?1:m+1;drawR()});
+  r.querySelector('[data-rreset]').addEventListener('click',function(){m=1;drawR()});
+  drawL();drawR()});
   </script>
   <div class="grp"><span class="gt">Posts &amp; sources</span></div>
   <figure class="panel xpost">
@@ -1623,6 +1662,9 @@ for p in parts:
       <li id="src-24"><a href="https://arxiv.org/abs/2403.09629" rel="noopener">Zelikman et al. · Quiet-STaR: Language Models Can Teach Themselves to Think Before Speaking · arXiv 2403.09629 · 2024-03-14</a></li>
       <li id="src-25"><a href="https://cognition.ai/blog/introducing-devin" rel="noopener">Cognition · Introducing Devin · 2024-03-12</a></li>
       <li id="src-26"><a href="https://alexzhang13.github.io/blog/2026/harness/" rel="noopener">Zhang, Khattab · Language model harnesses are compositional generalizers · 2026-07-20</a></li>
+      <li id="src-27"><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" rel="noopener">Anthropic · Effective context engineering for AI agents · 2025-09-29</a></li>
+      <li id="src-28"><a href="https://research.trychroma.com/context-rot" rel="noopener">Chroma · Context Rot: How Increasing Input Tokens Impacts LLM Performance · 2025-07-14</a></li>
+      <li id="src-29"><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-caching" rel="noopener">Claude Docs · Prompt caching</a></li>
     </ol>
     <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
   </section>
