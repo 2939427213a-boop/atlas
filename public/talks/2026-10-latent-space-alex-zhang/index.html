@@ -398,6 +398,14 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 @container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
 .q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.cmp2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+@container (max-width:640px){.cmp2{grid-template-columns:minmax(0,1fr)}}
+.cmp2>div{padding:10px 12px;border:1px dashed var(--line-2)}
+.cmp2>div.a{border:1px solid var(--midground)}
+.cmp2>div>*+*{margin-top:6px}
+.cmp2 .k{display:block;font-size:13px;color:var(--mg-80)}
+.cmp2 .a .k{color:var(--midground)}
+#v04 .rx{margin-top:14px}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1211,6 +1219,25 @@ html.sv-open{overflow:hidden}
         <div class="vs-row" role="row"><span class="vs-k" role="rowheader">After training on one</span><span class="vs-w" role="cell">The other must still be learned</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Does the other directly</span></div>
         <div class="vs-row" role="row"><span class="vs-k" role="rowheader">Longer tasks</span><span class="vs-w" role="cell">Longer trajectory, out of distribution</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">Only a length variable changes: works 8–30× longer</span></div>
       </div>
+      <details class="rx" id="rx-why04">
+        <summary><b>Why does this happen? One example, step by step</b><span class="tg2"></span><span class="re">The key: the main model sees different things in the two kinds of harness.</span></summary>
+        <div class="rx-b">
+          <p><span class="src-tag">Context</span> The example and numbers come from his blog post.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
+          <p><b>Two tasks</b>: retrieval means finding the answer to a question in a large pile of documents; aggregation means computing statistics over a large dataset, such as how many items fall in each class. The domains and questions are completely different, but the solution is the same: cut the input into pieces, handle each piece, then combine the results.</p>
+          <div class="cmp2">
+            <div><b class="k">Ordinary harness: the main model sees everything</b><p>The task description, all the documents or data, and every tool result are appended in order. This is "trajectory as a prompt". The two tasks produce completely different text, so what the model learns on one is hard to carry to the other.</p></div>
+            <div class="a"><b class="k">RLM: the main model only writes orchestration code</b><p>The documents or data go into a variable <code>context</code>, and the question into <code>query</code>. The main model never sees their contents; it only writes code (simplified):</p><pre class="code"># cut into 20 pieces
+chunks = split(context, 20)
+# one sub-call per piece
+notes = [llm(query, c) for c in chunks]
+# one more sub-call to combine
+answer = llm(query, notes)</pre><p>This code is almost the same for both tasks. Only <code>query</code> and the content of each piece differ, and those go to the sub-calls. Each sub-call sees one small piece, a small task the model already knows.</p></div>
+          </div>
+          <p><b>Train on one, get the other</b>: in training, the main model learns the program "cut, dispatch, combine". On the other task it sees almost the same program, so there is nothing new to learn. The blog's cross-domain experiments (for example, from finding essays by the same author to finding math problems with the same solution method) show this transfer; the model trained directly barely transfers.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
+          <p><b>Longer tasks</b>: when the input is 10× longer, an ordinary harness's trajectory is also about 10× longer, beyond the lengths seen in training, so the model is on unfamiliar ground. The RLM's code stays the same; there are just more pieces, and each sub-call still sees one small piece. In the blog's experiments, Qwen3-30B-A3B trained only on short tasks and tested on tasks 8–32× longer improved clearly as an RLM, while the directly trained model barely moved.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
+          <p><b>Why "no magic"</b>: the model must actually learn to decompose. On short tasks it can also hand the whole problem to one sub-call, and that habit does not carry to long tasks. On one task in the blog, it needed a hint to decompose first.<a class="fn" href="#src-26" aria-label="Source 26">26</a></p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">Posts &amp; sources</span></div>
@@ -1595,6 +1622,7 @@ for p in parts:
       <li id="src-23"><a href="https://arxiv.org/abs/2310.06770" rel="noopener">Jimenez et al. · SWE-bench: Can Language Models Resolve Real-World GitHub Issues? · arXiv 2310.06770 · 2023-10-10</a></li>
       <li id="src-24"><a href="https://arxiv.org/abs/2403.09629" rel="noopener">Zelikman et al. · Quiet-STaR: Language Models Can Teach Themselves to Think Before Speaking · arXiv 2403.09629 · 2024-03-14</a></li>
       <li id="src-25"><a href="https://cognition.ai/blog/introducing-devin" rel="noopener">Cognition · Introducing Devin · 2024-03-12</a></li>
+      <li id="src-26"><a href="https://alexzhang13.github.io/blog/2026/harness/" rel="noopener">Zhang, Khattab · Language model harnesses are compositional generalizers · 2026-07-20</a></li>
     </ol>
     <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
   </section>

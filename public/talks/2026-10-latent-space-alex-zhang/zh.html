@@ -398,6 +398,14 @@ pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-
 @container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
 .q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.cmp2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+@container (max-width:640px){.cmp2{grid-template-columns:minmax(0,1fr)}}
+.cmp2>div{padding:10px 12px;border:1px dashed var(--line-2)}
+.cmp2>div.a{border:1px solid var(--midground)}
+.cmp2>div>*+*{margin-top:6px}
+.cmp2 .k{display:block;font-size:13px;color:var(--mg-80)}
+.cmp2 .a .k{color:var(--midground)}
+#v04 .rx{margin-top:14px}
 .rx-list{display:grid;gap:8px}
 .rx{border:1px solid var(--line-2);background:var(--background-base)}
 .rx.hot{border-color:var(--midground)}
@@ -1211,6 +1219,25 @@ html.sv-open{overflow:hidden}
         <div class="vs-row" role="row"><span class="vs-k" role="rowheader">训练一个之后</span><span class="vs-w" role="cell">另一个仍要单独学</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">另一个直接会做</span></div>
         <div class="vs-row" role="row"><span class="vs-k" role="rowheader">任务变长</span><span class="vs-w" role="cell">轨迹变长，出了训练分布</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">只改一个长度变量：长 8–30× 也能做</span></div>
       </div>
+      <details class="rx" id="rx-why04">
+        <summary><b>为什么会这样？用一个例子拆开看</b><span class="tg2"></span><span class="re">关键在于：两种 harness 里，主模型看到的东西不一样。</span></summary>
+        <div class="rx-b">
+          <p><span class="src-tag">背景</span> 例子和数字来自他的博客。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
+          <p><b>两个任务</b>：检索，是在一大堆文档里找出某个问题的答案；聚合，是在一大批数据里做统计，比如每一类各有几条。领域和问题完全不同，但解法相同：切成小块，逐块处理，再合并结果。</p>
+          <div class="cmp2">
+            <div><b class="k">普通 harness：主模型看到全部内容</b><p>任务说明、整批文档或数据、每次工具调用的结果，按顺序一直追加，这就是“整条轨迹当 prompt”。两个任务的文字完全不同，模型在一个任务上学到的，很难搬到另一个任务。</p></div>
+            <div class="a"><b class="k">RLM：主模型只写调度代码</b><p>文档或数据存进变量 <code>context</code>，问题存进 <code>query</code>。主模型看不到它们的内容，只写代码（简化示意）：</p><pre class="code"># 切成 20 块
+chunks = split(context, 20)
+# 每块交给一个子调用
+notes = [llm(query, c) for c in chunks]
+# 再让一个子调用合并
+answer = llm(query, notes)</pre><p>两个任务的这段代码几乎一样。不同的只是 <code>query</code> 和每块的内容，它们都交给子调用。每个子调用只看一小块，是模型熟悉的小任务。</p></div>
+          </div>
+          <p><b>训练一个，另一个就会</b>：训练时，主模型学会的是“切块、分派、合并”这段程序。换成另一个任务，主模型看到的几乎是同一段程序，所以不用重新学。博客的跨领域实验（比如从找同一作者的文章，换到找解法相同的数学题）也看到了这种迁移；直接训练的模型基本迁移不过去。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
+          <p><b>任务变长</b>：输入长 10 倍时，普通 harness 的轨迹也长约 10 倍，超过训练时见过的长度，模型就不熟悉了。RLM 的代码不变，只是块数变多；每个子调用看到的仍是一小块。博客的实验：只在短任务上训练 Qwen3-30B-A3B，再在长 8–32 倍的任务上测试，RLM 的成绩明显上升，直接训练的模型基本不涨。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
+          <p><b>为什么说“没有魔法”</b>：这要求模型真的学会拆分。在短任务上，它也可能把整个问题丢给一个子调用了事；这样学到的东西推广不到长任务。博客里有一个任务，要提示它先拆分才学对。<a class="fn" href="#src-26" aria-label="来源 26">26</a></p>
+        </div>
+      </details>
     </div>
   </article>
   <div class="grp"><span class="gt">原帖与资料</span></div>
@@ -1595,6 +1622,7 @@ for p in parts:
       <li id="src-23"><a href="https://arxiv.org/abs/2310.06770" rel="noopener">Jimenez et al. · SWE-bench: Can Language Models Resolve Real-World GitHub Issues? · arXiv 2310.06770 · 2023-10-10</a></li>
       <li id="src-24"><a href="https://arxiv.org/abs/2403.09629" rel="noopener">Zelikman et al. · Quiet-STaR: Language Models Can Teach Themselves to Think Before Speaking · arXiv 2403.09629 · 2024-03-14</a></li>
       <li id="src-25"><a href="https://cognition.ai/blog/introducing-devin" rel="noopener">Cognition · Introducing Devin · 2024-03-12</a></li>
+      <li id="src-26"><a href="https://alexzhang13.github.io/blog/2026/harness/" rel="noopener">Zhang, Khattab · Language model harnesses are compositional generalizers · 2026-07-20</a></li>
     </ol>
     <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
   </section>
