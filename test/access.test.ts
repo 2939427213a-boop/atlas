@@ -55,4 +55,15 @@ describe('checkAccess', () => {
   it('fails closed when ACCESS_AUD is empty', async () => {
     expect(await checkAccess(req(await token()), { ...env, ACCESS_AUD: '' })).toBe(503);
   });
+  it('accepts the owner email in any case', async () => {
+    expect(await checkAccess(req(await token({ email: 'Owner@Example.TEST' })), env)).toBeNull();
+  });
+  it('rejects a valid token issued to another email, or to none', async () => {
+    expect(await checkAccess(req(await token({ email: 'friend@example.test' })), env)).toBe(403);
+    expect(await checkAccess(req(await token({ email: undefined })), env)).toBe(403);
+  });
+  it('fails closed when OWNER_EMAIL is unset', async () => {
+    expect(await checkAccess(req(await token()), { ...env, OWNER_EMAIL: undefined })).toBe(503);
+    expect(await checkAccess(req(await token()), { ...env, OWNER_EMAIL: ' ' })).toBe(503);
+  });
 });

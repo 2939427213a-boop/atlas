@@ -34,7 +34,7 @@
 ## 线上与账号
 - Cloudflare 账号 `6eea0c0db7f7abff29599f723cf4c6c0`。DNS 在 Cloudflare，不在 Spaceship。域名靠 `wrangler.jsonc` 的 custom_domain 绑定，部署时自动建 DNS 记录和证书。
 - D1 免费额度与 `investment-cabbage`（`~/Desktop/投资网页`）共用。`DAILY_BEACON_CAP` 是保护阀；超额会让两个项目的 D1 查询一起失败。
-- `/admin` 由 Cloudflare Access 应用 `atlas-admin` 保护（团队 `orange-smoke-772b`，复用投资网页的“仅站长邮箱”策略 `investment-owner-only`，会话 24 小时）。Worker 也校验 Access JWT；`ACCESS_AUD` 为空时 `/admin` 返回 503。Access 设置在 Zero Trust 控制台修改（`dash.cloudflare.com/<账号>/one/access-controls/apps`）。
+- `/admin` 由 Cloudflare Access 应用 `atlas-admin` 保护（团队 `orange-smoke-772b`，复用投资网页的“仅站长邮箱”策略 `investment-owner-only`，会话 24 小时）。Worker 也校验 Access JWT，并只放行 JWT 里的邮箱等于 secret `OWNER_EMAIL` 的人（第二道锁：这条 Access 策略和投资网页共用，放宽它不会放开本站后台）；`ACCESS_AUD` 或 `OWNER_EMAIL` 为空时 `/admin` 返回 503，邮箱不符返回 403。在 `/admin` 点“标记”后，这个浏览器打开本站页面不再上报统计（localStorage `atlas.self`）。Access 设置在 Zero Trust 控制台修改（`dash.cloudflare.com/<账号>/one/access-controls/apps`）。
 
 ## 版权与署名
 - 不发布讲座逐字稿。幻灯片截图、视频画面注明版权归原作者。X 原帖截图标作者和日期、链接原帖。

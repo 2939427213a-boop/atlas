@@ -35,9 +35,10 @@ async function loadKeys(issuer: string): Promise<void> {
   keysUntil = Date.now() + 300_000;
 }
 
-/** null = valid Cloudflare Access token for this application; otherwise the status to return. */
-export async function checkAccess(request: Request, env: Env): Promise<null | 401 | 503> {
-  if (!env.ACCESS_ISSUER || !env.ACCESS_AUD) return 503;
+/** null = valid Cloudflare Access token for this application, issued to OWNER_EMAIL; otherwise the status to return. */
+export async function checkAccess(request: Request, env: Env): Promise<null | 401 | 403 | 503> {
+  const owner = (env.OWNER_EMAIL ?? '').trim().toLowerCase();
+  if (!env.ACCESS_ISSUER || !env.ACCESS_AUD || !owner) return 503;
   const token = request.headers.get('Cf-Access-Jwt-Assertion');
   if (!token || token.length > 16_384) return 401;
   const parts = token.split('.');
@@ -68,5 +69,7 @@ export async function checkAccess(request: Request, env: Env): Promise<null | 40
   const now = Math.floor(Date.now() / 1000);
   const aud = Array.isArray(claims.aud) ? claims.aud : [claims.aud];
   if (!ok || claims.iss !== env.ACCESS_ISSUER || !aud.includes(env.ACCESS_AUD) || typeof claims.exp !== 'number' || claims.exp <= now) return 401;
+  // Second lock: the Access policy is shared with another site, so check the person here too.
+  if (typeof claims.email !== 'string' || claims.email.trim().toLowerCase() !== owner) return 403;
   return null;
 }
