@@ -136,7 +136,13 @@ nav a[aria-current]{background:var(--fg);color:var(--bg)}a{color:var(--fg)}.note
 .card{border:1px solid var(--line);padding:10px}.card b{display:block;font-size:22px}.card span{color:var(--mute);font-size:12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0 16px}section{overflow-x:auto}
 table{width:100%;border-collapse:collapse}th,td{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:anywhere}
-th{color:var(--mute);font-weight:400}.track{display:block;min-width:80px}.bar{display:block;height:8px;background:var(--fg);opacity:.7}.empty{color:var(--mute)}`;
+th{color:var(--mute);font-weight:400}button{font:inherit;color:var(--fg);background:none;border:1px solid var(--line);padding:1px 8px;cursor:pointer}.track{display:block;min-width:80px}.bar{display:block;height:8px;background:var(--fg);opacity:.7}.empty{color:var(--mute)}`;
+
+// Marks this browser as the owner's: atlas.js then sends nothing from it. Same origin as the pages, so same localStorage.
+const SELF_MARK = `(function(){var k='atlas.self',s=document.getElementById('self-state'),b=document.getElementById('self-toggle');
+function on(){try{return localStorage.getItem(k)==='1'}catch(e){return null}}
+function show(){var v=on();s.textContent=v===null?'无法使用本地存储':v?'已标记，不计入统计':'未标记，计入统计';b.textContent=v?'取消标记':'标记';b.disabled=v===null}
+b.onclick=function(){try{if(on())localStorage.removeItem(k);else localStorage.setItem(k,'1')}catch(e){}show()};show()})()`;
 
 export function renderPage(d: Data, r: Range): string {
   const t = d.totals as Row;
@@ -161,7 +167,8 @@ export function renderPage(d: Data, r: Range): string {
 <meta name="robots" content="noindex"><title>Atlas · 统计</title><style>${CSS}</style></head><body>
 <header><h1>Atlas 统计</h1><nav>${[1, 7, 30, 90, 365].map((n) => `<a href="?days=${n}${pathQ}"${n === r.days ? ' aria-current="page"' : ''}>${n === 1 ? '24 小时' : `${n} 天`}</a>`).join('')}
 <a href="?days=${r.days}">全部页面</a><a href="/admin/export.ndjson?days=${r.days}">导出 NDJSON</a></nav>
-<p class="note">${r.path ? `页面：${esc(r.path)} · ` : ''}时间按美东（${tz}）显示；访客按 UTC 日去重；已排除机器人。</p></header>
+<p class="note">${r.path ? `页面：${esc(r.path)} · ` : ''}时间按美东（${tz}）显示；访客按 UTC 日去重；已排除机器人。</p>
+<p class="note">本浏览器：<span id="self-state">—</span> <button id="self-toggle" type="button">标记</button>（标记后，这个浏览器打开 Atlas 页面不上报统计）</p></header>
 <section class="cards">${card('浏览', t.pvs)}${card('访客·天', t.visitor_days)}${card('可识别浏览器', t.ids)}${card('回访浏览器', d.returning)}${card('平均阅读', secs(t.avg_ms))}${card('读到 90%', t.deep)}</section>
 ${table('每日', ['日期', '浏览', '访客', '平均阅读', ''], d.daily.map((x) => [esc(x.d), esc(x.pvs), esc(x.visitors), secs(x.avg_ms), bar(Number(x.pvs), maxDaily)]))}
 ${table('小时分布（美东）', ['小时', '浏览', ''], Array.from({ length: 24 }, (_, h) => [String(h).padStart(2, '0'), String(hourMap.get(h) ?? 0), bar(hourMap.get(h) ?? 0, maxHour)]))}
@@ -176,6 +183,7 @@ ${table('最近 50 次浏览', ['时间（美东）', '页面', '语言', '地�
     esc([x.city, x.country].filter(Boolean).join(', ')), esc(x.ref), esc(`${x.device ?? ''} ${x.browser ?? ''}`), secs(x.ms),
     `${esc(x.depth ?? 0)}%`, esc(x.clicks),
   ]))}
+<script>${SELF_MARK}</script>
 </body></html>`;
 }
 

@@ -3,6 +3,8 @@
 (function () {
   'use strict';
   if (window.atlas) return;
+  /* the site owner's own browsers, marked at /admin, send nothing */
+  try { if (localStorage.getItem('atlas.self') === '1') return; } catch (e) {}
   var script = document.currentScript;
   var PAGE = (script && script.getAttribute('data-page')) || location.pathname;
   var PVER = (script && script.getAttribute('data-v')) || '';
