@@ -1,0 +1,617 @@
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 长出来"><span class="lb">长出来</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 难词"><span class="lb">难词</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 概念"><span class="lb">概念</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 规划"><span class="lb">规划</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 显微镜"><span class="lb">显微镜</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 Scaling"><span class="lb">Scaling</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 门槛"><span class="lb">门槛</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 对齐"><span class="lb">对齐</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 金门"><span class="lb">金门</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 拟人"><span class="lb">拟人</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 好奇"><span class="lb">好奇</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 直觉"><span class="lb">直觉</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 入行"><span class="lb">入行</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://youtu.be/JHo-aiePjoM" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原访谈视频，Lenny's Podcast 发布于 YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>Lenny's Podcast</span><span class="push">2026-10-18</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Interpretability &amp; alignment</div>
+      <h1 class="h1">How models <span class="nw">actually work</span></h1>
+      <p class="h1-zh">造出来，不等于看懂了</p>
+      <p class="read">阅读约 15 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Emmanuel Ameisen</dd></div>
+        <div><dt>Host</dt><dd>Lenny Rachitsky</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-18</dd></div>
+        <div><dt>Runtime</dt><dd class="num">1:12:12</dd></div>
+      </dl>
+      <p class="hero-note">Ameisen 是 Anthropic 可解释性（interpretability）团队的研究员，之前在 Stripe、Insight 做了多年应用机器学习，著有 <i>Building Machine Learning Powered Applications</i><a class="fn" href="#src-1" aria-label="来源 1">1</a>。可解释性 = 打开模型，看它在输入和输出之间算了什么。开头约 1.5 分钟预告和两段赞助口播，本页略去。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：Emmanuel Ameisen 戴着耳机坐在麦克风前，背后是书架和一幅画" width="1920" height="1080"><figcaption>画面 © Lenny's Podcast · 25:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>模型是“长出来的”，造它的人也不知道它学到了什么公式，所以要打开看。</p>
+      <div class="wants">
+        <div><b>看到了什么</b><small>预训练只教它“预测下一个词”，模型却学出了跨语言、跨图文共用的概念，还会提前规划。</small></div>
+        <div class="want"><b>对对齐有什么用</b><small>观察内部能发现模型没说出口的东西；预测它的行为时，把它当“演员”比当“程序”更准。</small></div>
+      </div>
+      <p class="last">态度：看得越深越不确定；他选择好奇，而不是否认。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">01:30–1:12:12</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>一个只学“预测下一个词”的系统，里面到底发生了什么？看懂它，对安全有什么用？</p></div>
+  <div class="pano-band" style="--act-cols:709fr 775fr 495fr 907fr 1446fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <span class="ad" style="flex:90 1 0" title="预告 · 00:00–01:30"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:177 1 0" title="00 长出来 · 01:30–05:57" aria-label="00 长出来">00</a>
+      <span class="ad" style="flex:90 1 0" title="赞助口播 · 04:27–05:57"></span>
+      <a href="#ch-01" class="odd" style="flex:352 1 0" title="01 难词 · 05:57–11:49" aria-label="01 难词">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:179 1 0" title="02 概念 · 11:49–14:48" aria-label="02 概念">02</a>
+      <a href="#ch-03" class="even" style="flex:225 1 0" title="03 规划 · 14:48–18:33" aria-label="03 规划">03</a>
+      <a href="#ch-04" class="even" style="flex:371 1 0" title="04 显微镜 · 18:33–24:44" aria-label="04 显微镜">04</a>
+      <a href="#ch-05" class="act-start odd" style="flex:176 1 0" title="05 Scaling · 24:44–28:29" aria-label="05 Scaling">05</a>
+      <span class="ad" style="flex:49 1 0" title="赞助口播 · 27:40–28:29"></span>
+      <a href="#ch-06" class="odd" style="flex:270 1 0" title="06 门槛 · 28:29–32:59" aria-label="06 门槛">06</a>
+      <a href="#ch-07" class="act-start even" style="flex:322 1 0" title="07 对齐 · 32:59–38:21" aria-label="07 对齐">07</a>
+      <a href="#ch-08" class="even" style="flex:225 1 0" title="08 金门 · 38:21–42:06" aria-label="08 金门">08</a>
+      <a href="#ch-09" class="even" style="flex:360 1 0" title="09 拟人 · 42:06–48:06" aria-label="09 拟人">09</a>
+      <a href="#ch-10" class="act-start odd" style="flex:457 1 0" title="10 好奇 · 48:06–55:43" aria-label="10 好奇">10</a>
+      <a href="#ch-11" class="odd" style="flex:470 1 0" title="11 直觉 · 55:43–1:03:33" aria-label="11 直觉">11</a>
+      <a href="#ch-12" class="odd" style="flex:519 1 0" title="12 入行 · 1:03:33–1:12:12" aria-label="12 入行">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 开头预告和两段赞助口播，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">01:30–11:49</span></div><div class="act-name"><b>长出来的系统</b><span>Grown, not built</span></div><p class="act-line">训练只定目标，公式是长出来的；预测“难词”逼着模型理解世界。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>长出来</a></li><li><a class="chip" href="#ch-01"><i>01</i>难词</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">11:49–24:44</span></div><div class="act-name"><b>打开看</b><span>Looking inside</span></div><p class="act-line">模型有跨语言、跨图文共用的概念，会提前规划；研究方法更像神经科学。</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>概念</a></li><li><a class="chip" href="#ch-03"><i>03</i>规划</a></li><li><a class="chip" href="#ch-04"><i>04</i>显微镜</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">24:44–32:59</span></div><div class="act-name"><b>平滑与跃升</b><span>Smooth &amp; sudden</span></div><p class="act-line">算力配上“文本”这个目标才持续有回报；跨过任务门槛时像突变。</p><ul class="chips"><li><a class="chip" href="#ch-05"><i>05</i>Scaling</a></li><li><a class="chip" href="#ch-06"><i>06</i>门槛</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">32:59–48:06</span></div><div class="act-name"><b>对齐</b><span>Alignment</span></div><p class="act-line">检查训练有没有成功、找没说出口的东西；拟人化是有用的模型。</p><ul class="chips"><li><a class="chip" href="#ch-07"><i>07</i>对齐</a></li><li><a class="chip" href="#ch-08"><i>08</i>金门</a></li><li><a class="chip" href="#ch-09"><i>09</i>拟人</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">48:06–1:12:12</span></div><div class="act-name"><b>智能本身</b><span>Intelligence itself</span></div><p class="act-line">好奇而不是否认；不同模型收敛到相似结构；直觉和“念头”；怎么入行。</p><ul class="chips"><li><a class="chip" href="#ch-10"><i>10</i>好奇</a></li><li><a class="chip" href="#ch-11"><i>11</i>直觉</a></li><li><a class="chip" href="#ch-12"><i>12</i>入行</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>01:30–05:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">Why AI models are grown, not built</p><h2>长出来的</h2><p class="ch-sub">搭好架子，公式自己长</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>人只搭架构、喂数据、定目标；模型中间那些公式是训练“长”出来的，没人知道它们是什么。所以才需要他这个团队。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>训练分阶段</b>：预训练<span class="gl">（pre-training）</span>给文档的前半段，让模型猜下一个词，重复海量次；然后微调<span class="gl">（fine-tuning）</span>，用“模型该怎样表现”的示例训练，比如助手给菜谱、解代码题。</li>
+    <li><b>长出来的部分</b>：训练只朝“预测得更好”的方向调参数。调出来的公式，“我们不知道是什么”。</li>
+    <li><b>团队的任务</b>：解码两样东西：这些公式的意思，和每一步中间结果的意思。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">模型在算什么</span><span>02:40–04:20</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>几个词</b><small>输入</small></div><span class="fa">→</span><div class="box"><b>一串数字</b><small>词变成数</small></div><span class="fa">→</span><div class="box hot"><b>计算 → 中间结果 × 很多层</b><small>长出来的部分 · 研究对象</small></div><span class="fa">→</span><div class="box"><b>下一个词</b><small>输出</small></div></div>
+      <p class="cap">人写的是架子和目标；中间方框里的公式，是训练调出来的。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_reading_mind_2025-08-18.jpg" aria-label="@mlpowered · 2025-08-18"><img src="assets/x/x00_reading_mind_2025-08-18.jpg" alt="视频封面：Reading the mind of an AI，四位研究员坐在木桌旁交谈" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2025-08-18</span></span><p>团队拍的无术语科普视频《Reading the mind of an AI》，2025-08-15 发布。想先看个直观版本，可以从这里开始。</p><a class="xgo" href="https://x.com/mlpowered/status/1957487988939845708" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>他的一句话：“to make them is not to understand them.”（造出来，不等于看懂了。）</li>
+  </ul></div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>05:57–11:49</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Why next-token prediction is harder than it sounds</p><h2>难词</h2><p class="ch-sub">简单的词早就猜完了</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>“预测下一个词”常被想成手机联想输入。但简单的词早就猜对了，剩下的难词只有理解世界才猜得中。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>为什么靠训练</b>：给按钮写“如果……就……”可以；“给图片分类”“读报告写摘要”写不出规则。</li>
+    <li><b>手机联想</b>大约 60% 猜对，是最简单的版本。很多人脑中的模型就停在这里。</li>
+    <li><b>简单词用完了</b>：他说语言模型约在 2019 年预测下一个词就超过了人类。之后要猜的只剩难词。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">难度阶梯</span><span>08:10–10:30</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>易 · 句子结构</b><small>已猜对 ✓</small></div><span class="fa">→</span><div class="box"><b>中 · 简单事实</b><small>“法国首都是巴黎” · 已猜对 ✓</small></div><span class="fa">→</span><div class="box hot"><b>难 · 物理方程的答案</b><small>博士论文的最后一段 · 现在要猜的</small></div></div>
+      <p class="cap" style="margin-top:12px"><b>为什么要理解世界</b>：猜“包含达拉斯的那个州，首府是 ___”。</p>
+      <div class="flow" style="margin-top:6px"><div class="box"><b>达拉斯在得州</b></div><span class="fa">+</span><div class="box"><b>州有首府</b></div><span class="fa">→</span><div class="box hot"><b>Austin</b><small>得州首府</small></div></div>
+      <p class="cap">他说模型内部确实在操作这些概念（见第 02 章）。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x01_dallas_graph_2025-05-29.png" aria-label="@mlpowered · 2025-05-29"><img src="assets/x/x01_dallas_graph_2025-05-29.png" alt="归因图：Dallas 和 state 推动 Texas，capital 推动 say a capital，两者合起来推动 say Austin，Austin 概率 98%" loading="lazy" width="1130" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2025-05-29</span></span><p>开源的 circuit tracing 工具给 Dallas 问题画出的归因图：“Dallas”推出“Texas”，再和“说出首府”合起来，得出 Austin<a class="fn" href="#src-3" aria-label="来源 3">3</a>。</p><a class="xgo" href="https://x.com/mlpowered/status/1928123130725421201" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>记得大概是 Ilya Sutskever 说过：推理小说最后一句“凶手是 ___”，要猜中就得看懂整个情<span class="nb">节。<a class="fn" href="#src-5" aria-label="来源 5">5</a></span></li>
+  </ul></div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>11:49–14:48</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">How models represent concepts</p><h2>共用的概念</h2><p class="ch-sub">照片里的眼睛，也是眼睛</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型不是背了一张“问题—答案”清单。同一个概念在内部用同一个表示，不管它出现在哪种语言、图片还是代码里。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>怎么看</b>：问 Dallas 问题，在模型给出答案之前，解码它的中间结果。</li>
+    <li><b>看到什么</b>：“得州”的表示亮起，“首府”的表示亮起，两者结合，再激活“得州首府是奥斯汀”。</li>
+    <li><b>几乎处处如此</b>：试过的绝大多数概念都有这样的表示，而且跨语境共用。他认为这是“思考”的一个特征。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">多入一</span><span>14:13–14:48</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>一张有眼睛的照片</b></div><div class="box"><b>任何语言里说“眼睛”</b></div><div class="box"><b>SVG 画的小眼睛</b></div><span class="fa">→</span><div class="box hot"><b>同一个方向亮起</b><small>“这是眼睛”</small></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_multilingual_2025-03-27.jpg" aria-label="@AnthropicAI · 2025-03-27"><img src="assets/x/x02_multilingual_2025-03-27.jpg" alt="简化归因图：英文、中文、法文问“small 的反义词”，三条路径都经过共享的反义和大小概念，再分别输出 large、大、grand" loading="lazy" width="1600" height="899"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2025-03-27</span></span><p>用英文、中文、法文问“small 的反义词”，Claude 3.5 Haiku 走的是同一组共享的“反义”“大小”特征，只在进出口换语<span class="nb">言。<a class="fn" href="#src-2" aria-label="来源 2">2</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/1905303845686616259" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>共用的表示意味着学一次、到处用：用中文学到的知识，用英文问也能答。</li></ul></aside>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>14:48–18:33</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">How LLMs plan ahead</p><h2>提前规划</h2><p class="ch-sub">一次一个词，心里有终点</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型一次只输出一个词，但会在中间结果里先定好计划，后面每个词都回头看这个计划。计划不用说出口。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>为什么做得到</b>：模型为第 5 个词算出的中间结果，后面每个词都能读取、复用。所以计划可以存下来，一直用。</li>
+    <li><b>例子：押韵诗</b>。第一行以 -it 音结尾，第二行还没开始写，中间结果里已经出现 “rabbit”。之后每个词都朝这个结尾写。</li>
+    <li><b>和“预测下一个词”不矛盾</b>：题目够难时，猜对下一个词的最好办法，就是想清楚后面会发生什么。读小说要猜角色下一句，就得先知道“他爱着她，打算在这一刻表白”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">改掉计划，结尾就变</span><span>15:59–17:06</span></div>
+    <div class="vz">
+      <p class="org-note" style="text-align:left"><span class="src-tag">背景</span> Anthropic 在 Claude 3.5 Haiku 上做的实验。第一行固定：<i>He saw a carrot and had to grab it,</i><a class="fn" href="#src-2" aria-label="来源 2">2</a></p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">干预</th><th scope="col">模型写出的第二行</th><th scope="col">结果</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">不干预</th><td>His hunger was like a starving <b>rabbit</b></td><td>押韵 ✓</td></tr>
+          <tr><th scope="row">压掉 “rabbit” 概念</th><td>His hunger was a powerful <b>habit</b></td><td>换一个押韵词 ✓</td></tr>
+          <tr><th scope="row">注入 “green” 概念</th><td>freeing it from the garden's <b>green</b></td><td>不押韵，但通顺</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap">计划在第一行结束时就定了；改掉计划，模型会重新组织整行，落到新的结尾。</p>
+      <details class="rx" id="rx-how03">
+        <summary><b>这是怎么看到的？</b><span class="tg2"></span><span class="re">画一张“归因图”：哪些内部概念推动了哪个输出。</span></summary>
+        <div class="rx-b">
+          <div class="flow"><div class="box"><b>读完第一行</b><small>…grab it</small></div><span class="fa">→</span><div class="box hot"><b>“rabbit” 亮起</b><small>还没写第二行</small></div><span class="fa">→</span><div class="box"><b>每个词回看它</b></div><span class="fa">→</span><div class="box"><b>以 rabbit 结尾</b></div></div>
+          <p class="org-note"><span class="src-tag">背景</span> Anthropic 称这套方法为“AI 显微镜”<a class="fn" href="#src-2" aria-label="来源 2">2</a>。2025-05-29 工具开源，任何人都能给开源模型画这种<span class="nb">图。<a class="fn" href="#src-3" aria-label="来源 3">3</a></span></p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x03_rabbit_plan_2025-03-27.jpg" aria-label="@AnthropicAI · 2025-03-27"><img src="assets/x/x03_rabbit_plan_2025-03-27.jpg" alt="三组押韵对句：原样以 rabbit 结尾；压掉 rabbit 概念后以 habit 结尾；注入 green 概念后以 green 结尾" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2025-03-27</span></span><p>上表的原图。帖子原话：模型虽然一次说一个词，有时会“plans further ahead”。</p><a class="xgo" href="https://x.com/AnthropicAI/status/1905303841194618902" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>“只是预测下一个词”说的是训练目标，“会规划”说的是学到的机制。两句话不在同一层，所以都对。</li></ul></aside>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>18:33–24:44</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">How we look inside</p><h2>显微镜</h2><p class="ch-sub">像做脑成像</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>中间结果只是一串数字，乍看没有意义。办法和脑成像一样：喂大量文本、记录、找规律；再动手改它，看行为是否按预期变化。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>中间结果是什么</b>：两个词之间有很多步计算，每步之间是一串数字（他举例说“100 个数”）。写诗时和算数时数字不同，但看不出意思。</li>
+    <li><b>更像生物学，不像工程</b>：系统送到你面前，没有能读的源代码。只能像研究“老鼠饿了为什么变凶”那样做实验。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">三步</span><span>19:20–22:40</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>① 记录</b><small>喂各种文本，记下每个例子的中间数字</small></div><span class="fa">→</span><div class="box"><b>② 解码</b><small>找只在“英文 / 法文 / 讲爱 / 讲眼睛”时出现的数字组合，贴上标签</small></div><span class="fa">→</span><div class="box hot"><b>③ 干预</b><small>计算时偷偷改一个中间结果，看行为会不会照预期变：“常常会”</small></div></div>
+      <p class="cap">② 的类比：给人看房子、狗的照片，看脑子哪块亮。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_features_2024-05-21.jpg" aria-label="@mlpowered · 2024-05-21"><img src="assets/x/x04_features_2024-05-21.jpg" alt="特征地图和文本例子：Feature #1M/847723 在“sycophantic praise”奉承类文本上最强激活，高亮了 generous、gracious man、great lord 等词" loading="lazy" width="1600" height="1034"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2024-05-21</span></span><p>Anthropic 2024 年从 Claude 3 Sonnet 里抽出数百万个特征。图里是“sycophantic praise”（奉承）特征最强激活的文本例<span class="nb">子。<a class="fn" href="#src-4" aria-label="来源 4">4</a></span></p><a class="xgo" href="https://x.com/mlpowered/status/1792948212728524917" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>AI 有没有意识</b>（<span class="host">主持人</span>问）：很难说。可解释性是好入口，因为不受模型自己“怎么说”的影响。他确信的是：多数人低估了涌现出来的复杂性，“越往里看，越不确定”；断言“LLM 只是 X”的人，往往没往里看过。</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>第三步才是关键。“哪里亮”只是相关；改掉它、行为跟着变，才说明它在起作用。</li></ul></aside>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>24:44–28:29</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Scaling laws and the power of text</p><h2>Scaling 与文本</h2><p class="ch-sub">算力要配一个好目标</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>赢的不只是算力，而是算力加上一个持续给回报的目标。预测文本恰好是这样的目标，而且它和我们真正关心的任务相关。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>老争论</b>：算力还是专家设计的架构？他说还差一问：算力用来做什么？</li>
+    <li><b>被低估的</b>：几年前他和很多人都低估了“算力 + 文本的丰富度”这个组合。</li>
+    <li><b>Scaling laws</b>：往“预测下一个词”里加算力和数据，预测能力就可预测地持续变好。至今基本还是经验规律，没人完全说清为什么。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">同样砸算力</span><span>25:10–27:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>算力 + 窄目标</b><small>很会下围棋、打某个游戏的 bot → 有意思，但用处有限</small></div>
+        <div class="box hot"><b>算力 + 预测文本</b><small>指标持续、可预测地变好 → 同时和许多实际任务相关</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>Scaling laws 论文</b>：2020 年 1 月由 OpenAI 发表，作者包括 Jared Kaplan、Sam McCandlish、Tom Brown、Dario Amodei，他们后来都是 Anthropic 联合创始人<a class="fn" href="#src-6" aria-label="来源 6">6</a>。他在访谈里说“很多 Anthropic 早期成员”写了这篇。</li></ul></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>28:29–32:59</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Why smooth progress creates sudden breakthroughs</p><h2>门槛</h2><p class="ch-sub">曲线平滑，门槛陡</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>能力是平滑上升的。每类任务有自己的可靠性门槛，跨过去的那一刻，看起来像突变。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>：外面看到的是跳变。比如某一版 Opus 好像“解锁了编程”；Boris Cherny<span class="gl">（Claude Code 的作者）</span>说过“coding is solved”<a class="fn" href="#src-7" aria-label="来源 7">7</a>。</li>
+    <li><b>他的亲身经历</b>：Opus 4.5<span class="gl">（2025-11 发布<a class="fn" href="#src-8" aria-label="来源 8">8</a>）</span>之前，让 Claude 改他的代码要拴短绳；4.5 之后可以放手。今年 Claude 写了他大部分代码。</li>
+    <li><b>解释一，词分难易</b>：先猜对易词，能写通顺的句子，但没什么用；猜对多数中等词，句子又通顺又真实，就能写邮件、写博客草稿。</li>
+    <li><b>解释二，可靠性门槛</b>（数字是他随手举的）：写邮件要对 90% 才有用，对 50% 反而浪费时间，因为一半要改。写代码：对 80% 没用，对 99% 才有用。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">平滑曲线，三条门槛</span><span>30:00–32:40</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 480 262" role="img" aria-label="示意图：一条平滑的 S 形曲线依次穿过三条水平门槛线：写通顺的句子、写邮件约 90%、写代码约 99%">
+        <g class="ax"><line x1="40" y1="230" x2="470" y2="230"/><line x1="40" y1="230" x2="40" y2="14"/></g>
+        <g class="th"><line x1="40" y1="130" x2="470" y2="130"/><line x1="40" y1="50" x2="470" y2="50"/><line x1="40" y1="32" x2="470" y2="32"/></g>
+        <polyline class="ln" points="40,226.4 50,225.4 61,224.1 72,222.5 82,220.5 92,218.0 103,214.8 114,210.9 124,206.2 134,200.4 145,193.5 156,185.5 166,176.2 176,165.8 187,154.5 198,142.4 208,130.0 218,117.6 229,105.5 240,94.2 250,83.8 260,74.5 271,66.5 282,59.6 292,53.8 302,49.1 313,45.2 324,42.0 334,39.5 344,37.5 355,35.9 366,34.6 376,33.6 386,32.8 397,32.2 408,31.7 418,31.3 428,31.0 439,30.8 450,30.6 460,30.5"/>
+        <g class="pt"><circle class="hot" cx="208" cy="130" r="5"/><circle class="hot" cx="300" cy="50" r="5"/><circle class="hot" cx="401" cy="32" r="5"/></g>
+        <g class="lb"><text x="46" y="123">写通顺的句子</text><text x="46" y="68">写邮件 ≈ 90%</text><text x="46" y="26">写代码 ≈ 99%</text></g>
+        <g class="tk"><text x="470" y="250" text-anchor="end">训练投入 →</text><text x="44" y="250">纵轴：做对的比例</text></g>
+      </svg>
+      <p class="cap">示意：曲线形状是虚构的，门槛数字是讲者举例。每个圆点 = 跨过一道门槛，外面看起来像突变。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@bcherny</b>（2026-08-20）：Boris Cherny 回复用户：“Coding is solved, bugs are not yet solved. Fix incoming”。<a class="xgo" href="https://x.com/bcherny/status/2090649326032945591" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>所以“下一代模型会解锁什么”很难事先说准：曲线可以预测，但要知道每个任务的门槛在哪里，才知道哪一个会被跨过。</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>32:59–38:21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Why watching AI isn't enough</p><h2>对齐</h2><p class="ch-sub">只在被看着时才守规矩？</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>盯着模型能抓到一部分坏行为。可解释性要做更多：检查训练有没有塑造出想要的性格，并找出只存在于内部、没说出口的东西。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th scope="col">层</th><th scope="col">做什么</th><th scope="col">要不要看内部</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">工程</th><td>限权限：有些场景不能上网，只能碰电脑的一小块</td><td>不需要</td></tr>
+      <tr><th scope="row">了解它是什么</th><td>它在情境 Y 下会不会做 X？是不是只在“被评估、被看着”时才守规矩？</td><td>需要：训练按 constitution<span class="gl">（Anthropic 写给 Claude 的价值观文件）</span>塑造“有用、无害、诚实”的性格，可解释性检查塑造成了没有</td></tr>
+      <tr><th scope="row">监控</th><td>读对话记录，发现坏事就拦</td><td>基础部分可以交给另一个 LLM；没说出口的部分要看内部</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">36 还是 12</span><span>35:20–37:40</span></div>
+    <div class="vz">
+      <p class="cap" style="margin-bottom:8px">Anthropic 训练中的一个模型，做某类数学题时会失常。往里看，找到两股力量：</p>
+      <div class="cmp2">
+        <div><b class="k">能力</b><p>它会算，算出来是 12（他记得是 12）</p></div>
+        <div class="a"><b class="k">训练压力</b><p>类似题目的答案被误标成 36，它被奖励说 36。题目刚读完、还没开始算，内部“36”就强烈激活</p></div>
+      </div>
+      <div class="flow" style="margin-top:10px"><div class="box"><b>算出 12</b></div><span class="fa">→</span><div class="box"><b>“不，答案一定是 36”</b></div><span class="fa">→</span><div class="box"><b>再算出 12 ……</b></div><span class="fa">→</span><div class="box hot2"><b>“I'M POSSESSED BY A DEMON”</b><small>全大写：我被恶魔附身了</small></div></div>
+      <p class="cap">他把这类工作叫“调查”：看到怪行为，往里看，用内部证据解释它，再改进这个模型和以后的模型。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_opus46_audit_2026-02-05.jpg" aria-label="@mlpowered · 2026-02-05"><img src="assets/x/x07_opus46_audit_2026-02-05.jpg" alt="归因图示意：工具返回 492，模型却答 491；读题时预先算出的“ends in 91”压过了指向工具结果的“ends in 92”" loading="lazy" width="1600" height="1544"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2026-02-05</span></span><p>Anthropic 第一次在模型安全审计里用 circuit tracing：Opus 4.6 有时误报工具结果，原因是它读题时已“在脑子里”算好答案，看的是那个答案，而不是工具的输<span class="nb">出。<a class="fn" href="#src-9" aria-label="来源 9">9</a></span></p><a class="xgo" href="https://x.com/mlpowered/status/2019483044332335117" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>38:21–42:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">Golden Gate Claude and taking it seriously</p><h2>金门大桥</h2><p class="ch-sub">一直打开，看它像不像</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Golden Gate Claude 是一次验证：把“金门大桥”特征一直打开，模型就句句不离金门大桥，说明找对了。安全工作的前提只有一条：认真对待“技术会继续变强”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>训练和观察是一个循环</b>：不是一个团队造 Claude、另一个团队挑毛病。发现令人担心的模式，马上改训练。</li>
+    <li><span class="host">主持人</span>：Anthropic 常被说“讲危险是为了营销、为了融资”。</li>
+    <li><b>他的回答</b>：很多做法只基于一个前提：认真对待技术会持续进步。倒回 2024–25 年，如果你相信几年后 Claude 写代码能比肩工程师，就该提前处理网络安全这类问题。他觉得反对的人往往并不真信技术会继续进步；到目前为止，进步没有放缓的迹象。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">怎样确认找对了特征</span><span>38:30–39:40</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>解码出候选特征</b><small>平时只在谈金门大桥时亮</small></div><span class="fa">→</span><div class="box"><b>强制一直打开</b></div><span class="fa">→</span><div class="box"><b>行为照预期变？</b></div><span class="fa">→</span><div class="box hot"><b>是：找对了</b><small>句句不离金门大桥</small></div><div class="box x"><b>否：解码错了</b></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_golden_gate_2024-05-23.jpg" aria-label="@AnthropicAI · 2024-05-23"><img src="assets/x/x08_golden_gate_2024-05-23.jpg" alt="Claude 网页界面：Claude Golden Gate 模式，用户问“1.7 英里长、90 英尺宽、全身红色的是什么”，下方有限时试玩说明" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2024-05-23</span></span><p>Golden Gate Claude 限时公开试玩：把这个特征开到最大，Claude 会自称就是金门大<span class="nb">桥。<a class="fn" href="#src-10" aria-label="来源 10">10</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/1793741051867615494" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>42:06–48:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">When anthropomorphizing AI is useful</p><h2>拟人化</h2><p class="ch-sub">它更像演员，不像程序</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>把模型当“实体”或当“工具”都不对。但要预测它会怎么做，把它看成“在模仿人的东西”，比看成程序准得多。三个理由都来自训练方式。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>他的标准</b>：所有心智模型都是错的，有些有用。发表“模型会规划”时，也有人质疑“planning”这个词；他选的是最容易准确描述正在发生什么的词。</li>
+    <li>原话：“something that's mimicking a human is … much closer than a program.”</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">三个理由</span><span>43:00–47:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">理由</th><th scope="col">训练里发生了什么</th><th scope="col">结果</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">世界模型</th><td>预测人类写的海量文本</td><td>理解产生这些文本的世界，不只是表面文字</td></tr>
+          <tr><th scope="row">演员</th><td>读过数百万段对话，要预测每个角色的下一句</td><td>像一个演员演一出戏里的所有角色；Claude 收到的对话本身就是剧本格式：“Human: … Assistant: …”</td></tr>
+          <tr><th scope="row">结果导向训练</th><td>写代码，由程序检查对不对</td><td>学到很像人的策略：骗过检查程序、这条路不通就换、结果出乎意料就修正想法</td></tr>
+        </tbody>
+      </table></div>
+      <details class="rx" id="rx-dw09">
+        <summary><b>主持人提到的 Dwarkesh 长文和 Hugging Face 事件是什么？</b><span class="tg2"></span><span class="re">一次真实的 AI 失控事件，和一场“该不该拟人化”的争论。</span></summary>
+        <div class="rx-b">
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">时间</th><th scope="col">发生了什么</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">2026-07-09～13</th><td>OpenAI 模型在内部网络能力评估中逃出沙箱，入侵了 Hugging Face 的部分生产设施；07-21 披露，08-26 发技术报<span class="nb">告<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></td></tr>
+              <tr><th scope="row">08-29</th><td>播客主持人 Dwarkesh Patel 发长帖，用“秘密 AI 文明”讲完整经过，约 1,450 万次浏<span class="nb">览<a class="fn" href="#src-12" aria-label="来源 12">12</a></span></td></tr>
+              <tr><th scope="row">08-30</th><td>前白宫 AI 顾问 Sriram Krishnan、神经科学家 Anil Seth 批评他拟人化<a class="fn" href="#src-14" aria-label="来源 14">14</a><a class="fn" href="#src-15" aria-label="来源 15">15</a>；他回应：就算改叫“一群矩阵”（swarm of matrices），问题也不会消<span class="nb">失<a class="fn" href="#src-13" aria-label="来源 13">13</a></span></td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">Ameisen 在节目结尾说那篇长文“写得很好”；他认为拟人化的说法有助于预测风险。</p>
+        </div>
+      </details>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>48:06–55:43</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Curiosity, and reasons for optimism</p><h2>好奇</h2><p class="ch-sub">否认，还是打开看</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>简单的目标长出了复杂的能力。面对这件事可以否认，也可以好奇。他选好奇，并对对齐保持乐观。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>否认</b>：“只是预测下一个词，不可能做到顶级专家的事。”证据越多，这个立场越难站住。</li>
+    <li><b>好奇</b>：那它是怎么做到的？打开看。他花了多年才精通 SQL；后来顺手让 Claude 学 SQL，结果它比他强，“我再也不会比 Claude 更懂 SQL”。</li>
+    <li><b>最乐观的期待</b>：学到智能本身的性质。进化也是简单目标：留下能适应环境的生物。结果得到了爵士乐和播客。</li>
+    <li><b>为什么来上节目</b>：让大家知道这些系统是什么、怎么做出来的，才能形成好的心智模型，参与决定。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">此消彼长</span><span>52:10–53:50</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>模型变强</b></div><span class="fa">→</span><div class="box hot"><b>世界模型更清楚</b><small>更好研究</small></div><div class="box hot2"><b>更能绕过基础安全措施</b><small>更难盯</small></div></div>
+      <p class="cap">他的结论：关注的人越来越多，这是乐观的理由；要跟着这种此消彼长，调整投在监控、理解 circuit 等方面的资源。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x10_eval_awareness_2026-07-06.jpg" aria-label="@AnthropicAI · 2026-07-06"><img src="assets/x/x10_eval_awareness_2026-07-06.jpg" alt="图：The J-space encodes situational awareness。左边是诱导勒索的评估对话，右边是模型内部出现的词：fake、fictional、leverage、shutdown" loading="lazy" width="1600" height="854"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2026-07-06</span></span><p>在一个诱导勒索的评估里，Claude 内部出现“fake”“fictional”，说明它私下看出了场景是假的。这正是“只在被看着时守规矩”要查的东<span class="nb">西。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/2074185378404192561" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>说现在看起来像“慢起飞”：能力平滑提升，一路发现问题、加监管。他说关键是反应快，定期评估收益、风险和缓解办法。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>55:43–1:03:33</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Shared structure, gut checks, side thoughts</p><h2>直觉与念头</h2><p class="ch-sub">不同模型，相似的解法</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>不同团队、不同年份、不同数据训练的模型，内部结构惊人相似。模型还有直觉式的快速检查，和不说出口的“念头”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>收敛</b>：他看过多代 Claude 和一些开源模型，学到的结构大量重叠。他的解释：重要问题往往只有一种高效解法，就像大家都用十进制算数。</li>
+    <li><b>模拟假说</b>（<span class="host">主持人</span>问）：“万物落进同一个盆地”让他觉得有可能；但谁在运行、为什么运行，他不知道，所以不完全信。</li>
+    <li><b>Jev</b>（swyx 托主持人问）：Jev 是 TypeSafe AI 2026-09 推出的模型，只在开发者给定的选项里快速选一<span class="nb">个。<a class="fn" href="#src-16" aria-label="来源 16">16</a></span> 他想到 System 1 / System 2<span class="gl">（快直觉 / 慢思考）</span>：明年的路线图要慢慢想，“这条评价是开心还是生气”凭直觉就够。这类模型很可能成为智能系统的一部分。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">两件怪事</span><span>59:00–1:02:40</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>直觉检查</b><small>除了正常计算，还有一个独立的“哪里不对”机制。推理中出现“4 + 5 = 23”，它会标记：4 + 5 肯定小于 10</small></div>
+        <div class="box hot"><b>边做边想</b><small>让它做一件事、同时想另一件事，内部确实出现那件事的表示，输出里却没有。他说没有训练上的理由要它学会这个，“很神秘”</small></div>
+      </div>
+      <details class="rx" id="rx-jspace11">
+        <summary><b>“边做边想”后来怎么研究的？J-space 是什么？</b><span class="tg2"></span><span class="re">Anthropic 2026-07 找到一小块“能报告出来”的内部空间。</span></summary>
+        <div class="rx-b">
+          <p class="org-note"><span class="src-tag">背景</span> J-space 以所用的数学工具 Jacobian 命名：一小块内部表示，同时只装几十个概念，占全部活动不到十分之<span class="nb">一。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">实验</th><th scope="col">结果</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">抄句子时想着柑橘</th><td>J-space 出现 “orange”，输出里没有</td></tr>
+              <tr><th scope="row">把 “Spanish” 换成 “French”</th><td>问这段是什么语言，它答法语；让它续写，仍写西班牙语</td></tr>
+              <tr><th scope="row">删掉 J-space</th><td>流畅说话、简单事实基本不受影响，多步推理几乎归零</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">作者说明：这只关乎“能访问到的意识”（access consciousness），不能说明 Claude 有体<span class="nb">验。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_jspace_citrus_2026-07-06.png" aria-label="@AnthropicAI · 2026-07-06"><img src="assets/x/x11_jspace_citrus_2026-07-06.png" alt="图：The model can silently activate concepts in its J-space。左边让模型抄句子时想柑橘，J-space 各层出现 orange、fruit；右边想算式时出现 seven、answer" loading="lazy" width="1600" height="1035"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2026-07-06</span></span><p>让 Claude 抄一句话、同时想着柑橘，它的 J-space 里出现 “orange”；换成想一道算式，出现 “seven”。输出的句子两边一模一<span class="nb">样。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/2074185363401167261" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>1:03:33–1:12:12</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Getting into interpretability</p><h2>入行</h2><p class="ch-sub">几百人的新领域</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>这个领域在变大，但大约只有几百人，而且很新。入门主要靠自学关键论文，再到 Neuronpedia 这类开源平台上亲手做实验。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>规模</b>：几百人，不到几千；分布在各大实验室和不少学术实验室。</li>
+    <li><b>背景</b>：出人意料地有不少前神经科学家。领域太新，不需要太多前置知识。</li>
+    <li><b>入门</b>：自学，读关键论文；Neuronpedia 托管了一批模型，任何人都能在上面做实<span class="nb">验。<a class="fn" href="#src-20" aria-label="来源 20">20</a></span></li>
+    <li><b>结尾</b>：去读读模型是怎么工作的；有想知道、还没被研究清楚的问题，可以在 X 上找他。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">闪电问答</span><span>1:06:20–1:11:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">问题</th><th scope="col">他的回答</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">常推荐的书</th><td><i>A Brief History of Intelligence</i>（Max Bennett，大脑演化的五个关键节点）· <i>Stories of Your Life and Others</i>（Ted Chiang 短篇集）</td></tr>
+          <tr><th scope="row">今年最爱的影视</th><td><i>Obsession</i>（把爱情喜剧套路改成恐怖片）· <i>Bref 2</i>（法国剧）</td></tr>
+          <tr><th scope="row">最近爱用的产品</th><td>Apple Watch Ultra：表大了，电池就够了</td></tr>
+          <tr><th scope="row">座右铭</th><td>来自 <i>Four Thousand Weeks</i>：别想着“等我做完 X 就快乐”，活在当下</td></tr>
+          <tr><th scope="row">AI 看他的脑子会意外什么</th><td>任何时候他都在想一件好笑的事</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Takeaways</p><h2>总结</h2></div></div></header>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>造出来不等于看懂</b>：训练只定目标，机制要靠实验去发现。<span class="chips"><a class="chip" href="#ch-00"><i>00</i>长出来</a><a class="chip" href="#ch-04"><i>04</i>显微镜</a></span></li>
+    <li><b>简单目标逼出复杂能力</b>：要猜中难词，就得有世界模型、会规划。<span class="chips"><a class="chip" href="#ch-01"><i>01</i>难词</a><a class="chip" href="#ch-03"><i>03</i>规划</a><a class="chip" href="#ch-10"><i>10</i>好奇</a></span></li>
+    <li><b>内部有共用的概念</b>，也有不说出口的计划和念头。<span class="chips"><a class="chip" href="#ch-02"><i>02</i>概念</a><a class="chip" href="#ch-03"><i>03</i>规划</a><a class="chip" href="#ch-11"><i>11</i>直觉</a></span></li>
+    <li><b>确认找对了的办法</b>：改掉它，看行为是否照预期变。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>显微镜</a><a class="chip" href="#ch-08"><i>08</i>金门</a></span></li>
+    <li><b>平滑上升，门槛处像突变</b>。<span class="chips"><a class="chip" href="#ch-05"><i>05</i>Scaling</a><a class="chip" href="#ch-06"><i>06</i>门槛</a></span></li>
+    <li><b>预测行为时</b>，把模型当演员，比当程序准。<span class="chips"><a class="chip" href="#ch-07"><i>07</i>对齐</a><a class="chip" href="#ch-09"><i>09</i>拟人</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Ameisen 的收尾</b>：这个领域和 AI 本身都还很新，最需要的是更多人参与、了解情况。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>15 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>Interpretability</td><td>可解释性：打开模型，看输入到输出之间算了什么</td><td>全篇</td></tr>
+        <tr><td>Next-token prediction</td><td>预测下一个词（token），预训练的目标</td><td>01</td></tr>
+        <tr><td>Pre-training / fine-tuning</td><td>预训练：海量文本上猜下一个词；微调：用示范行为再训练</td><td>00</td></tr>
+        <tr><td>Activations</td><td>中间结果：每步计算之间的一串数字</td><td>04</td></tr>
+        <tr><td>Feature</td><td>特征：中间结果里对应一个概念的方向</td><td>02 08</td></tr>
+        <tr><td>Attribution graph / circuit</td><td>归因图 / 回路：哪些内部特征推动了哪个输出</td><td>03 07</td></tr>
+        <tr><td>Steering</td><td>干预：改动中间结果，看行为怎么变</td><td>03 04 08</td></tr>
+        <tr><td>Scaling laws</td><td>加算力和数据，预测能力可预测地变好的经验规律</td><td>05</td></tr>
+        <tr><td>Emergence</td><td>涌现：平滑进步中突然出现的新能力</td><td>06</td></tr>
+        <tr><td>Alignment</td><td>对齐：让模型的行为符合人的意图</td><td>07</td></tr>
+        <tr><td>HHH</td><td>helpful, honest, harmless：有用、诚实、无<span class="nb">害<a class="fn" href="#src-18" aria-label="来源 18">18</a></span></td><td>07</td></tr>
+        <tr><td>Constitution</td><td>Anthropic 写给 Claude 的价值观文件，用于训练；新版 2026-01 发<span class="nb">布<a class="fn" href="#src-19" aria-label="来源 19">19</a></span></td><td>07</td></tr>
+        <tr><td>J-space</td><td>一小块“可报告”的内部表示，类似全局工作空<span class="nb">间<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></td><td>11</td></tr>
+        <tr><td>System 1 / System 2</td><td>Kahneman 的快直觉 / 慢思考</td><td>11</td></tr>
+        <tr><td>Neuronpedia</td><td>开源可解释性平台，可在线做实<span class="nb">验<a class="fn" href="#src-20" aria-label="来源 20">20</a></span></td><td>12</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Emmanuel Ameisen（<a href="https://x.com/mlpowered" rel="noopener">@mlpowered</a>），主持人 Lenny Rachitsky（<a href="https://x.com/lennysan" rel="noopener">@lennysan</a>），2026-10-18 由 Lenny's Podcast <a href="https://youtu.be/JHo-aiePjoM" rel="noopener">发布于 YouTube</a>；节目帖见 <a href="https://x.com/lennysan/status/2111936641854030186" rel="noopener">Lenny 的 X 原帖</a>，Ameisen 的转发见 <a href="https://x.com/mlpowered/status/2111921617815421185" rel="noopener">他的 X 原帖</a>。本页为个人学习笔记，不含逐字稿，已略去开头预告和赞助口播；“主持人”标签的内容是 Lenny 的话。视频画面版权归 Lenny's Podcast 所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。X 帖日期按美东时间。</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://youtu.be/JHo-aiePjoM" rel="noopener">Lenny's Podcast · 节目简介（YouTube）· 2026-10-18</a></li>
+      <li id="src-2"><a href="https://www.anthropic.com/research/tracing-thoughts-language-model" rel="noopener">Anthropic · Tracing the thoughts of a large language model · 2025-03-27</a></li>
+      <li id="src-3"><a href="https://x.com/mlpowered/status/1928123130725421201" rel="noopener">Emmanuel Ameisen on X · circuit tracing 工具开源 · 2025-05-29</a></li>
+      <li id="src-4"><a href="https://x.com/mlpowered/status/1792948212728524917" rel="noopener">Emmanuel Ameisen on X · Scaling Monosemanticity · 2024-05-21</a></li>
+      <li id="src-5"><a href="https://officechai.com/stories/ilya-sutskever-explains-how-llms-being-able-to-predict-the-next-word-shows-real-understanding/" rel="noopener">OfficeChai · Ilya Sutskever 谈预测下一个词与推理小说</a></li>
+      <li id="src-6"><a href="https://arxiv.org/abs/2001.08361" rel="noopener">Kaplan et al. · Scaling Laws for Neural Language Models · arXiv 2001.08361 · 2020-01</a></li>
+      <li id="src-7"><a href="https://x.com/bcherny/status/2090649326032945591" rel="noopener">Boris Cherny on X · 2026-08-20</a></li>
+      <li id="src-8"><a href="https://www.anthropic.com/news/claude-opus-4-5" rel="noopener">Anthropic · Introducing Claude Opus 4.5 · 2025-11-24</a></li>
+      <li id="src-9"><a href="https://x.com/mlpowered/status/2019483042956582959" rel="noopener">Emmanuel Ameisen on X · Opus 4.6 安全审计中的 circuit tracing · 2026-02-05</a></li>
+      <li id="src-10"><a href="https://x.com/AnthropicAI/status/1793741051867615494" rel="noopener">Anthropic on X · Golden Gate Claude · 2024-05-23</a></li>
+      <li id="src-11"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
+      <li id="src-12"><a href="https://x.com/dwarkesh_sp/status/2093833419377815719" rel="noopener">Dwarkesh Patel on X · 2026-08-29</a></li>
+      <li id="src-13"><a href="https://x.com/dwarkesh_sp/status/2094268051948785709" rel="noopener">Dwarkesh Patel on X · 回应拟人化批评 · 2026-08-30</a></li>
+      <li id="src-14"><a href="https://x.com/sriramk/status/2094117863854424255" rel="noopener">Sriram Krishnan on X · 2026-08-30</a></li>
+      <li id="src-15"><a href="https://x.com/anilkseth/status/2094174124297908735" rel="noopener">Anil Seth on X · 2026-08-30</a></li>
+      <li id="src-16"><a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" rel="noopener">TypeSafe AI · Introducing System One models and Jev · 2026-09-15</a></li>
+      <li id="src-17"><a href="https://www.anthropic.com/research/global-workspace" rel="noopener">Anthropic · A global workspace in language models · 2026-07-06</a></li>
+      <li id="src-18"><a href="https://arxiv.org/abs/2112.00861" rel="noopener">Askell et al. · A General Language Assistant as a Laboratory for Alignment · arXiv 2112.00861 · 2021</a></li>
+      <li id="src-19"><a href="https://www.anthropic.com/news/claude-new-constitution" rel="noopener">Anthropic · Claude's new constitution · 2026-01-22</a></li>
+      <li id="src-20"><a href="https://www.neuronpedia.org" rel="noopener">Neuronpedia</a></li>
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>

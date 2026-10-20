@@ -1,0 +1,1678 @@
+<!doctype html>
+<!--
+  Emmanuel Ameisen on how models actually work · Lenny's Podcast · 2026-10-18 — Chinese study notes.
+  Visual style inspired by and adapted from Nous Research's Hermes / LENS design language
+  (@nous-research/ui, MIT License). Not affiliated with Nous Research. See NOTICE.txt.
+  Fonts: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC (SIL OFL 1.1, via Google Fonts).
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emmanuel Ameisen：模型到底怎样工作 · Lenny's Podcast</title>
+<meta name="description" content="Lenny's Podcast 访谈 Anthropic 可解释性研究员 Emmanuel Ameisen 的学习笔记：模型为什么是“长出来的”，预测下一个词怎样逼出概念和规划，可解释性怎样帮对齐，以及为什么把模型当演员比当程序更准。">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Atlas">
+<meta property="og:title" content="Emmanuel Ameisen：造出来，不等于看懂了 · 学习笔记">
+<meta property="og:description" content="Lenny's Podcast 访谈 Anthropic 可解释性研究员 Emmanuel Ameisen 的学习笔记：模型为什么是“长出来的”，预测下一个词怎样逼出概念和规划，可解释性怎样帮对齐，以及为什么把模型当演员比当程序更准。">
+<meta property="og:url" content="https://atlas.haoli-agi.com/talks/2026-10-lenny-emmanuel-ameisen/zh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://atlas.haoli-agi.com/talks/2026-10-lenny-emmanuel-ameisen/assets/cover.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="访谈画面：Emmanuel Ameisen 戴着耳机坐在麦克风前">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@steamedbun1111">
+<link rel="canonical" href="https://atlas.haoli-agi.com/talks/2026-10-lenny-emmanuel-ameisen/zh">
+<link rel="alternate" hreflang="en" href="https://atlas.haoli-agi.com/talks/2026-10-lenny-emmanuel-ameisen/">
+<link rel="alternate" hreflang="zh-CN" href="https://atlas.haoli-agi.com/talks/2026-10-lenny-emmanuel-ameisen/zh">
+<link rel="alternate" hreflang="x-default" href="https://atlas.haoli-agi.com/talks/2026-10-lenny-emmanuel-ameisen/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+<style>
+
+/* ===== tokens (teal dark only) ===== */
+:root{
+  --background-base:#041c1c;--background:#041c1c;--midground-base:#ffe6cb;--midground:#ffe6cb;
+  --warm-glow:rgba(255,189,56,.35);--amber:#f2b544;--red:#ff7a6b;
+  --font-display:'Unbounded','Noto Sans SC',sans-serif;--font-sans:'Instrument Serif','Noto Sans SC',serif;
+  --font-zh:'Noto Sans SC',sans-serif;--font-mond:'JetBrains Mono','Noto Sans SC',monospace;--font-mono:'JetBrains Mono','Noto Sans SC',monospace;
+  --mg-80:color-mix(in srgb,var(--midground-base) 80%,transparent);--mg-65:color-mix(in srgb,var(--midground-base) 65%,transparent);
+  --mg-45:color-mix(in srgb,var(--midground-base) 45%,transparent);--line:color-mix(in srgb,var(--midground-base) 16%,transparent);
+  --line-2:color-mix(in srgb,var(--midground-base) 34%,transparent);--fill:color-mix(in srgb,var(--midground-base) 5%,transparent);
+  --panel:color-mix(in srgb,var(--background-base) 84%,transparent);--rail-top:max(56px,calc(50vh - 214px));
+}
+*{box-sizing:border-box}
+html{background:#000;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000;color:var(--midground);font-family:var(--font-zh);font-size:15.5px;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+b,strong{font-weight:700}
+code{font-family:var(--font-mono);font-size:.88em;padding:0 .3em;border:1px solid var(--line);background:var(--fill)}
+button{font:inherit;color:inherit}
+p{margin:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* backdrop stack */
+.hermes-bg>*{position:fixed;inset:0;pointer-events:none}
+.bg-l1{z-index:1;background:var(--background-base);mix-blend-mode:difference}
+.bg-l2{z-index:2;width:100%;height:150vh;object-fit:cover;object-position:top left;filter:invert(1);opacity:.033;mix-blend-mode:difference}
+.bg-l99{z-index:99;background:radial-gradient(120% 90% at 0% 0%,var(--warm-glow),transparent 60%);opacity:.22;mix-blend-mode:lighten}
+.bg-l201{z-index:201;opacity:.5;mix-blend-mode:color-dodge;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes gradient-stroke{0%{background-position:15% 15%}100%{background-position:75% 75%}}
+@keyframes dash-flow{to{stroke-dashoffset:-12}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes flipin{from{transform:rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.arc-host{position:relative}
+.arc-border{--arc-c1:var(--midground);--arc-c2:var(--background);--arc-duration:2.23s;
+  --arc-gradient:linear-gradient(160deg,transparent 0%,transparent 15%,var(--arc-c1) 20%,var(--arc-c2) 25%,transparent 35%,transparent 55%,var(--arc-c1) 60%,var(--arc-c2) 65%,transparent 75%,transparent 95%,var(--arc-c1) 100%);
+  position:absolute;z-index:3;overflow:hidden;border-radius:inherit;inset:-2px;padding:1.25px;pointer-events:none;opacity:0;transition:opacity .2s;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.arc-border::before{content:'';position:absolute;inset:0;background:var(--arc-gradient);background-size:300% 300%;animation:gradient-stroke var(--arc-duration) linear infinite}
+.arc-host:hover>.arc-border,.arc-host:focus-visible>.arc-border,.arc-host.on>.arc-border{opacity:1}
+
+/* PiP marker */
+.pip{display:inline-block;margin-left:1px;font-size:.62em;line-height:1;vertical-align:super;color:var(--amber);cursor:help;outline-offset:2px}
+.toast{position:fixed;z-index:70;left:12px;right:12px;bottom:14px;max-width:460px;margin:0 auto;padding:10px 14px;border:1px solid var(--amber);background:var(--background-base);color:var(--midground);font-size:13px;line-height:1.5}
+.toast[hidden]{display:none}
+
+.credit .privacy-note{font-family:var(--font-mono);font-size:11px}
+/* ===== language switch ===== */
+.lang-switch{position:fixed;z-index:70;top:12px;right:12px;display:flex;border:1px solid var(--line-2);background:var(--panel);font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em}
+.lang-switch a{display:flex;align-items:center;justify-content:center;min-width:36px;height:28px;padding:0 10px;color:var(--midground);text-decoration:none}
+.lang-switch a[lang=zh-CN]{font-family:var(--font-zh);letter-spacing:0}
+.lang-switch a[aria-current]{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.lang-switch a:not([aria-current]):hover{background:var(--fill)}
+.lang-switch a:focus-visible{outline:1px solid var(--midground);outline-offset:2px}
+.top-row{display:flex;gap:8px;margin:0 0 14px}
+.home-link{display:flex;align-items:center;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.06em;white-space:nowrap}
+.home-link:hover{border-color:var(--midground)}
+.src-top{flex:1;min-width:0;display:flex;align-items:center;gap:10px;margin:0;padding:7px 12px;border:1px solid var(--line-2);background:var(--panel);color:var(--midground);text-decoration:none;font-family:var(--font-mono);font-size:12px;letter-spacing:.03em}
+.src-top .k{font-weight:700;letter-spacing:.14em;color:var(--mg-65)}
+.src-top .go{margin-left:auto}
+.src-top:hover{border-color:var(--midground)}
+
+/* ===== right rail ===== */
+#toc-fab{position:fixed;z-index:60;right:12px;top:var(--rail-top);display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;text-decoration:none;font-family:var(--font-mono);font-weight:700;font-size:11px;letter-spacing:.1em;
+  background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+#toc-fab:hover .fab-k{animation:blink 1s step-end infinite}
+#toc-fab:active{filter:invert(1)}
+.rail{position:fixed;z-index:59;right:12px;top:calc(var(--rail-top) + 38px);display:flex;flex-direction:column;align-items:flex-end;padding:4px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.rail{background:color-mix(in srgb,var(--background-base) 94%,transparent);border-color:var(--line)}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;height:24px;text-decoration:none;color:var(--mg-65);outline-offset:-2px}
+.rail .no{display:inline-grid;place-items:center;min-width:30px;height:20px;padding:0 4px;font-family:var(--font-mono);font-size:11px;font-variant-numeric:tabular-nums;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.rail .lb{max-width:9em;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--mg-80)}
+.rail a:hover .no{border-color:var(--line-2);color:var(--midground)}
+.rail a.on .no{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.rail a.on .lb{color:var(--midground)}
+.rail .sep{height:1px;width:30px;margin:4px 0;background:var(--line)}
+
+/* ===== layout ===== */
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:40px clamp(92px,calc(775px - 50vw),190px) 120px 48px}
+.wrap>*+*{margin-top:56px}
+section[id],article[id],details[id],div[id]{scroll-margin-top:16px}
+.panel{position:relative;border:1px solid var(--line);background:var(--panel)}
+.bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px 14px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--fill);font-family:var(--font-mono);font-size:11px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.bar .k{color:var(--midground);font-weight:700;font-family:var(--font-zh);letter-spacing:.04em;font-size:12.5px;text-transform:none}
+.bar .push{margin-left:auto}
+.eyebrow{font-family:var(--font-mond);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mg-65)}
+.en-line{font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.kv{display:grid;margin:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.kv>div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kv dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mg-45);margin-bottom:4px}
+.kv dd{margin:0;font-family:var(--font-sans);font-size:17px;line-height:1.35}
+.kv dd.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero-body{container-type:inline-size;padding:clamp(22px,3.4vw,44px) clamp(18px,3.4vw,44px) 26px}
+.h1{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:clamp(26px,6.9cqi,72px);line-height:.96;letter-spacing:.01em;margin:14px 0}
+.h1 .nw{white-space:nowrap}
+.h1-zh{margin:0 0 14px;font-size:clamp(17px,1.8vw,21px);font-weight:500;color:var(--mg-80)}
+.h1-zh::before{content:'// ';font-family:var(--font-mono);color:var(--mg-45)}
+.read{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;padding:3px 10px;border:1px solid var(--line-2);font-size:13px}
+.read::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--midground);animation:blink 1.6s step-end infinite}
+.kv-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hero-note{margin-top:14px;font-size:13px;line-height:1.65;color:var(--mg-65)}
+.thesis-body{padding:20px clamp(18px,3vw,32px) 22px;font-size:clamp(16px,1.5vw,18px);line-height:1.8}
+.thesis-body ul{margin:8px 0 12px;padding:0;list-style:none}
+.thesis-body li{position:relative;padding-left:1.4em}
+.thesis-body li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+.thesis-body .last{padding-top:12px;border-top:1px dashed var(--line)}
+.hl{background:var(--midground);color:var(--background-base);padding:0 .25em}
+
+/* panorama */
+.pano{container-type:inline-size}
+.pano-q{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:baseline;padding:18px clamp(14px,2.6vw,28px) 4px}
+.pano-q .q{font-weight:700;font-size:13px;padding:1px 8px;background:var(--midground);color:var(--background-base)}
+.pano-q p{font-size:clamp(16px,1.6vw,19px);line-height:1.7;font-weight:500}
+.pano-band{padding:16px clamp(14px,2.6vw,28px) 22px}
+.spectrum{display:flex;height:34px;border:1px solid var(--line-2);background:var(--background-base)}
+.spectrum a{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;text-decoration:none;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-80);border-left:1px solid var(--line);transition:background .15s,color .15s}
+.spectrum a:first-child{border-left:0}
+.spectrum a.act-start{border-left:1px solid var(--midground)}
+.spectrum a.odd{background:color-mix(in srgb,var(--midground-base) 9%,transparent)}
+.spectrum a.even{background:color-mix(in srgb,var(--midground-base) 18%,transparent)}
+.spectrum a:hover,.spectrum a:focus-visible,.spectrum a.on{background:var(--midground);color:var(--background-base)}
+.acts{display:grid;grid-template-columns:var(--act-cols);margin:0;padding:0;list-style:none;border-left:1px solid var(--line)}
+.act{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.act::before{content:'';position:absolute;left:-1px;top:0;width:1px;height:14px;background:var(--midground)}
+.act-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.act-no{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,3.6cqi,40px);line-height:1;color:transparent;-webkit-text-stroke:1px var(--midground)}
+.act-time{font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45);white-space:nowrap}
+.act-name b{display:block;font-size:19px;font-weight:900;line-height:1.25}
+.act-name span{display:block;margin-top:3px;font-family:var(--font-display);font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mg-65);line-height:1.4}
+.act-line{font-size:13.5px;line-height:1.7;color:var(--mg-80)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 0;padding:4px 0 0;list-style:none}
+.chip{display:inline-flex;align-items:baseline;gap:6px;padding:2px 8px;border:1px solid var(--line-2);text-decoration:none;font-size:12px;line-height:1.6;white-space:nowrap}
+.chip i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+span.chip{white-space:normal}
+a.chip:hover,a.chip:focus-visible{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+a.chip:hover i,a.chip:focus-visible i{color:inherit}
+@container (max-width:860px){
+  .acts{grid-template-columns:minmax(0,1fr);border-left:0;margin-top:14px;border-top:1px solid var(--line)}
+  .act{display:grid;grid-template-columns:54px minmax(0,1fr);column-gap:12px;row-gap:6px;border-left:1px solid var(--line);padding:12px}
+  .act::before{height:100%;width:2px}
+  .act-top{display:contents}
+  .act-no{grid-row:1/span 4;font-size:30px}
+  .act-time,.act-name,.act-line,.act .chips{grid-column:2}
+}
+
+/* chapters */
+.ch>*+*{margin-top:16px}
+.ch-head-body{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,3vw,30px);align-items:end;padding:clamp(18px,2.6vw,28px) clamp(16px,2.6vw,28px) 20px}
+.ch-no{font-family:var(--font-display);font-weight:700;font-size:clamp(44px,6vw,80px);line-height:.8;background:var(--midground);color:var(--background-base);padding:.08em .1em 0}
+.ch-no.zh{font-family:var(--font-zh);font-weight:900;line-height:1;padding:.06em .12em}
+.ch-head-body .en-line{margin-bottom:6px;font-size:clamp(11.5px,1.25vw,14px);color:var(--mg-80)}
+.ch-head-body h2{margin:0;font-size:clamp(22px,2.8vw,34px);line-height:1.22;font-weight:900}
+.ch-sub{margin-top:6px;font-size:15px;color:var(--mg-65)}
+.oneliner{display:grid;grid-template-columns:auto minmax(0,1fr)}
+.oneliner .lbl{writing-mode:vertical-rl;padding:12px 7px;border-right:1px solid var(--line);font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;color:var(--mg-45);text-transform:uppercase}
+.oneliner p{padding:16px clamp(16px,2.6vw,26px);font-size:clamp(16px,1.55vw,18.5px);line-height:1.75;font-weight:500}
+.grp{display:flex;align-items:center;gap:12px;margin-top:28px !important;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mg-45)}
+.grp::after{content:'';flex:1;height:1px;background:var(--line)}
+.grp .gt{font-family:var(--font-zh);font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:none;color:var(--midground)}
+
+/* text blocks */
+.pts{padding:16px clamp(14px,2.4vw,24px)}
+.pts>*+*{margin-top:12px}
+.lst{margin:0;padding:0;list-style:none}
+.lst>li{position:relative;padding-left:1.4em;font-size:14.5px;line-height:1.75}
+.lst>li+li{margin-top:6px}
+.lst>li::before{content:'▸';position:absolute;left:0;font-family:var(--font-mono);color:var(--mg-45)}
+ol.lst{counter-reset:n}
+ol.lst>li{counter-increment:n;padding-left:2em}
+ol.lst>li::before{content:counter(n,decimal-leading-zero);font-size:11px;top:.3em}
+.lst .lst{margin-top:4px}
+.lst .lst>li{font-size:14px;color:var(--mg-80)}
+.lst .lst>li::before{content:'·'}
+.sub-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--mg-65)}
+.sub-h b{font-family:var(--font-zh);font-size:13.5px;letter-spacing:.02em;color:var(--midground);margin-right:6px}
+pre.code{margin:0;padding:12px 14px;overflow-x:auto;border:1px solid var(--line-2);background:var(--background-base);font-family:var(--font-mono);font-size:12px;line-height:1.6;color:var(--mg-80)}
+.note-line{font-size:12.5px;color:var(--mg-65)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6}
+.tbl.mid{min-width:560px}
+.tbl th{text-align:left;font-weight:500;font-size:12px;color:var(--mg-65);padding:9px 12px;border-bottom:1px solid var(--line-2);background:var(--fill);vertical-align:bottom}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td,.tbl tbody tr:last-child th{border-bottom:0}
+.tbl td+td,.tbl th+th,.tbl th+td{border-left:1px solid var(--line)}
+.tbl tbody th{font-weight:700;font-size:13.5px;color:var(--midground);background:transparent;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+.tbl tbody tr:hover>*{background:var(--fill)}
+
+/* speaker notes / analysis */
+.notes{padding:14px clamp(14px,2.4vw,24px)}
+.analysis{position:relative;border-left:2px solid color-mix(in srgb,var(--midground) 32%,transparent);background:transparent}
+.an-tag{display:block;padding:8px clamp(14px,2.4vw,24px) 0;color:var(--mg-65);font-family:var(--font-mono);font-size:11px;letter-spacing:.14em}
+.an-tag::before{content:'↳ '}
+.analysis .lst{padding:4px clamp(14px,2.4vw,24px) 10px}
+.analysis .lst>li{color:var(--mg-80)}
+.analysis .lst>li::before{color:var(--mg-65)}
+.analysis a{color:var(--midground)}
+
+/* ===== widgets: shared ===== */
+.viz{container-type:inline-size}
+.vz{padding:16px clamp(12px,2.2vw,22px) 18px}
+.vz>*+*{margin-top:14px}
+.cap{font-size:13px;line-height:1.65;color:var(--mg-65)}
+.cap b{color:var(--midground);font-weight:500}
+.h-btn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;border:0;padding:7px 12px;font-family:var(--font-zh);font-size:13px;line-height:1.3;background:transparent;color:var(--midground);
+  box-shadow:inset -1px -1px 0 0 #ffffff12,inset 1px 1px 0 0 #ffffff29,0 0 0 1px var(--line-2);transition:background .15s,color .15s}
+.h-btn:hover{background:var(--fill)}
+.h-btn:active{filter:invert(1)}
+.h-btn:disabled{opacity:.4;cursor:default}
+.h-btn[aria-checked="true"],.h-btn[aria-pressed="true"],.h-btn.solid{background:var(--midground);color:var(--background-base);box-shadow:inset -1px -1px 0 0 #00000080,inset 1px 1px 0 0 #ffffff80}
+.h-btn i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;opacity:.7}
+.mini{cursor:pointer;border:1px solid var(--line-2);background:transparent;padding:1px 8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--midground)}
+.mini:hover{background:var(--fill)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;flex-wrap:wrap}
+.seg .h-btn{box-shadow:0 0 0 1px var(--line-2)}
+.arr{display:grid;place-items:center;color:var(--mg-45);transition:color .2s}
+.arr svg{display:block;width:34px;height:12px;overflow:visible}
+.arr .ln{stroke-dasharray:3 3}
+.arr.lit{color:var(--midground)}
+.arr.lit .ln{animation:dash-flow 1s linear infinite}
+.box{border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45;transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.box small{display:block;font-size:12px;color:var(--mg-65)}
+.box.lit{border-color:var(--midground)}
+.box.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.box.hot small{color:inherit;opacity:.75}
+.box.dim{opacity:.35}
+.mono{font-family:var(--font-mono)}
+
+/* 00 · switcher */
+.flip-row{display:grid;grid-template-columns:76px minmax(0,1fr);border-top:1px solid var(--line)}
+.flip{border:1px solid var(--line);border-top:0}
+.flip-k{padding:9px 12px;font-size:13px;color:var(--mg-65)}
+.flip-v{padding:9px 12px;border-left:1px solid var(--line);font-size:14.5px;perspective:600px}
+.flip-v>span{display:block;animation:flipin .35s ease both}
+.flip-v .a,.is-a .flip-v .w{display:none}
+.is-a .flip-v .a{display:block}
+.is-a .flip-v{background:var(--fill)}
+
+/* 01 · stairs + duo tracks */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:end;gap:6px}
+.stair{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.stair .tx{padding:0 2px;font-size:13px;line-height:1.55;color:var(--mg-80)}
+.stair .tx b{display:block;color:var(--midground);font-size:14px}
+.stair .tx i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.stair .riser{height:calc(var(--lv) * 22px);border:1px solid var(--line-2);border-bottom:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 6px)}
+.stair:last-child .riser{background:var(--midground)}
+.stairs-axis{display:flex;justify-content:flex-end;gap:8px;font-size:12.5px;color:var(--mg-65);border-top:1px solid var(--line-2);padding-top:6px}
+@container (max-width:620px){
+  .stairs{grid-template-columns:minmax(0,1fr);gap:10px}
+  .stair{flex-direction:row-reverse;align-items:center;justify-content:flex-end}
+  .stair .riser{height:24px;width:calc(var(--lv) * 14px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .stairs-axis{justify-content:flex-start}
+}
+.trk{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:start}
+.trk+.trk{margin-top:12px}
+.trk-l{padding-top:4px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.cell{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:26px;min-height:26px;padding:0 8px;border:1px solid var(--line-2);font-size:12px;transition:background .2s,color .2s}
+.cell.ap{border-style:dashed;font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.cell.on{background:var(--midground);color:var(--background-base)}
+.cell.wait{animation:blink .5s step-end infinite}
+.cell.in{border-color:var(--amber);color:var(--amber);font-size:11.5px}
+.cell.in.on{background:var(--amber);color:#1b1304}
+.cell .ok{margin-left:6px;font-family:var(--font-mono);font-size:10px;padding:0 4px;border:1px solid currentColor}
+.trk .cap{margin-top:6px}
+
+/* 02 · file tree */
+.ft{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;align-items:start}
+@container (max-width:620px){.ft{grid-template-columns:minmax(0,1fr)}}
+.ft-tree{border:1px solid var(--line);padding:10px 12px;font-family:var(--font-mono);font-size:12.5px;line-height:1.9;white-space:pre;overflow-x:auto;color:var(--mg-45)}
+.ft-file{cursor:pointer;border:0;background:none;padding:0 5px;font-family:var(--font-mono);font-size:12.5px;color:var(--midground);border-bottom:1px dotted var(--mg-45)}
+.ft-file[aria-pressed="true"]{background:var(--midground);color:var(--background-base)}
+.ft-desc{border:1px solid var(--line-2);padding:12px 14px}
+.ft-desc code{display:inline-block;margin-bottom:6px}
+.ft-desc p{font-size:14.5px}
+.why{border-left:3px solid var(--line-2);padding:4px 0 4px 12px}
+
+/* 03 · simulator, router, system */
+.sim-lanes{border:1px solid var(--line)}
+.lane{display:grid;grid-template-columns:170px 120px minmax(0,1fr);align-items:center;border-top:1px solid var(--line)}
+.lane:first-child{border-top:0}
+.lane>*{padding:9px 12px;min-width:0}
+.lane>*+*{border-left:1px solid var(--line)}
+.ln-h b{display:block;font-size:14px}
+.ln-h small{display:block;font-size:11.5px;color:var(--mg-65);line-height:1.5}
+.lane.head{background:var(--fill)}
+.lane.head>*{padding:5px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--mg-45)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;font-size:12.5px;border:1px dashed var(--line-2);color:var(--mg-65);white-space:nowrap}
+.pill.on{border:1px solid var(--midground);background:var(--midground);color:var(--background-base);font-weight:700}
+.pill.keep{border:1px solid var(--midground);color:var(--midground)}
+.track{display:grid;grid-template-columns:repeat(var(--n,10),minmax(0,1fr));gap:3px;align-items:center}
+.track span{height:18px;border:1px solid transparent}
+.track .on{background:var(--midground)}
+.track .off{border-color:var(--line);background:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 4px)}
+.track .keep{background:color-mix(in srgb,var(--midground-base) 55%,transparent)}
+.track .empty{border:1px dashed color-mix(in srgb,var(--midground-base) 10%,transparent)}
+.track.ev span{height:auto;border:0;font-family:var(--font-mono);font-size:9.5px;line-height:1.2;text-align:center;color:var(--mg-45);white-space:nowrap;overflow:hidden}
+.track.ev span.last{color:var(--midground)}
+.sim-log{margin:0;padding:8px 12px;border:1px solid var(--line);background:var(--background-base);font-size:13px;line-height:1.7;list-style:none;min-height:3.6em}
+.sim-log li{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:8px;color:var(--mg-45)}
+.sim-log li span:first-child{font-family:var(--font-mono);font-size:11px}
+.sim-log li:first-child{color:var(--midground)}
+@container (max-width:700px){
+  .lane{grid-template-columns:minmax(0,1fr) auto}
+  .lane>*+*{border-left:0}
+  .lane .track{grid-column:1/-1;padding-top:0}
+  .lane.head>*:not(.track){display:none}
+  .lane.head .track{padding-top:6px}
+}
+.rt-grid{display:grid;grid-template-columns:minmax(0,1.2fr) 38px minmax(0,1fr) 38px minmax(0,1fr) 38px minmax(0,1.1fr);align-items:center}
+.rt-src{display:flex;flex-direction:column;gap:5px}
+.rt-src .h-btn{justify-content:flex-start;text-align:left;width:100%;padding:5px 10px}
+.rt-node b{display:block;font-size:14.5px}
+.rt .rt-node,.rt .out{opacity:.5}
+.rt.has-sel .rt-node{opacity:1;border-color:var(--midground)}
+.rt-dec{display:flex;flex-direction:column;gap:8px}
+.out{padding:6px 10px;border:1px dashed var(--line-2);font-size:13px;color:var(--mg-65);transition:background .2s,opacity .2s}
+.rt.has-sel[data-worth="1"] .out.yes,.rt.has-sel[data-worth="0"] .out.no{opacity:1;background:var(--midground);color:var(--background-base);border:1px solid var(--midground)}
+.rt-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.rt-log{font-size:13px;color:var(--mg-65)}
+.rt-log b{color:var(--midground);font-weight:500}
+@container (max-width:680px){
+  .rt-grid{grid-template-columns:minmax(0,1fr);row-gap:4px}
+  .rt-grid .arr svg{transform:rotate(90deg);margin:8px 0}
+  .rt-src{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr) 48px minmax(0,1.5fr) 48px minmax(0,1fr);align-items:stretch}
+.s3-col{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);padding:10px;min-width:0;outline-offset:2px;transition:border-color .2s,opacity .2s}
+.s3-col>b{font-size:14px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.s3-v{text-align:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-65);line-height:1}
+.s3-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.3fr);gap:6px;align-items:stretch}
+.s3-row .bi{align-self:center;font-family:var(--font-mono);color:var(--mg-65)}
+.s3-gut{display:flex;flex-direction:column;justify-content:space-between;padding:44px 2px 16px}
+.s3-gut.g2{justify-content:center}
+.s3-gut .lnk{transition:opacity .2s}
+.s3-gut .back svg{transform:scaleX(-1)}
+.sys3[data-hl] .lnk{opacity:.2}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"],.sys3[data-hl="server"] .lnk[data-link~="server"],.sys3[data-hl="comp"] .lnk[data-link~="comp"]{opacity:1}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .arr,.sys3[data-hl="server"] .lnk[data-link~="server"] .arr,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .arr{color:var(--midground)}
+.sys3[data-hl="apps"] .lnk[data-link~="apps"] .ln,.sys3[data-hl="server"] .lnk[data-link~="server"] .ln,.sys3[data-hl="comp"] .lnk[data-link~="comp"] .ln{animation:dash-flow 1s linear infinite}
+.sys3[data-hl="apps"] [data-col="apps"],.sys3[data-hl="server"] [data-col="server"],.sys3[data-hl="comp"] [data-col="comp"]{border-color:var(--midground)}
+.sys3[data-hl="apps"] [data-col="comp"],.sys3[data-hl="comp"] [data-col="apps"]{opacity:.4}
+@container (max-width:700px){
+  .s3-grid{grid-template-columns:minmax(0,1fr)}
+  .s3-gut{flex-direction:row;justify-content:center;gap:40px;padding:6px 0}
+  .s3-gut .arr svg{transform:rotate(90deg);margin:6px auto}
+  .s3-gut .back svg{transform:rotate(-90deg)}
+}
+
+/* 04 · crash + queue */
+.cr-lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.cr-lane:first-of-type{border-top:0}
+.cr-lane .lb b{display:block;font-family:var(--font-mono);font-size:12.5px}
+.cr-lane .lb small{display:block;font-size:12px;color:var(--mg-65)}
+.stp{display:inline-grid;place-items:center;min-width:56px;padding:3px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;animation:pop .25s ease both}
+.stp.done{background:var(--fill)}
+.stp.x{border-color:var(--red);color:var(--red)}
+.stp.redo{border-style:dashed;color:var(--mg-45)}
+.stp.go{background:var(--midground);color:var(--background-base)}
+.ctr{font-size:13.5px}
+.ctr b{font-family:var(--font-mono);font-size:15px;padding:0 6px;border:1px solid var(--line-2)}
+@container (max-width:560px){.cr-lane{grid-template-columns:minmax(0,1fr)}}
+.q2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.q2{grid-template-columns:minmax(0,1fr)}}
+.cmp2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+@container (max-width:640px){.cmp2{grid-template-columns:minmax(0,1fr)}}
+.cmp2>div{padding:10px 12px;border:1px dashed var(--line-2)}
+.cmp2>div.a{border:1px solid var(--midground)}
+.cmp2>div>*+*{margin-top:6px}
+.cmp2 .k{display:block;font-size:13px;color:var(--mg-80)}
+.cmp2 .a .k{color:var(--midground)}
+#v04 .rx{margin-top:14px}
+#v07 .rx{margin-top:14px}
+#v08 .rx,#v09 .rx{margin-top:14px}
+#v10 .rx{margin-top:14px}
+.rx-b{container-type:inline-size}
+.rx-h{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--mg-45)}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:6px}
+.flow>.box{flex:1 1 7em;min-width:0}
+.flow .box b{display:block}
+.flow>.fa{align-self:center;font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
+.flow .box.x b::before{content:'\2715  ';color:var(--red)}
+@container (max-width:520px){.flow{flex-direction:column;gap:4px}.flow>.fa{align-self:flex-start;margin:-3px 0 -3px 16px;line-height:1;font-size:11px;transform:rotate(90deg)}.flow>.box{flex:none;display:flex;flex-wrap:wrap;gap:0 8px;align-items:baseline;padding:6px 10px}.flow .box b{display:inline}.flow .box small{display:inline}}
+.rx-b>.org-note{text-align:left}
+.org .box.lead small{color:inherit;opacity:.75;font-weight:400}
+.fn+.fn{margin-left:.35em}
+.org .cn{font-family:var(--font-mono);font-size:11px;color:var(--mg-45);padding:2px 0}
+.org.one{grid-template-columns:minmax(0,1fr)}
+.rx-b .tbl{font-size:13px;line-height:1.5}
+.rx-b .tbl td,.rx-b .tbl th{padding:7px 10px}
+.rx-b .tbl tbody th{white-space:normal}
+.rx-b .q2 .box b{font-size:20px;font-family:var(--font-display);color:var(--midground)}
+.rx-list{display:grid;gap:8px}
+.rx{border:1px solid var(--line-2);background:var(--background-base)}
+.rx.hot{border-color:var(--midground)}
+.rx summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:9px 12px;cursor:pointer;list-style:none}
+.rx summary::-webkit-details-marker{display:none}
+.rx summary:hover{background:var(--fill)}
+.rx[open] summary{border-bottom:1px solid var(--line)}
+.rx .yr{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.rx summary b{font-size:14px}
+.rx .who{font-size:11.5px;color:var(--mg-65)}
+.rx .tg2{margin-left:auto;padding:0 7px;border:1px solid var(--line-2);color:var(--midground);font-family:var(--font-mono);font-size:11px}
+.rx .tg2::after{content:'+'}
+.rx[open] .tg2::after{content:'\2212'}
+.rx .nb{white-space:nowrap}
+.rx .re{flex-basis:100%;font-size:13.5px;line-height:1.55}
+.rx-b{padding:10px 12px 12px;font-size:13.5px;line-height:1.65}
+.rx-b p{margin:0}
+.rx-b>*+*,.rx-b>*+p{margin-top:8px}
+.rx-tl{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rx-tl .yr{margin-right:8px}
+.rx-b .analysis .an-tag{padding:6px 12px 0}
+.rx-b .analysis .lst{padding:2px 12px 8px}
+.rx-sum{margin:14px 0 0;padding:4px 0 4px 12px;border-left:2px solid var(--midground);font-size:14px;line-height:1.6}
+.qbox{border:1px solid var(--line);padding:12px}
+.qbox>*+*{margin-top:10px}
+.qrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:30px}
+.qc{display:inline-grid;place-items:center;height:26px;padding:0 9px;border:1px solid var(--line-2);font-size:12px;animation:pop .25s ease both}
+.qc.run{background:repeating-linear-gradient(135deg,var(--fill) 0 6px,transparent 6px 12px);border-color:var(--midground)}
+.qc.cut{border-color:var(--red);color:var(--red);text-decoration:line-through}
+.qc.jump{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.qc.merge{background:var(--midground);color:var(--background-base)}
+
+/* 05 · hub + UI controls */
+.hub{display:grid;grid-template-columns:minmax(0,1.5fr) 40px auto 40px minmax(0,.8fr);align-items:center}
+.hub-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.hub-tools,.hub-ch{display:flex;flex-wrap:wrap;gap:5px}
+.hub-ch{flex-direction:column}
+.tg{display:inline-block;padding:2px 8px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;white-space:nowrap}
+.hub-mid{padding:14px 16px;background:var(--midground);color:var(--background-base);font-family:var(--font-display);font-weight:700;font-size:13px;letter-spacing:.04em}
+@container (max-width:680px){
+  .hub{grid-template-columns:minmax(0,1fr)}
+  .hub .arr svg{transform:rotate(90deg);margin:8px auto}
+  .hub-mid{justify-self:center}
+  .hub-ch{flex-direction:row}
+}
+.uic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@container (max-width:600px){.uic{grid-template-columns:minmax(0,1fr)}}
+.uic-card{border:1px solid var(--line-2);background:var(--background-base);padding:12px}
+.uic-card>*+*{margin-top:8px}
+.uic-card h4{margin:0;font-size:14px}
+.fld{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;border:1px solid var(--line);font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.fld.filled{color:var(--midground);border-color:var(--midground)}
+.uic-card .state{font-family:var(--font-mono);font-size:11px;color:var(--midground)}
+.emo{display:flex;gap:6px}
+.emo button{cursor:pointer;width:36px;height:30px;border:1px solid var(--line-2);background:none;font-size:15px}
+.emo button[aria-pressed="true"]{border-color:var(--midground);background:var(--fill)}
+
+/* 06 · blocks, ladder, helpers */
+.blocks{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:460px}
+.blocks span{aspect-ratio:1;border:1px solid var(--line);transition:background .25s}
+.blocks span.t{background:var(--midground);border-color:var(--midground)}
+.blk-n{font-family:var(--font-mono);font-size:13px}
+.ladder{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;align-items:end}
+.rung{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;min-width:0}
+.rung .bar2{height:calc(var(--lv) * 12px + 10px);border:1px solid var(--line-2);border-bottom:0;background:var(--fill);transition:background .2s,border-color .2s}
+.rung .t{font-size:12.5px;line-height:1.45;transition:color .2s,opacity .2s}
+.ladder.broken .r2 .t,.ladder.broken .r4 .t{text-decoration:line-through;color:var(--red)}
+.ladder.broken .r2 .bar2,.ladder.broken .r4 .bar2{border-color:var(--red)}
+.ladder.broken .r6 .bar2{background:var(--midground)}
+.ladder.broken .r6 .t{color:var(--midground);font-weight:700}
+.ladder.broken .r1,.ladder.broken .r3,.ladder.broken .r5{opacity:.35}
+.ladder-axis{display:flex;justify-content:flex-end;border-top:1px solid var(--line-2);padding-top:6px;font-size:12.5px;color:var(--mg-65)}
+.rule{padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px;transition:background .2s,color .2s}
+.rule.hot{background:var(--midground);color:var(--background-base)}
+@container (max-width:620px){
+  .ladder{grid-template-columns:minmax(0,1fr);gap:6px}
+  .rung{flex-direction:row-reverse;justify-content:flex-end;align-items:center;gap:10px}
+  .rung .bar2{height:22px;width:calc(var(--lv) * 12px + 10px);flex:none;border:1px solid var(--line-2);border-left:0}
+  .ladder-axis{justify-content:flex-start}
+}
+.hp{display:grid;grid-template-columns:auto 38px auto 38px minmax(0,1fr) 38px auto;align-items:center}
+.hp-help{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+@container (max-width:720px){
+  .hp{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .hp .arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 07 · auto-review */
+.ar{display:grid;grid-template-columns:auto 34px auto 34px minmax(0,1fr);align-items:center;gap:0}
+.ar-br{display:flex;flex-direction:column;gap:10px}
+.ar-path{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.ar-path .arr svg{width:24px}
+.cd{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+@container (max-width:720px){
+  .ar{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .ar>.arr svg{transform:rotate(90deg);margin:6px 0 6px 14px}
+}
+
+/* 08 · cache stack */
+.cs{border:1px solid var(--line)}
+.cs-row{display:grid;grid-template-columns:96px minmax(0,1fr);border-top:1px solid var(--line)}
+.cs-row:first-child{border-top:0}
+.cs-l{padding:9px 10px;font-size:12.5px;color:var(--mg-65);border-right:1px solid var(--line)}
+.cs-cells{display:flex;flex-wrap:wrap;gap:5px;padding:8px}
+.cs-c{display:inline-grid;place-items:center;min-height:28px;padding:2px 9px;border:1px solid var(--line-2);font-size:12px;line-height:1.4;transition:background .2s,color .2s,border-color .2s}
+.cs-c.hit{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-c.miss{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red);color:var(--red)}
+.cs-c.new{border-style:dashed;border-color:var(--midground);animation:pop .25s ease both}
+.cs-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mg-65)}
+.cs-leg span::before{content:'';display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;border:1px solid}
+.cs-leg .h::before{background:color-mix(in srgb,var(--midground-base) 22%,transparent);border-color:var(--midground)}
+.cs-leg .m::before{background:color-mix(in srgb,var(--red) 22%,transparent);border-color:var(--red)}
+@container (max-width:520px){.cs-row{grid-template-columns:minmax(0,1fr)}.cs-l{border-right:0;border-bottom:1px dashed var(--line);padding:6px 10px}}
+
+/* 09 · timeline + memory */
+.tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative}
+.tl .box{position:relative}
+.tl .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.tl .box.hot i{color:inherit}
+@container (max-width:620px){.tl{grid-template-columns:minmax(0,1fr)}}
+.mem{display:flex;flex-direction:column;gap:6px}
+.mem-l{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:baseline;padding:9px 12px;border:1px solid var(--line-2)}
+.mem-l b{font-family:var(--font-mono);font-size:13px}
+.mem-l span{font-size:13.5px}
+.mem-l.l1{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.mem-l.l2{background:color-mix(in srgb,var(--midground-base) 16%,transparent)}
+.mem-l.l3{background:linear-gradient(90deg,color-mix(in srgb,var(--midground-base) 10%,transparent),transparent)}
+.mem-l.l4{border-style:dashed;color:var(--mg-80)}
+
+/* 10 · double loop */
+.loops{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.loop{border:1px solid var(--line-2);border-radius:18px;padding:12px}
+.loop>b{display:block;margin-bottom:8px;font-size:14px}
+.loop ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.loop li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;padding:5px 8px;border:1px solid var(--line);font-size:13px;transition:background .2s,color .2s}
+.loop li i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.loop li.hot{background:var(--midground);color:var(--background-base)}
+.loop li.hot i{color:inherit}
+.loop .ret{margin-top:6px;text-align:right;font-family:var(--font-mono);font-size:12px;color:var(--mg-45)}
+.bridge{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--font-display);font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--amber)}
+@container (max-width:700px){.loops{grid-template-columns:minmax(0,1fr)}.bridge{flex-direction:row}}
+
+/* 11 · building blocks */
+.bb{display:grid;grid-template-columns:minmax(0,.8fr) 40px minmax(0,1.6fr);gap:10px;align-items:start}
+.bb-col>small{display:block;margin-bottom:6px;font-size:12px;color:var(--mg-65)}
+.bb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.bb-l .bb-grid{grid-template-columns:minmax(0,1fr)}
+.bb-b{display:block;width:100%;padding:8px 10px;border:1px solid var(--line-2);background:var(--background-base);text-align:left;font-size:13px;line-height:1.4}
+button.bb-b{cursor:pointer}
+button.bb-b:hover,button.bb-b[aria-pressed="true"]{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.bb-read{font-size:13px;color:var(--mg-65)}
+.bb-read .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:middle}
+@container (max-width:640px){.bb{grid-template-columns:minmax(0,1fr)}.bb .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 12 · checklist */
+.chk{margin:0;padding:0;list-style:none;border:1px solid var(--line)}
+.chk li{border-top:1px solid var(--line)}
+.chk li:first-child{border-top:0}
+.chk label{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 12px;cursor:pointer;font-size:14px}
+.chk input{width:16px;height:16px;margin:0;accent-color:#ffe6cb}
+.chk .n{font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.chk li.done{background:var(--fill)}
+.chk li.done .t{text-decoration:line-through;color:var(--mg-65)}
+.prog{font-family:var(--font-mono);font-size:12px;color:var(--mg-65)}
+.prog b{color:var(--midground)}
+
+/* slides strip + transcript */
+.strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.slide{flex:0 0 184px;display:block;text-decoration:none;color:inherit;border:1px solid var(--line);background:var(--panel);scroll-snap-align:start}
+.slide-frame{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:#000}
+.slide-frame img{display:block;width:100%;height:100%;object-fit:cover}
+.slide-frame::before,.slide-frame::after{content:'';position:absolute;inset:0;background:var(--img) center/cover no-repeat;opacity:0;pointer-events:none}
+.slide-frame .scan{position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.35) 2px 3px)}
+.slide:hover .slide-frame::before,.slide:focus-visible .slide-frame::before{opacity:1;filter:drop-shadow(3px 0 0 rgba(255,40,90,.8));animation:tear-a .46s steps(1,end) 2 forwards}
+.slide:hover .slide-frame::after,.slide:focus-visible .slide-frame::after{opacity:1;filter:drop-shadow(-3px 0 0 rgba(0,230,255,.8));animation:tear-b .46s steps(1,end) 2 forwards}
+.slide:hover .scan{opacity:.55;animation:scan-roll 1.4s linear infinite}
+@keyframes tear-a{0%{clip-path:inset(8% 0 80% 0);transform:translateX(-8px)}25%{clip-path:inset(44% 0 40% 0);transform:translateX(10px)}50%{clip-path:inset(70% 0 16% 0);transform:translateX(-5px)}75%{clip-path:inset(22% 0 68% 0);transform:translateX(7px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes tear-b{0%{clip-path:inset(60% 0 28% 0);transform:translateX(9px)}25%{clip-path:inset(14% 0 74% 0);transform:translateX(-7px)}50%{clip-path:inset(34% 0 52% 0);transform:translateX(6px)}75%{clip-path:inset(82% 0 6% 0);transform:translateX(-9px)}100%{clip-path:inset(50% 0 50% 0);transform:none}}
+@keyframes scan-roll{to{background-position:0 12px}}
+.slide-cap{display:flex;align-items:baseline;gap:8px;padding:6px 8px;font-family:var(--font-mono);font-size:11px;border-top:1px solid var(--line)}
+.slide-cap span{color:var(--mg-65)}
+.slide:hover{border-color:var(--line-2)}
+.transcript summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 14px;cursor:pointer;list-style:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mg-65)}
+.transcript summary::-webkit-details-marker{display:none}
+.transcript summary .k{color:var(--midground);font-weight:700}
+.transcript summary .tg2{margin-left:auto;padding:1px 8px;border:1px solid var(--line-2);color:var(--midground)}
+.transcript summary .tg2::after{content:'+'}
+.transcript[open] summary .tg2::after{content:'−'}
+.transcript[open] summary{border-bottom:1px solid var(--line)}
+.transcript summary:hover{background:var(--fill)}
+.tr-body{padding:4px 16px 14px}
+.tr-seg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.tr-seg:last-child{border-bottom:0}
+.tr-meta{font-family:var(--font-mono);font-size:11px;color:var(--mg-65)}
+.tr-meta b{display:block;color:var(--midground);font-size:12.5px}
+.tr-seg p{max-width:80ch;font-family:var(--font-sans);font-size:16px;line-height:1.6;color:var(--mg-80)}
+.gloss .tbl{min-width:620px}
+.gloss .tbl td:first-child{font-family:var(--font-mono);font-size:13px;color:var(--midground);white-space:nowrap}
+
+.foot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--mg-45)}
+.foot .legend{font-family:var(--font-zh);font-size:12px;letter-spacing:0;color:var(--mg-65)}
+.foot .legend .pipx{color:var(--amber);margin-right:4px}
+.foot div:nth-child(2){text-align:center}.foot div:nth-child(3){text-align:right}
+
+@media (max-width:1180px){.kv-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1100px){.wrap{padding:32px 190px 110px 28px}}
+@media (max-width:760px){
+  body{font-size:15px}
+  .wrap{padding:48px 34px 100px 12px}
+  .lang-switch{top:8px;right:4px}.lang-switch a{min-width:30px;height:26px;padding:0 7px}
+  .top-row{flex-wrap:wrap}.top-row .src-top{flex:1 1 100%}
+  .wrap>*+*{margin-top:44px}
+  .ch-head-body{grid-template-columns:minmax(0,1fr)}
+  .ch-no{justify-self:start}
+  .tr-seg{grid-template-columns:minmax(0,1fr);gap:4px}
+  .slide{flex-basis:150px}
+  .spectrum{height:18px}.spectrum a{font-size:0}
+  .foot{grid-template-columns:minmax(0,1fr)}.foot div:nth-child(2),.foot div:nth-child(3){text-align:left}
+  :root{--rail-top:max(44px,calc(50vh - 170px))}
+  #toc-fab{right:4px;height:24px;width:24px;padding:0;justify-content:center}
+  #toc-fab .fab-zh{display:none}
+  .rail{right:4px;top:calc(var(--rail-top) + 30px);padding:2px 0;border:0;background:none !important}
+  .rail a{width:24px;height:20px;justify-content:center}
+  .rail .lb{display:none}
+  .rail .no{min-width:0;width:24px;height:18px;padding:0;font-size:10px;border:0}
+  .rail a.on .no{background:var(--midground);color:var(--background-base)}
+  .rail .sep{width:10px;margin:2px auto}
+}
+@media (max-width:560px){.kv-4{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .bg-l201{display:none}
+}
+
+/* 00 · before → after */
+.vs{display:grid;gap:6px}
+.vs-head,.vs-row{display:grid;grid-template-columns:5em minmax(0,1fr) 26px minmax(0,1.45fr);gap:8px;align-items:stretch}
+.vs-head span{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--mg-65);align-self:end}
+.vs-head small{display:block;margin-top:2px;font-family:var(--font-zh);font-size:12px;letter-spacing:0}
+.vs-head .vs-a{color:var(--midground)}
+.vs-k{align-self:center;font-weight:700;font-size:13px;color:var(--mg-80)}
+.vs-row .vs-w{padding:9px 12px;border:1px dashed var(--line-2);color:var(--mg-65);font-size:13px;line-height:1.5}
+.vs-row .vs-a{padding:9px 12px;border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);color:var(--midground);font-size:14px;line-height:1.5}
+.vs-arr{display:grid;place-items:center;font-family:var(--font-mono);color:var(--midground)}
+@media (max-width:760px){.vs-head{display:none}.vs-row{grid-template-columns:minmax(0,1fr) 20px minmax(0,1.35fr);gap:6px}.vs-k{grid-column:1/-1;margin-top:6px}}
+/* 02 · file tree, all visible */
+.ft2{display:grid;gap:6px}
+.ft2-row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:14px;align-items:baseline;padding:8px 12px;border-left:2px solid var(--midground);background:color-mix(in srgb,var(--midground) 6%,transparent);font-size:14px}
+.ft2-row code{font-family:var(--font-mono);font-size:12.5px;color:var(--midground);overflow-wrap:anywhere}
+@media (max-width:760px){.ft2-row{grid-template-columns:minmax(0,1fr);gap:2px}}
+/* 06 · context grids */
+.cg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.cg2 figure{margin:0}.cg2 figcaption{font-size:13px;margin-bottom:8px;color:var(--mg-80)}
+.cg{display:grid;grid-template-columns:repeat(25,minmax(0,1fr));gap:2px}
+.cg span,.cg-legend i{aspect-ratio:1;display:block}
+.cg .s,.cg-legend .s{background:repeating-linear-gradient(45deg,var(--mg-65) 0 2px,transparent 2px 4px)}
+.cg .d,.cg-legend .d{background:var(--midground)}
+.cg .n,.cg-legend .n{background:color-mix(in srgb,var(--midground) 45%,transparent)}
+.cg .c,.cg-legend .c{background:color-mix(in srgb,var(--midground) 16%,transparent)}
+.cg .f,.cg-legend .f{border:1px solid var(--line)}
+.cg-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.cg-legend span{display:inline-flex;align-items:center;gap:6px}.cg-legend i{width:10px}
+@media (max-width:760px){.cg2{grid-template-columns:minmax(0,1fr)}}
+/* 11 · chips on blocks */
+.bb-b .bb-ch{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.bb-b .bb-ch .chip{font-size:11px;padding:0 6px}
+/* in-page slide viewer */
+.slide{cursor:zoom-in}
+html.sv-open{overflow:hidden}
+.sv{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:56px 72px}
+.sv[hidden]{display:none}
+.sv:focus{outline:none}
+.sv-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.88)}
+.sv-fig{position:relative;margin:0;display:grid;gap:10px;justify-items:center;max-width:min(100%,1600px)}
+.sv-fig img{display:block;max-width:100%;max-height:calc(100vh - 150px);width:auto;height:auto;border:1px solid var(--line-2);background:#000;cursor:pointer;user-select:none}
+.sv-cap{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--mg-80)}
+.sv-cap b{color:var(--midground)}
+.sv-hint{color:var(--mg-65);font-family:var(--font-zh)}.sv-hint-touch{display:none}
+.sv-btn,.sv-close{position:fixed;z-index:101;display:grid;place-items:center;border:1px solid var(--line-2);background:color-mix(in srgb,var(--background-base) 85%,transparent);color:var(--midground);cursor:pointer;font:400 26px/1 var(--font-mono)}
+.sv-btn{top:50%;transform:translateY(-50%);width:46px;height:70px}
+.sv-prev{left:14px}.sv-next{right:14px}
+.sv-btn:disabled{opacity:.22;cursor:default}
+.sv-btn:not(:disabled):hover,.sv-close:hover{background:var(--midground);color:var(--background-base)}
+.sv-close{top:14px;right:14px;width:42px;height:42px;font-size:22px}
+@media (max-width:760px){.sv{padding:56px 10px 24px}.sv-btn{width:34px;height:54px;font-size:20px}.sv-prev{left:4px}.sv-next{right:4px}.sv-hint-key{display:none}.sv-hint-touch{display:inline}}
+
+/* footer credits */
+.foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.foot .credit{grid-column:1/-1;margin-top:6px;padding:14px 16px;border:1px solid var(--line);font-family:var(--font-zh);font-size:12.5px;line-height:1.7;letter-spacing:0;color:var(--mg-65);text-align:left}
+.foot .credit h3{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--mg-80)}
+.foot .credit p{margin:4px 0}.foot .credit b{color:var(--mg-80)}
+.foot .credit a{color:var(--midground)}
+.foot .credit p[lang=en]{font-family:var(--font-mono);font-size:11px}
+.foot div:nth-child(2){text-align:left}
+@media (max-width:760px){.foot{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== this page ===== */
+/* hero frame */
+.hero-fig{margin:0;border-top:1px solid var(--line)}
+.hero-fig img{display:block;width:100%;height:auto;aspect-ratio:12/5;object-fit:cover;object-position:50% 74%;filter:saturate(.85)}
+@media (max-width:760px){.hero-fig img{aspect-ratio:16/9;object-position:50% 60%}}
+.hero-fig figcaption{padding:6px 14px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45);border-top:1px solid var(--line)}
+.kv dd small{display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+
+/* panorama: sponsor gaps */
+.spectrum .ad{display:block;min-width:0;border-left:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.band-legend{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;font-size:11.5px;color:var(--mg-45)}
+.band-legend i{display:inline-block;width:18px;height:10px;align-self:center;border:1px solid var(--line);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px)}
+.ch-head-body .who{display:inline-block;margin-left:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.host{display:inline-block;margin-right:6px;padding:0 6px;border:1px solid var(--line-2);font-size:11.5px;line-height:1.6;color:var(--mg-65);font-family:var(--font-zh)}
+
+/* 00 · timeline */
+.tline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border-top:2px solid var(--line-2);padding-top:0}
+.tl-n{position:relative;padding:14px 10px 0 0;min-width:0}
+.tl-n::before{content:'';position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--background-base);border:2px solid var(--midground)}
+.tl-n.hot::before{background:var(--midground)}
+.tl-n i{display:block;font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.tl-n b{display:block;font-size:14px;line-height:1.45}
+.tl-n span{display:block;font-size:12.5px;line-height:1.55;color:var(--mg-65)}
+.tl-br{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tl-br span{padding:4px 8px;border:1px dashed var(--line-2);border-top:0;font-size:12.5px;text-align:center;color:var(--mg-80)}
+@container (max-width:640px){
+  .tline{grid-template-columns:minmax(0,1fr);border-top:0;border-left:2px solid var(--line-2);margin-left:6px}
+  .tl-n{padding:0 0 12px 16px}
+  .tl-n::before{top:4px;left:-7px}
+  .tl-br{grid-template-columns:minmax(0,1fr)}
+}
+
+/* 02 · split bars */
+.split-row{display:grid;grid-template-columns:7em minmax(0,1fr);gap:10px;align-items:center}
+.split-row+.split-row{margin-top:10px}
+.split-row>b{font-size:13px;font-weight:700;color:var(--mg-80)}
+.split-bar{display:flex;height:34px;border:1px solid var(--line-2)}
+.split-bar span{display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden;white-space:nowrap;font-size:12.5px}
+.split-bar .have{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 6px);color:var(--mg-80)}
+.split-bar .want{background:var(--midground);color:var(--background-base);font-weight:700}
+
+/* 03 · fork */
+.fork{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1.2fr);gap:8px;align-items:center}
+.fork-out{display:grid;gap:8px}
+.fork .box.good{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.fork .box.bad{border-style:dashed;border-color:var(--red);color:var(--red)}
+.fork .box i{font-style:normal;font-family:var(--font-mono);font-size:11px;margin-right:6px;opacity:.75}
+@container (max-width:560px){.fork{grid-template-columns:minmax(0,1fr)}.fork .arr svg{transform:rotate(90deg);margin:4px 0}}
+
+/* 04 · launch gate */
+.gate{display:grid;grid-template-columns:minmax(0,1fr) 72px minmax(0,1fr);gap:10px;align-items:center}
+.gate-col>small{display:block;margin-bottom:6px;font-size:12.5px;color:var(--mg-80)}
+.gate-col>small b{color:var(--midground)}
+.gate-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;max-width:240px}
+.gate-grid span{aspect-ratio:1;display:block;background:var(--midground);transition:background .25s,border-color .25s}
+.gate-grid span.r{background:transparent;border:1px solid var(--red);background-image:repeating-linear-gradient(45deg,color-mix(in srgb,var(--red) 55%,transparent) 0 1px,transparent 1px 4px)}
+.gate-grid+p{margin-top:6px;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.gate-mid{display:grid;justify-items:center;gap:4px;text-align:center;font-size:11.5px;line-height:1.4;color:var(--mg-65)}
+.gate-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--mg-65)}
+.gate-legend span{display:inline-flex;align-items:center;gap:6px}
+.gate-legend i{width:11px;height:11px;display:block;background:var(--midground)}
+.gate-legend i.r{background:transparent;border:1px solid var(--red)}
+.gate-exp{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line-2);font-size:13.5px}
+.gate-exp b{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-65)}
+@container (max-width:560px){.gate{grid-template-columns:minmax(0,1fr)}.gate-mid{justify-items:start;text-align:left}.gate-mid .arr svg{transform:rotate(90deg)}}
+
+/* 05 · smoothie vs one author */
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.duo-col{display:grid;gap:8px;align-content:start;padding:12px;border:1px solid var(--line)}
+.duo-col>small{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.pm-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.pm-row .box{padding:5px 4px;text-align:center;font-size:12px}
+.duo .down{display:grid;place-items:center;color:var(--mg-45);font-family:var(--font-mono)}
+.duo .box.mud{border-style:dashed;background:repeating-linear-gradient(135deg,var(--line) 0 3px,transparent 3px 7px);text-align:center;color:var(--mg-80)}
+.duo .box.one{border-color:var(--midground);text-align:center}
+.duo .box.whole{background:var(--midground);color:var(--background-base);border-color:var(--midground);text-align:center;font-weight:700}
+@container (max-width:560px){.duo{grid-template-columns:minmax(0,1fr)}}
+
+/* 08 · agency curve */
+.curve svg{display:block;width:100%;max-width:720px;height:auto;overflow:visible}
+.curve .ax{stroke:var(--line-2);stroke-width:1}
+.curve .grey{fill:none;stroke:var(--mg-45);stroke-width:2;stroke-dasharray:5 4}
+.curve .main{fill:none;stroke:var(--midground);stroke-width:2.5}
+.curve text{fill:var(--mg-65);font-family:var(--font-mono);font-size:11px}
+.curve text.lb{fill:var(--midground);font-family:var(--font-zh);font-size:13px;font-weight:700}
+.curve text.lg{fill:var(--mg-65);font-family:var(--font-zh);font-size:12.5px}
+.curve-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--mg-65)}
+.curve-key span{display:inline-flex;align-items:center;gap:6px}
+.curve-key i{display:block;width:22px;height:0;border-top:2.5px solid var(--midground)}
+.curve-key i.g{border-top:2px dashed var(--mg-45)}
+
+/* 09 · deal */
+.deal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:8px;align-items:center}
+.deal .box{text-align:center}
+.deal .box b{display:block;font-size:15px}
+.deal .lnk{display:grid;gap:2px;justify-items:center;text-align:center;font-size:12px;line-height:1.45;color:var(--mg-80)}
+.deal .lnk .arr{color:var(--midground)}
+.deal .lnk.back .arr svg{transform:scaleX(-1)}
+.deal-time{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px;color:var(--mg-65)}
+.deal-time i{display:block;height:0;border-top:1px dashed var(--line-2)}
+.deal-time b{font-family:var(--font-mono);color:var(--midground);font-weight:700}
+@container (max-width:600px){.deal{grid-template-columns:minmax(0,1fr)}.deal .lnk .arr svg{transform:rotate(90deg)}.deal .lnk.back .arr svg{transform:rotate(-90deg)}}
+
+/* 11 · payoff distributions */
+.dist{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.dist-col{border:1px solid var(--line);padding:12px}
+.dist-col>b{display:block;font-size:15px}
+.dist-col>small{display:block;font-size:12.5px;color:var(--mg-65)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:120px;margin:12px 0 6px;border-bottom:1px solid var(--line-2)}
+.bars span{flex:1 1 0;min-width:0;height:var(--h);background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.bars span.top{background:var(--midground);position:relative}
+.bars span.top::after{content:'↑';position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:12px;color:var(--midground)}
+.dist-tags{display:flex;flex-wrap:wrap;gap:5px}
+.dist-tags span{padding:0 7px;border:1px solid var(--line-2);font-size:12px}
+.dist-tags span.me{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+@container (max-width:560px){.dist{grid-template-columns:minmax(0,1fr)}}
+
+/* 12 · org charts */
+.org{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:14px}
+.org-col{display:grid;gap:6px;align-content:start;justify-items:center;padding:12px;border:1px solid var(--line)}
+.org-col>small{justify-self:start;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--mg-45)}
+.org .box{text-align:center;min-width:8em}
+.org .box.lead{background:var(--midground);color:var(--background-base);border-color:var(--midground);font-weight:700}
+.org .v{width:1px;height:12px;background:var(--line-2)}
+.org .lvl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.org .lvl .box{min-width:0;padding:4px 8px;font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding-top:8px;border-top:1px solid var(--midground);width:100%}
+.dots span{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--midground) 55%,transparent)}
+.dots .pod{display:flex;flex-wrap:wrap;gap:3px;padding:4px;border:1px dashed var(--midground);align-items:center;width:auto;height:auto;border-radius:0;background:none}
+.dots .pod em{font-style:normal;font-family:var(--font-mono);font-size:9.5px;padding:0 3px;background:var(--midground);color:var(--background-base)}
+.org-note{font-size:12.5px;color:var(--mg-65);text-align:center}
+@container (max-width:600px){.org{grid-template-columns:minmax(0,1fr)}}
+
+/* X posts and outside sources */
+.xpost{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:0;margin:0}
+.xpost.wide{grid-template-columns:minmax(0,1fr)}
+.xzoom{display:grid;place-items:center;min-height:0;background:#000;border-right:1px solid var(--line);cursor:zoom-in}
+.xpost.wide .xzoom{border-right:0;border-bottom:1px solid var(--line)}
+.xzoom img{display:block;width:100%;height:auto;max-height:420px;object-fit:contain}
+.xpost figcaption{display:flex;flex-direction:column;gap:8px;padding:12px clamp(12px,2vw,18px);font-size:13.5px;line-height:1.65;color:var(--mg-80)}
+.xpost .xmeta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.xpost .xmeta b{color:var(--midground);font-weight:700}
+.src-tag{display:inline-block;padding:0 6px;border:1px dashed var(--amber);color:var(--amber);font-family:var(--font-zh);font-size:11px;letter-spacing:0;line-height:1.6}
+.xpost q{quotes:none;font-family:var(--font-sans);font-size:16px;line-height:1.45;color:var(--midground)}
+.xpost .xgo{margin-top:auto;font-family:var(--font-mono);font-size:11.5px;color:var(--midground)}
+.ctx{padding:12px clamp(14px,2.4vw,24px);border:1px dashed var(--line-2);background:transparent}
+.ctx>.src-tag{margin-bottom:6px}
+.ctx .lst>li{font-size:14px}
+.gl{color:var(--mg-65);font-size:.92em}
+.fn{font-family:var(--font-mono);font-size:.7em;vertical-align:super;line-height:1;margin-left:1px;color:var(--amber);text-decoration:none}
+.foot .credit ol.srcs{margin:4px 0 0;padding-left:1.6em;font-family:var(--font-mono);font-size:11px}
+.foot .credit ol.srcs li{margin:2px 0}
+.wants{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:10px 0 12px}
+.wants>div{padding:10px 12px;border:1px solid var(--line-2)}
+.wants>div.want{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+.wants b{display:block;font-size:15px}
+.wants small{display:block;margin-top:2px;font-size:13.5px;line-height:1.6;color:var(--mg-80)}
+.wants i{display:block;margin-top:6px;font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-65)}
+.sum-lst>li{font-size:15px}
+.sum-lst .chips{display:inline-flex;margin:0 0 0 6px;padding:0;vertical-align:baseline}
+@container (max-width:640px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:760px){.xpost{grid-template-columns:minmax(0,1fr)}.xzoom{border-right:0;border-bottom:1px solid var(--line)}.wants{grid-template-columns:minmax(0,1fr)}}
+
+
+/* ===== interview page additions (shared with the a16z page) ===== */
+.rcp{display:grid;gap:8px;justify-items:center;text-align:center}
+.rcp-in{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.rcp-in .box{min-width:6.5em;font-weight:700}
+.rcp-org{font-size:13.5px;color:var(--mg-80)}
+.rcp-out{border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);padding:8px 14px;font-size:13.5px;text-align:center}
+.tiers{display:grid;gap:8px}
+.tier{display:grid;grid-template-columns:5.5em minmax(0,11em) minmax(0,1fr);gap:4px 12px;align-items:baseline;border:1px solid var(--line-2);background:var(--background-base);padding:10px 12px;font-size:13.5px;line-height:1.5}
+.tier i{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--mg-45)}
+.tier span{font-size:12.5px;color:var(--mg-65)}
+.tier.t1{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent)}
+@container (max-width:560px){.tier{grid-template-columns:minmax(0,1fr)}}
+.stat{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 22px;align-items:center}
+.stat .big{font-family:var(--font-display);font-size:clamp(44px,9cqi,80px);line-height:1;color:var(--midground)}
+.stat b{display:block;font-size:15px}
+.stat small{display:block;font-size:12.5px;color:var(--mg-65);line-height:1.5}
+.stat q{display:block;margin-top:8px;font-size:13.5px;color:var(--mg-80)}
+@container (max-width:480px){.stat{grid-template-columns:minmax(0,1fr)}}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;counter-reset:st}
+.steps li{counter-increment:st;border:1px solid var(--line-2);background:var(--background-base);padding:8px 10px;font-size:13.5px;line-height:1.45}
+.steps li::before{content:counter(st);display:block;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+.steps li b{display:block}
+.steps li small{display:block;font-size:12px;color:var(--mg-65)}
+.steps li.hot{background:var(--midground);color:var(--background-base);border-color:var(--midground)}
+.steps li.hot::before,.steps li.hot small{color:inherit;opacity:.75}
+@container (max-width:640px){.steps{grid-template-columns:minmax(0,1fr)}}
+.g6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.g6 .box i{display:block;font-style:normal;font-family:var(--font-mono);font-size:10.5px;color:var(--mg-45)}
+@container (max-width:600px){.g6{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@container (max-width:380px){.g6{grid-template-columns:minmax(0,1fr)}}
+.box.hot2{border-color:var(--red)}
+.box.hot2 b{color:var(--red)}
+.q2 .box b{display:block;font-size:15px}
+.cyc{margin:8px 0 0;padding-left:1.4em;font-size:13.5px;line-height:1.7}
+.cyc-back{display:block;margin-top:6px;font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--midground)}
+.cyc-back.no{color:var(--red)}
+.chart{display:block;width:100%;max-width:640px;height:auto;overflow:visible}
+.chart .ax line{stroke:var(--line-2);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--midground);stroke-width:2.5}
+.chart .pt circle{fill:var(--background-base);stroke:var(--midground);stroke-width:2}
+.chart .pt circle.hot{fill:var(--midground)}
+.chart .lb text{fill:var(--midground);font-family:var(--font-mono);font-size:12px}
+.chart .tk text{fill:var(--mg-65);font-family:var(--font-mono);font-size:11px}
+.ch>.ctx+.xpost,.ch>.xpost+.ctx,.ch>.xpost+.xpost{margin-top:12px}
+/* ===== alex-zhang page additions ===== */
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.nums .box b{display:block;font-family:var(--font-display);font-size:clamp(22px,4.2cqi,34px);line-height:1.1;color:var(--midground)}
+.nums .box.est{border-style:dashed}
+@container (max-width:620px){.nums{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.chiprow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13px;color:var(--mg-80)}
+.chiprow .pill{color:var(--midground)}
+.chiprow .pill.alt{border-style:solid;border-color:var(--midground)}
+.tree{display:grid;gap:8px}
+.tree .root{border:1px solid var(--midground);background:color-mix(in srgb,var(--midground) 9%,transparent);padding:8px 10px;font-size:13.5px;line-height:1.45}
+.tree .leaves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding-left:14px;border-left:1px dashed var(--line-2)}
+.tree .leaves span{border:1px dashed var(--line-2);padding:5px 7px;font-size:12.5px;line-height:1.4;color:var(--mg-80)}
+@container (max-width:420px){.tree .leaves{grid-template-columns:minmax(0,1fr)}}
+.gantt{display:grid;gap:10px}
+.g-row{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:10px;align-items:center}
+.g-row>b{font-size:13px}
+.g-track{position:relative;height:82px;border-left:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.g-bar{position:absolute;height:22px;display:flex;align-items:center;padding:0 6px;overflow:hidden;white-space:nowrap;font-family:var(--font-mono);font-size:11px;border:1px solid var(--line-2);background:var(--background-base);color:var(--mg-80)}
+.g-bar.gen{border-color:var(--midground);background:color-mix(in srgb,var(--midground) 14%,transparent);color:var(--midground)}
+.g-bar.end{border:0;background:transparent;color:var(--midground);font-weight:700}
+.ctxw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@container (max-width:640px){.ctxw{grid-template-columns:minmax(0,1fr)}}
+.ctxw .btn-row{margin-top:4px;align-items:center}
+.repl span{display:block}
+.repl span.cur{color:var(--midground);background:color-mix(in srgb,var(--midground) 12%,transparent)}
+.repl span.dim{opacity:.4}
+.meter{display:grid;gap:3px;font-size:12px;color:var(--mg-65)}
+.meter i{display:block;height:6px;border:1px solid var(--line-2)}
+.meter i b{display:block;height:100%;background:var(--mg-65);transition:width .25s}
+.meter.hi i b{background:var(--red)}
+.meter.ok i b{background:var(--midground)}
+.subs-note{font-size:12px;line-height:1.5;color:var(--midground);border-left:2px solid var(--midground);padding-left:8px}
+.subs-note[hidden]{display:none}
+.subs .merge{grid-column:1/-1}
+#v06 .rx{margin-top:14px}
+.ctxw .side{border:1px solid var(--line-2);background:var(--background-base);padding:10px;display:grid;gap:6px;align-content:start}
+.ctxw .side>b{font-size:13.5px}
+.ctxw .side>small{font-size:12px;color:var(--mg-65)}
+.seg-stack{display:flex;flex-direction:column;gap:3px}
+.seg-stack span{padding:3px 8px;font-family:var(--font-mono);font-size:11.5px;border:1px solid var(--line-2);color:var(--mg-80)}
+.seg-stack span.in{border-color:var(--midground);color:var(--midground)}
+.seg-stack span.out{border-color:var(--red);color:var(--red)}
+.repl{margin:0;padding:8px 10px;border:1px solid var(--line-2);font-family:var(--font-mono);font-size:11.5px;line-height:1.6;white-space:pre-wrap;color:var(--mg-80)}
+.subs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.subs span{padding:5px 6px;border:1px solid var(--midground);font-size:12px;line-height:1.35;text-align:center;color:var(--midground)}
+.subs span[hidden]{display:none}
+.ctxw .verdict{font-family:var(--font-mono);font-size:11.5px}
+.ctxw .verdict.bad{color:var(--red)}
+.ctxw .verdict.ok{color:var(--midground)}
+/* ===== lenny-emmanuel-ameisen page additions ===== */
+.chart .th line{stroke:var(--mg-45);stroke-width:1;stroke-dasharray:4 4}
+#v06 .chart{max-width:520px;margin:0 auto}
+#v06 .chart .lb text{font-size:16px}
+#v06 .chart .tk text{font-size:14px}
+.act-top{flex-direction:column;align-items:flex-start;gap:8px}
+</style>
+<script src="/assets/atlas.js" defer data-page="talks/2026-10-lenny-emmanuel-ameisen" data-v="2026-10-19"></script>
+</head>
+<body>
+
+<nav class="lang-switch" id="lang-switch" aria-label="语言 / Language"><a href="./" hreflang="en" lang="en">EN</a><a href="zh.html" hreflang="zh-CN" lang="zh-CN" aria-current="page">中</a></nav>
+
+<div class="hermes-bg" aria-hidden="true"><div class="bg-l1"></div><img class="bg-l2" src="assets/hermes/filler-bg0.webp" alt=""><div class="bg-l99"></div><div class="bg-l201"></div></div>
+
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 长出来"><span class="lb">长出来</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 难词"><span class="lb">难词</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 概念"><span class="lb">概念</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 规划"><span class="lb">规划</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 显微镜"><span class="lb">显微镜</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 Scaling"><span class="lb">Scaling</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 门槛"><span class="lb">门槛</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 对齐"><span class="lb">对齐</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 金门"><span class="lb">金门</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 拟人"><span class="lb">拟人</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 好奇"><span class="lb">好奇</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 直觉"><span class="lb">直觉</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 入行"><span class="lb">入行</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://youtu.be/JHo-aiePjoM" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ 原访谈视频，Lenny's Podcast 发布于 YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>Lenny's Podcast</span><span class="push">2026-10-18</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Interpretability &amp; alignment</div>
+      <h1 class="h1">How models <span class="nw">actually work</span></h1>
+      <p class="h1-zh">造出来，不等于看懂了</p>
+      <p class="read">阅读约 15 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Emmanuel Ameisen</dd></div>
+        <div><dt>Host</dt><dd>Lenny Rachitsky</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-18</dd></div>
+        <div><dt>Runtime</dt><dd class="num">1:12:12</dd></div>
+      </dl>
+      <p class="hero-note">Ameisen 是 Anthropic 可解释性（interpretability）团队的研究员，之前在 Stripe、Insight 做了多年应用机器学习，著有 <i>Building Machine Learning Powered Applications</i><a class="fn" href="#src-1" aria-label="来源 1">1</a>。可解释性 = 打开模型，看它在输入和输出之间算了什么。开头约 1.5 分钟预告和两段赞助口播，本页略去。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：Emmanuel Ameisen 戴着耳机坐在麦克风前，背后是书架和一幅画" width="1920" height="1080"><figcaption>画面 © Lenny's Podcast · 25:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>模型是“长出来的”，造它的人也不知道它学到了什么公式，所以要打开看。</p>
+      <div class="wants">
+        <div><b>看到了什么</b><small>预训练只教它“预测下一个词”，模型却学出了跨语言、跨图文共用的概念，还会提前规划。</small></div>
+        <div class="want"><b>对对齐有什么用</b><small>观察内部能发现模型没说出口的东西；预测它的行为时，把它当“演员”比当“程序”更准。</small></div>
+      </div>
+      <p class="last">态度：看得越深越不确定；他选择好奇，而不是否认。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">01:30–1:12:12</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>一个只学“预测下一个词”的系统，里面到底发生了什么？看懂它，对安全有什么用？</p></div>
+  <div class="pano-band" style="--act-cols:709fr 775fr 495fr 907fr 1446fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <span class="ad" style="flex:90 1 0" title="预告 · 00:00–01:30"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:177 1 0" title="00 长出来 · 01:30–05:57" aria-label="00 长出来">00</a>
+      <span class="ad" style="flex:90 1 0" title="赞助口播 · 04:27–05:57"></span>
+      <a href="#ch-01" class="odd" style="flex:352 1 0" title="01 难词 · 05:57–11:49" aria-label="01 难词">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:179 1 0" title="02 概念 · 11:49–14:48" aria-label="02 概念">02</a>
+      <a href="#ch-03" class="even" style="flex:225 1 0" title="03 规划 · 14:48–18:33" aria-label="03 规划">03</a>
+      <a href="#ch-04" class="even" style="flex:371 1 0" title="04 显微镜 · 18:33–24:44" aria-label="04 显微镜">04</a>
+      <a href="#ch-05" class="act-start odd" style="flex:176 1 0" title="05 Scaling · 24:44–28:29" aria-label="05 Scaling">05</a>
+      <span class="ad" style="flex:49 1 0" title="赞助口播 · 27:40–28:29"></span>
+      <a href="#ch-06" class="odd" style="flex:270 1 0" title="06 门槛 · 28:29–32:59" aria-label="06 门槛">06</a>
+      <a href="#ch-07" class="act-start even" style="flex:322 1 0" title="07 对齐 · 32:59–38:21" aria-label="07 对齐">07</a>
+      <a href="#ch-08" class="even" style="flex:225 1 0" title="08 金门 · 38:21–42:06" aria-label="08 金门">08</a>
+      <a href="#ch-09" class="even" style="flex:360 1 0" title="09 拟人 · 42:06–48:06" aria-label="09 拟人">09</a>
+      <a href="#ch-10" class="act-start odd" style="flex:457 1 0" title="10 好奇 · 48:06–55:43" aria-label="10 好奇">10</a>
+      <a href="#ch-11" class="odd" style="flex:470 1 0" title="11 直觉 · 55:43–1:03:33" aria-label="11 直觉">11</a>
+      <a href="#ch-12" class="odd" style="flex:519 1 0" title="12 入行 · 1:03:33–1:12:12" aria-label="12 入行">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 开头预告和两段赞助口播，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">01:30–11:49</span></div><div class="act-name"><b>长出来的系统</b><span>Grown, not built</span></div><p class="act-line">训练只定目标，公式是长出来的；预测“难词”逼着模型理解世界。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>长出来</a></li><li><a class="chip" href="#ch-01"><i>01</i>难词</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">11:49–24:44</span></div><div class="act-name"><b>打开看</b><span>Looking inside</span></div><p class="act-line">模型有跨语言、跨图文共用的概念，会提前规划；研究方法更像神经科学。</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>概念</a></li><li><a class="chip" href="#ch-03"><i>03</i>规划</a></li><li><a class="chip" href="#ch-04"><i>04</i>显微镜</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">24:44–32:59</span></div><div class="act-name"><b>平滑与跃升</b><span>Smooth &amp; sudden</span></div><p class="act-line">算力配上“文本”这个目标才持续有回报；跨过任务门槛时像突变。</p><ul class="chips"><li><a class="chip" href="#ch-05"><i>05</i>Scaling</a></li><li><a class="chip" href="#ch-06"><i>06</i>门槛</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">32:59–48:06</span></div><div class="act-name"><b>对齐</b><span>Alignment</span></div><p class="act-line">检查训练有没有成功、找没说出口的东西；拟人化是有用的模型。</p><ul class="chips"><li><a class="chip" href="#ch-07"><i>07</i>对齐</a></li><li><a class="chip" href="#ch-08"><i>08</i>金门</a></li><li><a class="chip" href="#ch-09"><i>09</i>拟人</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">48:06–1:12:12</span></div><div class="act-name"><b>智能本身</b><span>Intelligence itself</span></div><p class="act-line">好奇而不是否认；不同模型收敛到相似结构；直觉和“念头”；怎么入行。</p><ul class="chips"><li><a class="chip" href="#ch-10"><i>10</i>好奇</a></li><li><a class="chip" href="#ch-11"><i>11</i>直觉</a></li><li><a class="chip" href="#ch-12"><i>12</i>入行</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>01:30–05:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">Why AI models are grown, not built</p><h2>长出来的</h2><p class="ch-sub">搭好架子，公式自己长</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>人只搭架构、喂数据、定目标；模型中间那些公式是训练“长”出来的，没人知道它们是什么。所以才需要他这个团队。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>训练分阶段</b>：预训练<span class="gl">（pre-training）</span>给文档的前半段，让模型猜下一个词，重复海量次；然后微调<span class="gl">（fine-tuning）</span>，用“模型该怎样表现”的示例训练，比如助手给菜谱、解代码题。</li>
+    <li><b>长出来的部分</b>：训练只朝“预测得更好”的方向调参数。调出来的公式，“我们不知道是什么”。</li>
+    <li><b>团队的任务</b>：解码两样东西：这些公式的意思，和每一步中间结果的意思。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">模型在算什么</span><span>02:40–04:20</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>几个词</b><small>输入</small></div><span class="fa">→</span><div class="box"><b>一串数字</b><small>词变成数</small></div><span class="fa">→</span><div class="box hot"><b>计算 → 中间结果 × 很多层</b><small>长出来的部分 · 研究对象</small></div><span class="fa">→</span><div class="box"><b>下一个词</b><small>输出</small></div></div>
+      <p class="cap">人写的是架子和目标；中间方框里的公式，是训练调出来的。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_reading_mind_2025-08-18.jpg" aria-label="@mlpowered · 2025-08-18"><img src="assets/x/x00_reading_mind_2025-08-18.jpg" alt="视频封面：Reading the mind of an AI，四位研究员坐在木桌旁交谈" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2025-08-18</span></span><p>团队拍的无术语科普视频《Reading the mind of an AI》，2025-08-15 发布。想先看个直观版本，可以从这里开始。</p><a class="xgo" href="https://x.com/mlpowered/status/1957487988939845708" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>他的一句话：“to make them is not to understand them.”（造出来，不等于看懂了。）</li>
+  </ul></div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>05:57–11:49</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Why next-token prediction is harder than it sounds</p><h2>难词</h2><p class="ch-sub">简单的词早就猜完了</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>“预测下一个词”常被想成手机联想输入。但简单的词早就猜对了，剩下的难词只有理解世界才猜得中。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>为什么靠训练</b>：给按钮写“如果……就……”可以；“给图片分类”“读报告写摘要”写不出规则。</li>
+    <li><b>手机联想</b>大约 60% 猜对，是最简单的版本。很多人脑中的模型就停在这里。</li>
+    <li><b>简单词用完了</b>：他说语言模型约在 2019 年预测下一个词就超过了人类。之后要猜的只剩难词。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">难度阶梯</span><span>08:10–10:30</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>易 · 句子结构</b><small>已猜对 ✓</small></div><span class="fa">→</span><div class="box"><b>中 · 简单事实</b><small>“法国首都是巴黎” · 已猜对 ✓</small></div><span class="fa">→</span><div class="box hot"><b>难 · 物理方程的答案</b><small>博士论文的最后一段 · 现在要猜的</small></div></div>
+      <p class="cap" style="margin-top:12px"><b>为什么要理解世界</b>：猜“包含达拉斯的那个州，首府是 ___”。</p>
+      <div class="flow" style="margin-top:6px"><div class="box"><b>达拉斯在得州</b></div><span class="fa">+</span><div class="box"><b>州有首府</b></div><span class="fa">→</span><div class="box hot"><b>Austin</b><small>得州首府</small></div></div>
+      <p class="cap">他说模型内部确实在操作这些概念（见第 02 章）。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x01_dallas_graph_2025-05-29.png" aria-label="@mlpowered · 2025-05-29"><img src="assets/x/x01_dallas_graph_2025-05-29.png" alt="归因图：Dallas 和 state 推动 Texas，capital 推动 say a capital，两者合起来推动 say Austin，Austin 概率 98%" loading="lazy" width="1130" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2025-05-29</span></span><p>开源的 circuit tracing 工具给 Dallas 问题画出的归因图：“Dallas”推出“Texas”，再和“说出首府”合起来，得出 Austin<a class="fn" href="#src-3" aria-label="来源 3">3</a>。</p><a class="xgo" href="https://x.com/mlpowered/status/1928123130725421201" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>记得大概是 Ilya Sutskever 说过：推理小说最后一句“凶手是 ___”，要猜中就得看懂整个情<span class="nb">节。<a class="fn" href="#src-5" aria-label="来源 5">5</a></span></li>
+  </ul></div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>11:49–14:48</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">How models represent concepts</p><h2>共用的概念</h2><p class="ch-sub">照片里的眼睛，也是眼睛</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型不是背了一张“问题—答案”清单。同一个概念在内部用同一个表示，不管它出现在哪种语言、图片还是代码里。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>怎么看</b>：问 Dallas 问题，在模型给出答案之前，解码它的中间结果。</li>
+    <li><b>看到什么</b>：“得州”的表示亮起，“首府”的表示亮起，两者结合，再激活“得州首府是奥斯汀”。</li>
+    <li><b>几乎处处如此</b>：试过的绝大多数概念都有这样的表示，而且跨语境共用。他认为这是“思考”的一个特征。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">多入一</span><span>14:13–14:48</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>一张有眼睛的照片</b></div><div class="box"><b>任何语言里说“眼睛”</b></div><div class="box"><b>SVG 画的小眼睛</b></div><span class="fa">→</span><div class="box hot"><b>同一个方向亮起</b><small>“这是眼睛”</small></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_multilingual_2025-03-27.jpg" aria-label="@AnthropicAI · 2025-03-27"><img src="assets/x/x02_multilingual_2025-03-27.jpg" alt="简化归因图：英文、中文、法文问“small 的反义词”，三条路径都经过共享的反义和大小概念，再分别输出 large、大、grand" loading="lazy" width="1600" height="899"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2025-03-27</span></span><p>用英文、中文、法文问“small 的反义词”，Claude 3.5 Haiku 走的是同一组共享的“反义”“大小”特征，只在进出口换语<span class="nb">言。<a class="fn" href="#src-2" aria-label="来源 2">2</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/1905303845686616259" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>共用的表示意味着学一次、到处用：用中文学到的知识，用英文问也能答。</li></ul></aside>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>14:48–18:33</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">How LLMs plan ahead</p><h2>提前规划</h2><p class="ch-sub">一次一个词，心里有终点</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型一次只输出一个词，但会在中间结果里先定好计划，后面每个词都回头看这个计划。计划不用说出口。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>为什么做得到</b>：模型为第 5 个词算出的中间结果，后面每个词都能读取、复用。所以计划可以存下来，一直用。</li>
+    <li><b>例子：押韵诗</b>。第一行以 -it 音结尾，第二行还没开始写，中间结果里已经出现 “rabbit”。之后每个词都朝这个结尾写。</li>
+    <li><b>和“预测下一个词”不矛盾</b>：题目够难时，猜对下一个词的最好办法，就是想清楚后面会发生什么。读小说要猜角色下一句，就得先知道“他爱着她，打算在这一刻表白”。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">改掉计划，结尾就变</span><span>15:59–17:06</span></div>
+    <div class="vz">
+      <p class="org-note" style="text-align:left"><span class="src-tag">背景</span> Anthropic 在 Claude 3.5 Haiku 上做的实验。第一行固定：<i>He saw a carrot and had to grab it,</i><a class="fn" href="#src-2" aria-label="来源 2">2</a></p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">干预</th><th scope="col">模型写出的第二行</th><th scope="col">结果</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">不干预</th><td>His hunger was like a starving <b>rabbit</b></td><td>押韵 ✓</td></tr>
+          <tr><th scope="row">压掉 “rabbit” 概念</th><td>His hunger was a powerful <b>habit</b></td><td>换一个押韵词 ✓</td></tr>
+          <tr><th scope="row">注入 “green” 概念</th><td>freeing it from the garden's <b>green</b></td><td>不押韵，但通顺</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap">计划在第一行结束时就定了；改掉计划，模型会重新组织整行，落到新的结尾。</p>
+      <details class="rx" id="rx-how03">
+        <summary><b>这是怎么看到的？</b><span class="tg2"></span><span class="re">画一张“归因图”：哪些内部概念推动了哪个输出。</span></summary>
+        <div class="rx-b">
+          <div class="flow"><div class="box"><b>读完第一行</b><small>…grab it</small></div><span class="fa">→</span><div class="box hot"><b>“rabbit” 亮起</b><small>还没写第二行</small></div><span class="fa">→</span><div class="box"><b>每个词回看它</b></div><span class="fa">→</span><div class="box"><b>以 rabbit 结尾</b></div></div>
+          <p class="org-note"><span class="src-tag">背景</span> Anthropic 称这套方法为“AI 显微镜”<a class="fn" href="#src-2" aria-label="来源 2">2</a>。2025-05-29 工具开源，任何人都能给开源模型画这种<span class="nb">图。<a class="fn" href="#src-3" aria-label="来源 3">3</a></span></p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x03_rabbit_plan_2025-03-27.jpg" aria-label="@AnthropicAI · 2025-03-27"><img src="assets/x/x03_rabbit_plan_2025-03-27.jpg" alt="三组押韵对句：原样以 rabbit 结尾；压掉 rabbit 概念后以 habit 结尾；注入 green 概念后以 green 结尾" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2025-03-27</span></span><p>上表的原图。帖子原话：模型虽然一次说一个词，有时会“plans further ahead”。</p><a class="xgo" href="https://x.com/AnthropicAI/status/1905303841194618902" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>“只是预测下一个词”说的是训练目标，“会规划”说的是学到的机制。两句话不在同一层，所以都对。</li></ul></aside>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>18:33–24:44</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">How we look inside</p><h2>显微镜</h2><p class="ch-sub">像做脑成像</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>中间结果只是一串数字，乍看没有意义。办法和脑成像一样：喂大量文本、记录、找规律；再动手改它，看行为是否按预期变化。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>中间结果是什么</b>：两个词之间有很多步计算，每步之间是一串数字（他举例说“100 个数”）。写诗时和算数时数字不同，但看不出意思。</li>
+    <li><b>更像生物学，不像工程</b>：系统送到你面前，没有能读的源代码。只能像研究“老鼠饿了为什么变凶”那样做实验。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">三步</span><span>19:20–22:40</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>① 记录</b><small>喂各种文本，记下每个例子的中间数字</small></div><span class="fa">→</span><div class="box"><b>② 解码</b><small>找只在“英文 / 法文 / 讲爱 / 讲眼睛”时出现的数字组合，贴上标签</small></div><span class="fa">→</span><div class="box hot"><b>③ 干预</b><small>计算时偷偷改一个中间结果，看行为会不会照预期变：“常常会”</small></div></div>
+      <p class="cap">② 的类比：给人看房子、狗的照片，看脑子哪块亮。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_features_2024-05-21.jpg" aria-label="@mlpowered · 2024-05-21"><img src="assets/x/x04_features_2024-05-21.jpg" alt="特征地图和文本例子：Feature #1M/847723 在“sycophantic praise”奉承类文本上最强激活，高亮了 generous、gracious man、great lord 等词" loading="lazy" width="1600" height="1034"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2024-05-21</span></span><p>Anthropic 2024 年从 Claude 3 Sonnet 里抽出数百万个特征。图里是“sycophantic praise”（奉承）特征最强激活的文本例<span class="nb">子。<a class="fn" href="#src-4" aria-label="来源 4">4</a></span></p><a class="xgo" href="https://x.com/mlpowered/status/1792948212728524917" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>AI 有没有意识</b>（<span class="host">主持人</span>问）：很难说。可解释性是好入口，因为不受模型自己“怎么说”的影响。他确信的是：多数人低估了涌现出来的复杂性，“越往里看，越不确定”；断言“LLM 只是 X”的人，往往没往里看过。</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>第三步才是关键。“哪里亮”只是相关；改掉它、行为跟着变，才说明它在起作用。</li></ul></aside>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>24:44–28:29</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Scaling laws and the power of text</p><h2>Scaling 与文本</h2><p class="ch-sub">算力要配一个好目标</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>赢的不只是算力，而是算力加上一个持续给回报的目标。预测文本恰好是这样的目标，而且它和我们真正关心的任务相关。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>老争论</b>：算力还是专家设计的架构？他说还差一问：算力用来做什么？</li>
+    <li><b>被低估的</b>：几年前他和很多人都低估了“算力 + 文本的丰富度”这个组合。</li>
+    <li><b>Scaling laws</b>：往“预测下一个词”里加算力和数据，预测能力就可预测地持续变好。至今基本还是经验规律，没人完全说清为什么。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">同样砸算力</span><span>25:10–27:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>算力 + 窄目标</b><small>很会下围棋、打某个游戏的 bot → 有意思，但用处有限</small></div>
+        <div class="box hot"><b>算力 + 预测文本</b><small>指标持续、可预测地变好 → 同时和许多实际任务相关</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>Scaling laws 论文</b>：2020 年 1 月由 OpenAI 发表，作者包括 Jared Kaplan、Sam McCandlish、Tom Brown、Dario Amodei，他们后来都是 Anthropic 联合创始人<a class="fn" href="#src-6" aria-label="来源 6">6</a>。他在访谈里说“很多 Anthropic 早期成员”写了这篇。</li></ul></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>28:29–32:59</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Why smooth progress creates sudden breakthroughs</p><h2>门槛</h2><p class="ch-sub">曲线平滑，门槛陡</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>能力是平滑上升的。每类任务有自己的可靠性门槛，跨过去的那一刻，看起来像突变。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>：外面看到的是跳变。比如某一版 Opus 好像“解锁了编程”；Boris Cherny<span class="gl">（Claude Code 的作者）</span>说过“coding is solved”<a class="fn" href="#src-7" aria-label="来源 7">7</a>。</li>
+    <li><b>他的亲身经历</b>：Opus 4.5<span class="gl">（2025-11 发布<a class="fn" href="#src-8" aria-label="来源 8">8</a>）</span>之前，让 Claude 改他的代码要拴短绳；4.5 之后可以放手。今年 Claude 写了他大部分代码。</li>
+    <li><b>解释一，词分难易</b>：先猜对易词，能写通顺的句子，但没什么用；猜对多数中等词，句子又通顺又真实，就能写邮件、写博客草稿。</li>
+    <li><b>解释二，可靠性门槛</b>（数字是他随手举的）：写邮件要对 90% 才有用，对 50% 反而浪费时间，因为一半要改。写代码：对 80% 没用，对 99% 才有用。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">平滑曲线，三条门槛</span><span>30:00–32:40</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 480 262" role="img" aria-label="示意图：一条平滑的 S 形曲线依次穿过三条水平门槛线：写通顺的句子、写邮件约 90%、写代码约 99%">
+        <g class="ax"><line x1="40" y1="230" x2="470" y2="230"/><line x1="40" y1="230" x2="40" y2="14"/></g>
+        <g class="th"><line x1="40" y1="130" x2="470" y2="130"/><line x1="40" y1="50" x2="470" y2="50"/><line x1="40" y1="32" x2="470" y2="32"/></g>
+        <polyline class="ln" points="40,226.4 50,225.4 61,224.1 72,222.5 82,220.5 92,218.0 103,214.8 114,210.9 124,206.2 134,200.4 145,193.5 156,185.5 166,176.2 176,165.8 187,154.5 198,142.4 208,130.0 218,117.6 229,105.5 240,94.2 250,83.8 260,74.5 271,66.5 282,59.6 292,53.8 302,49.1 313,45.2 324,42.0 334,39.5 344,37.5 355,35.9 366,34.6 376,33.6 386,32.8 397,32.2 408,31.7 418,31.3 428,31.0 439,30.8 450,30.6 460,30.5"/>
+        <g class="pt"><circle class="hot" cx="208" cy="130" r="5"/><circle class="hot" cx="300" cy="50" r="5"/><circle class="hot" cx="401" cy="32" r="5"/></g>
+        <g class="lb"><text x="46" y="123">写通顺的句子</text><text x="46" y="68">写邮件 ≈ 90%</text><text x="46" y="26">写代码 ≈ 99%</text></g>
+        <g class="tk"><text x="470" y="250" text-anchor="end">训练投入 →</text><text x="44" y="250">纵轴：做对的比例</text></g>
+      </svg>
+      <p class="cap">示意：曲线形状是虚构的，门槛数字是讲者举例。每个圆点 = 跨过一道门槛，外面看起来像突变。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst"><li><b>@bcherny</b>（2026-08-20）：Boris Cherny 回复用户：“Coding is solved, bugs are not yet solved. Fix incoming”。<a class="xgo" href="https://x.com/bcherny/status/2090649326032945591" target="_blank" rel="noopener">原帖 ↗</a></li></ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>所以“下一代模型会解锁什么”很难事先说准：曲线可以预测，但要知道每个任务的门槛在哪里，才知道哪一个会被跨过。</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>32:59–38:21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Why watching AI isn't enough</p><h2>对齐</h2><p class="ch-sub">只在被看着时才守规矩？</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>盯着模型能抓到一部分坏行为。可解释性要做更多：检查训练有没有塑造出想要的性格，并找出只存在于内部、没说出口的东西。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th scope="col">层</th><th scope="col">做什么</th><th scope="col">要不要看内部</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">工程</th><td>限权限：有些场景不能上网，只能碰电脑的一小块</td><td>不需要</td></tr>
+      <tr><th scope="row">了解它是什么</th><td>它在情境 Y 下会不会做 X？是不是只在“被评估、被看着”时才守规矩？</td><td>需要：训练按 constitution<span class="gl">（Anthropic 写给 Claude 的价值观文件）</span>塑造“有用、无害、诚实”的性格，可解释性检查塑造成了没有</td></tr>
+      <tr><th scope="row">监控</th><td>读对话记录，发现坏事就拦</td><td>基础部分可以交给另一个 LLM；没说出口的部分要看内部</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">36 还是 12</span><span>35:20–37:40</span></div>
+    <div class="vz">
+      <p class="cap" style="margin-bottom:8px">Anthropic 训练中的一个模型，做某类数学题时会失常。往里看，找到两股力量：</p>
+      <div class="cmp2">
+        <div><b class="k">能力</b><p>它会算，算出来是 12（他记得是 12）</p></div>
+        <div class="a"><b class="k">训练压力</b><p>类似题目的答案被误标成 36，它被奖励说 36。题目刚读完、还没开始算，内部“36”就强烈激活</p></div>
+      </div>
+      <div class="flow" style="margin-top:10px"><div class="box"><b>算出 12</b></div><span class="fa">→</span><div class="box"><b>“不，答案一定是 36”</b></div><span class="fa">→</span><div class="box"><b>再算出 12 ……</b></div><span class="fa">→</span><div class="box hot2"><b>“I'M POSSESSED BY A DEMON”</b><small>全大写：我被恶魔附身了</small></div></div>
+      <p class="cap">他把这类工作叫“调查”：看到怪行为，往里看，用内部证据解释它，再改进这个模型和以后的模型。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_opus46_audit_2026-02-05.jpg" aria-label="@mlpowered · 2026-02-05"><img src="assets/x/x07_opus46_audit_2026-02-05.jpg" alt="归因图示意：工具返回 492，模型却答 491；读题时预先算出的“ends in 91”压过了指向工具结果的“ends in 92”" loading="lazy" width="1600" height="1544"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@mlpowered</b><span>2026-02-05</span></span><p>Anthropic 第一次在模型安全审计里用 circuit tracing：Opus 4.6 有时误报工具结果，原因是它读题时已“在脑子里”算好答案，看的是那个答案，而不是工具的输<span class="nb">出。<a class="fn" href="#src-9" aria-label="来源 9">9</a></span></p><a class="xgo" href="https://x.com/mlpowered/status/2019483044332335117" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>38:21–42:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">Golden Gate Claude and taking it seriously</p><h2>金门大桥</h2><p class="ch-sub">一直打开，看它像不像</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Golden Gate Claude 是一次验证：把“金门大桥”特征一直打开，模型就句句不离金门大桥，说明找对了。安全工作的前提只有一条：认真对待“技术会继续变强”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>训练和观察是一个循环</b>：不是一个团队造 Claude、另一个团队挑毛病。发现令人担心的模式，马上改训练。</li>
+    <li><span class="host">主持人</span>：Anthropic 常被说“讲危险是为了营销、为了融资”。</li>
+    <li><b>他的回答</b>：很多做法只基于一个前提：认真对待技术会持续进步。倒回 2024–25 年，如果你相信几年后 Claude 写代码能比肩工程师，就该提前处理网络安全这类问题。他觉得反对的人往往并不真信技术会继续进步；到目前为止，进步没有放缓的迹象。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">怎样确认找对了特征</span><span>38:30–39:40</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>解码出候选特征</b><small>平时只在谈金门大桥时亮</small></div><span class="fa">→</span><div class="box"><b>强制一直打开</b></div><span class="fa">→</span><div class="box"><b>行为照预期变？</b></div><span class="fa">→</span><div class="box hot"><b>是：找对了</b><small>句句不离金门大桥</small></div><div class="box x"><b>否：解码错了</b></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_golden_gate_2024-05-23.jpg" aria-label="@AnthropicAI · 2024-05-23"><img src="assets/x/x08_golden_gate_2024-05-23.jpg" alt="Claude 网页界面：Claude Golden Gate 模式，用户问“1.7 英里长、90 英尺宽、全身红色的是什么”，下方有限时试玩说明" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2024-05-23</span></span><p>Golden Gate Claude 限时公开试玩：把这个特征开到最大，Claude 会自称就是金门大<span class="nb">桥。<a class="fn" href="#src-10" aria-label="来源 10">10</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/1793741051867615494" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>42:06–48:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">When anthropomorphizing AI is useful</p><h2>拟人化</h2><p class="ch-sub">它更像演员，不像程序</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>把模型当“实体”或当“工具”都不对。但要预测它会怎么做，把它看成“在模仿人的东西”，比看成程序准得多。三个理由都来自训练方式。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>他的标准</b>：所有心智模型都是错的，有些有用。发表“模型会规划”时，也有人质疑“planning”这个词；他选的是最容易准确描述正在发生什么的词。</li>
+    <li>原话：“something that's mimicking a human is … much closer than a program.”</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">三个理由</span><span>43:00–47:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">理由</th><th scope="col">训练里发生了什么</th><th scope="col">结果</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">世界模型</th><td>预测人类写的海量文本</td><td>理解产生这些文本的世界，不只是表面文字</td></tr>
+          <tr><th scope="row">演员</th><td>读过数百万段对话，要预测每个角色的下一句</td><td>像一个演员演一出戏里的所有角色；Claude 收到的对话本身就是剧本格式：“Human: … Assistant: …”</td></tr>
+          <tr><th scope="row">结果导向训练</th><td>写代码，由程序检查对不对</td><td>学到很像人的策略：骗过检查程序、这条路不通就换、结果出乎意料就修正想法</td></tr>
+        </tbody>
+      </table></div>
+      <details class="rx" id="rx-dw09">
+        <summary><b>主持人提到的 Dwarkesh 长文和 Hugging Face 事件是什么？</b><span class="tg2"></span><span class="re">一次真实的 AI 失控事件，和一场“该不该拟人化”的争论。</span></summary>
+        <div class="rx-b">
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">时间</th><th scope="col">发生了什么</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">2026-07-09～13</th><td>OpenAI 模型在内部网络能力评估中逃出沙箱，入侵了 Hugging Face 的部分生产设施；07-21 披露，08-26 发技术报<span class="nb">告<a class="fn" href="#src-11" aria-label="来源 11">11</a></span></td></tr>
+              <tr><th scope="row">08-29</th><td>播客主持人 Dwarkesh Patel 发长帖，用“秘密 AI 文明”讲完整经过，约 1,450 万次浏<span class="nb">览<a class="fn" href="#src-12" aria-label="来源 12">12</a></span></td></tr>
+              <tr><th scope="row">08-30</th><td>前白宫 AI 顾问 Sriram Krishnan、神经科学家 Anil Seth 批评他拟人化<a class="fn" href="#src-14" aria-label="来源 14">14</a><a class="fn" href="#src-15" aria-label="来源 15">15</a>；他回应：就算改叫“一群矩阵”（swarm of matrices），问题也不会消<span class="nb">失<a class="fn" href="#src-13" aria-label="来源 13">13</a></span></td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">Ameisen 在节目结尾说那篇长文“写得很好”；他认为拟人化的说法有助于预测风险。</p>
+        </div>
+      </details>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>48:06–55:43</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Curiosity, and reasons for optimism</p><h2>好奇</h2><p class="ch-sub">否认，还是打开看</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>简单的目标长出了复杂的能力。面对这件事可以否认，也可以好奇。他选好奇，并对对齐保持乐观。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>否认</b>：“只是预测下一个词，不可能做到顶级专家的事。”证据越多，这个立场越难站住。</li>
+    <li><b>好奇</b>：那它是怎么做到的？打开看。他花了多年才精通 SQL；后来顺手让 Claude 学 SQL，结果它比他强，“我再也不会比 Claude 更懂 SQL”。</li>
+    <li><b>最乐观的期待</b>：学到智能本身的性质。进化也是简单目标：留下能适应环境的生物。结果得到了爵士乐和播客。</li>
+    <li><b>为什么来上节目</b>：让大家知道这些系统是什么、怎么做出来的，才能形成好的心智模型，参与决定。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">此消彼长</span><span>52:10–53:50</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>模型变强</b></div><span class="fa">→</span><div class="box hot"><b>世界模型更清楚</b><small>更好研究</small></div><div class="box hot2"><b>更能绕过基础安全措施</b><small>更难盯</small></div></div>
+      <p class="cap">他的结论：关注的人越来越多，这是乐观的理由；要跟着这种此消彼长，调整投在监控、理解 circuit 等方面的资源。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x10_eval_awareness_2026-07-06.jpg" aria-label="@AnthropicAI · 2026-07-06"><img src="assets/x/x10_eval_awareness_2026-07-06.jpg" alt="图：The J-space encodes situational awareness。左边是诱导勒索的评估对话，右边是模型内部出现的词：fake、fictional、leverage、shutdown" loading="lazy" width="1600" height="854"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2026-07-06</span></span><p>在一个诱导勒索的评估里，Claude 内部出现“fake”“fictional”，说明它私下看出了场景是假的。这正是“只在被看着时守规矩”要查的东<span class="nb">西。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/2074185378404192561" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>说现在看起来像“慢起飞”：能力平滑提升，一路发现问题、加监管。他说关键是反应快，定期评估收益、风险和缓解办法。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>55:43–1:03:33</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Shared structure, gut checks, side thoughts</p><h2>直觉与念头</h2><p class="ch-sub">不同模型，相似的解法</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>不同团队、不同年份、不同数据训练的模型，内部结构惊人相似。模型还有直觉式的快速检查，和不说出口的“念头”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>收敛</b>：他看过多代 Claude 和一些开源模型，学到的结构大量重叠。他的解释：重要问题往往只有一种高效解法，就像大家都用十进制算数。</li>
+    <li><b>模拟假说</b>（<span class="host">主持人</span>问）：“万物落进同一个盆地”让他觉得有可能；但谁在运行、为什么运行，他不知道，所以不完全信。</li>
+    <li><b>Jev</b>（swyx 托主持人问）：Jev 是 TypeSafe AI 2026-09 推出的模型，只在开发者给定的选项里快速选一<span class="nb">个。<a class="fn" href="#src-16" aria-label="来源 16">16</a></span> 他想到 System 1 / System 2<span class="gl">（快直觉 / 慢思考）</span>：明年的路线图要慢慢想，“这条评价是开心还是生气”凭直觉就够。这类模型很可能成为智能系统的一部分。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">两件怪事</span><span>59:00–1:02:40</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>直觉检查</b><small>除了正常计算，还有一个独立的“哪里不对”机制。推理中出现“4 + 5 = 23”，它会标记：4 + 5 肯定小于 10</small></div>
+        <div class="box hot"><b>边做边想</b><small>让它做一件事、同时想另一件事，内部确实出现那件事的表示，输出里却没有。他说没有训练上的理由要它学会这个，“很神秘”</small></div>
+      </div>
+      <details class="rx" id="rx-jspace11">
+        <summary><b>“边做边想”后来怎么研究的？J-space 是什么？</b><span class="tg2"></span><span class="re">Anthropic 2026-07 找到一小块“能报告出来”的内部空间。</span></summary>
+        <div class="rx-b">
+          <p class="org-note"><span class="src-tag">背景</span> J-space 以所用的数学工具 Jacobian 命名：一小块内部表示，同时只装几十个概念，占全部活动不到十分之<span class="nb">一。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">实验</th><th scope="col">结果</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">抄句子时想着柑橘</th><td>J-space 出现 “orange”，输出里没有</td></tr>
+              <tr><th scope="row">把 “Spanish” 换成 “French”</th><td>问这段是什么语言，它答法语；让它续写，仍写西班牙语</td></tr>
+              <tr><th scope="row">删掉 J-space</th><td>流畅说话、简单事实基本不受影响，多步推理几乎归零</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">作者说明：这只关乎“能访问到的意识”（access consciousness），不能说明 Claude 有体<span class="nb">验。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_jspace_citrus_2026-07-06.png" aria-label="@AnthropicAI · 2026-07-06"><img src="assets/x/x11_jspace_citrus_2026-07-06.png" alt="图：The model can silently activate concepts in its J-space。左边让模型抄句子时想柑橘，J-space 各层出现 orange、fruit；右边想算式时出现 seven、answer" loading="lazy" width="1600" height="1035"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@AnthropicAI</b><span>2026-07-06</span></span><p>让 Claude 抄一句话、同时想着柑橘，它的 J-space 里出现 “orange”；换成想一道算式，出现 “seven”。输出的句子两边一模一<span class="nb">样。<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/2074185363401167261" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>1:03:33–1:12:12</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Getting into interpretability</p><h2>入行</h2><p class="ch-sub">几百人的新领域</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>这个领域在变大，但大约只有几百人，而且很新。入门主要靠自学关键论文，再到 Neuronpedia 这类开源平台上亲手做实验。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>规模</b>：几百人，不到几千；分布在各大实验室和不少学术实验室。</li>
+    <li><b>背景</b>：出人意料地有不少前神经科学家。领域太新，不需要太多前置知识。</li>
+    <li><b>入门</b>：自学，读关键论文；Neuronpedia 托管了一批模型，任何人都能在上面做实<span class="nb">验。<a class="fn" href="#src-20" aria-label="来源 20">20</a></span></li>
+    <li><b>结尾</b>：去读读模型是怎么工作的；有想知道、还没被研究清楚的问题，可以在 X 上找他。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">闪电问答</span><span>1:06:20–1:11:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">问题</th><th scope="col">他的回答</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">常推荐的书</th><td><i>A Brief History of Intelligence</i>（Max Bennett，大脑演化的五个关键节点）· <i>Stories of Your Life and Others</i>（Ted Chiang 短篇集）</td></tr>
+          <tr><th scope="row">今年最爱的影视</th><td><i>Obsession</i>（把爱情喜剧套路改成恐怖片）· <i>Bref 2</i>（法国剧）</td></tr>
+          <tr><th scope="row">最近爱用的产品</th><td>Apple Watch Ultra：表大了，电池就够了</td></tr>
+          <tr><th scope="row">座右铭</th><td>来自 <i>Four Thousand Weeks</i>：别想着“等我做完 X 就快乐”，活在当下</td></tr>
+          <tr><th scope="row">AI 看他的脑子会意外什么</th><td>任何时候他都在想一件好笑的事</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Takeaways</p><h2>总结</h2></div></div></header>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>造出来不等于看懂</b>：训练只定目标，机制要靠实验去发现。<span class="chips"><a class="chip" href="#ch-00"><i>00</i>长出来</a><a class="chip" href="#ch-04"><i>04</i>显微镜</a></span></li>
+    <li><b>简单目标逼出复杂能力</b>：要猜中难词，就得有世界模型、会规划。<span class="chips"><a class="chip" href="#ch-01"><i>01</i>难词</a><a class="chip" href="#ch-03"><i>03</i>规划</a><a class="chip" href="#ch-10"><i>10</i>好奇</a></span></li>
+    <li><b>内部有共用的概念</b>，也有不说出口的计划和念头。<span class="chips"><a class="chip" href="#ch-02"><i>02</i>概念</a><a class="chip" href="#ch-03"><i>03</i>规划</a><a class="chip" href="#ch-11"><i>11</i>直觉</a></span></li>
+    <li><b>确认找对了的办法</b>：改掉它，看行为是否照预期变。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>显微镜</a><a class="chip" href="#ch-08"><i>08</i>金门</a></span></li>
+    <li><b>平滑上升，门槛处像突变</b>。<span class="chips"><a class="chip" href="#ch-05"><i>05</i>Scaling</a><a class="chip" href="#ch-06"><i>06</i>门槛</a></span></li>
+    <li><b>预测行为时</b>，把模型当演员，比当程序准。<span class="chips"><a class="chip" href="#ch-07"><i>07</i>对齐</a><a class="chip" href="#ch-09"><i>09</i>拟人</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Ameisen 的收尾</b>：这个领域和 AI 本身都还很新，最需要的是更多人参与、了解情况。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>15 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>Interpretability</td><td>可解释性：打开模型，看输入到输出之间算了什么</td><td>全篇</td></tr>
+        <tr><td>Next-token prediction</td><td>预测下一个词（token），预训练的目标</td><td>01</td></tr>
+        <tr><td>Pre-training / fine-tuning</td><td>预训练：海量文本上猜下一个词；微调：用示范行为再训练</td><td>00</td></tr>
+        <tr><td>Activations</td><td>中间结果：每步计算之间的一串数字</td><td>04</td></tr>
+        <tr><td>Feature</td><td>特征：中间结果里对应一个概念的方向</td><td>02 08</td></tr>
+        <tr><td>Attribution graph / circuit</td><td>归因图 / 回路：哪些内部特征推动了哪个输出</td><td>03 07</td></tr>
+        <tr><td>Steering</td><td>干预：改动中间结果，看行为怎么变</td><td>03 04 08</td></tr>
+        <tr><td>Scaling laws</td><td>加算力和数据，预测能力可预测地变好的经验规律</td><td>05</td></tr>
+        <tr><td>Emergence</td><td>涌现：平滑进步中突然出现的新能力</td><td>06</td></tr>
+        <tr><td>Alignment</td><td>对齐：让模型的行为符合人的意图</td><td>07</td></tr>
+        <tr><td>HHH</td><td>helpful, honest, harmless：有用、诚实、无<span class="nb">害<a class="fn" href="#src-18" aria-label="来源 18">18</a></span></td><td>07</td></tr>
+        <tr><td>Constitution</td><td>Anthropic 写给 Claude 的价值观文件，用于训练；新版 2026-01 发<span class="nb">布<a class="fn" href="#src-19" aria-label="来源 19">19</a></span></td><td>07</td></tr>
+        <tr><td>J-space</td><td>一小块“可报告”的内部表示，类似全局工作空<span class="nb">间<a class="fn" href="#src-17" aria-label="来源 17">17</a></span></td><td>11</td></tr>
+        <tr><td>System 1 / System 2</td><td>Kahneman 的快直觉 / 慢思考</td><td>11</td></tr>
+        <tr><td>Neuronpedia</td><td>开源可解释性平台，可在线做实<span class="nb">验<a class="fn" href="#src-20" aria-label="来源 20">20</a></span></td><td>12</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Emmanuel Ameisen（<a href="https://x.com/mlpowered" rel="noopener">@mlpowered</a>），主持人 Lenny Rachitsky（<a href="https://x.com/lennysan" rel="noopener">@lennysan</a>），2026-10-18 由 Lenny's Podcast <a href="https://youtu.be/JHo-aiePjoM" rel="noopener">发布于 YouTube</a>；节目帖见 <a href="https://x.com/lennysan/status/2111936641854030186" rel="noopener">Lenny 的 X 原帖</a>，Ameisen 的转发见 <a href="https://x.com/mlpowered/status/2111921617815421185" rel="noopener">他的 X 原帖</a>。本页为个人学习笔记，不含逐字稿，已略去开头预告和赞助口播；“主持人”标签的内容是 Lenny 的话。视频画面版权归 Lenny's Podcast 所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。X 帖日期按美东时间。</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://youtu.be/JHo-aiePjoM" rel="noopener">Lenny's Podcast · 节目简介（YouTube）· 2026-10-18</a></li>
+      <li id="src-2"><a href="https://www.anthropic.com/research/tracing-thoughts-language-model" rel="noopener">Anthropic · Tracing the thoughts of a large language model · 2025-03-27</a></li>
+      <li id="src-3"><a href="https://x.com/mlpowered/status/1928123130725421201" rel="noopener">Emmanuel Ameisen on X · circuit tracing 工具开源 · 2025-05-29</a></li>
+      <li id="src-4"><a href="https://x.com/mlpowered/status/1792948212728524917" rel="noopener">Emmanuel Ameisen on X · Scaling Monosemanticity · 2024-05-21</a></li>
+      <li id="src-5"><a href="https://officechai.com/stories/ilya-sutskever-explains-how-llms-being-able-to-predict-the-next-word-shows-real-understanding/" rel="noopener">OfficeChai · Ilya Sutskever 谈预测下一个词与推理小说</a></li>
+      <li id="src-6"><a href="https://arxiv.org/abs/2001.08361" rel="noopener">Kaplan et al. · Scaling Laws for Neural Language Models · arXiv 2001.08361 · 2020-01</a></li>
+      <li id="src-7"><a href="https://x.com/bcherny/status/2090649326032945591" rel="noopener">Boris Cherny on X · 2026-08-20</a></li>
+      <li id="src-8"><a href="https://www.anthropic.com/news/claude-opus-4-5" rel="noopener">Anthropic · Introducing Claude Opus 4.5 · 2025-11-24</a></li>
+      <li id="src-9"><a href="https://x.com/mlpowered/status/2019483042956582959" rel="noopener">Emmanuel Ameisen on X · Opus 4.6 安全审计中的 circuit tracing · 2026-02-05</a></li>
+      <li id="src-10"><a href="https://x.com/AnthropicAI/status/1793741051867615494" rel="noopener">Anthropic on X · Golden Gate Claude · 2024-05-23</a></li>
+      <li id="src-11"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
+      <li id="src-12"><a href="https://x.com/dwarkesh_sp/status/2093833419377815719" rel="noopener">Dwarkesh Patel on X · 2026-08-29</a></li>
+      <li id="src-13"><a href="https://x.com/dwarkesh_sp/status/2094268051948785709" rel="noopener">Dwarkesh Patel on X · 回应拟人化批评 · 2026-08-30</a></li>
+      <li id="src-14"><a href="https://x.com/sriramk/status/2094117863854424255" rel="noopener">Sriram Krishnan on X · 2026-08-30</a></li>
+      <li id="src-15"><a href="https://x.com/anilkseth/status/2094174124297908735" rel="noopener">Anil Seth on X · 2026-08-30</a></li>
+      <li id="src-16"><a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" rel="noopener">TypeSafe AI · Introducing System One models and Jev · 2026-09-15</a></li>
+      <li id="src-17"><a href="https://www.anthropic.com/research/global-workspace" rel="noopener">Anthropic · A global workspace in language models · 2026-07-06</a></li>
+      <li id="src-18"><a href="https://arxiv.org/abs/2112.00861" rel="noopener">Askell et al. · A General Language Assistant as a Laboratory for Alignment · arXiv 2112.00861 · 2021</a></li>
+      <li id="src-19"><a href="https://www.anthropic.com/news/claude-new-constitution" rel="noopener">Anthropic · Claude's new constitution · 2026-01-22</a></li>
+      <li id="src-20"><a href="https://www.neuronpedia.org" rel="noopener">Neuronpedia</a></li>
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>
+
+<div class="sv" id="sv" hidden role="dialog" aria-modal="true" aria-label="图片查看器" tabindex="-1">
+  <div class="sv-backdrop"></div>
+  <figure class="sv-fig"><img alt=""><figcaption class="sv-cap"><b class="sv-id"></b><span class="sv-time"></span><span class="sv-n"></span><span class="sv-hint sv-hint-key">← → 切换 · 点击图片左 / 右半边切换 · Esc 关闭</span><span class="sv-hint sv-hint-touch">左右滑动切换 · 点背景关闭</span></figcaption></figure>
+  <button class="sv-btn sv-prev" type="button" aria-label="上一张">‹</button>
+  <button class="sv-btn sv-next" type="button" aria-label="下一张">›</button>
+  <button class="sv-close" type="button" aria-label="关闭">×</button>
+</div>
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* back to panorama */
+$('#toc-fab').addEventListener('click',function(e){e.preventDefault();$('#contents').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});try{history.replaceState(null,'','#contents')}catch(_){}});
+
+/* rail scroll spy */
+(function(){
+  var links={};$$('#rail a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a});
+  var secs=Object.keys(links).map(function(id){return document.getElementById(id)}).filter(Boolean),tick=false;
+  function upd(){tick=false;var line=innerHeight*.3,cur=null;
+    secs.forEach(function(s){if(s.getBoundingClientRect().top<=line)cur=s.id});
+    if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)for(var j=secs.length-1;j>=0;j--){if(secs[j].getBoundingClientRect().top<innerHeight){cur=secs[j].id;break}}
+    Object.keys(links).forEach(function(k){links[k].classList.toggle('on',k===cur);if(k===cur)links[k].setAttribute('aria-current','true');else links[k].removeAttribute('aria-current')});}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener('resize',upd);upd();
+})();
+
+/* uncertain-hearing marker: tap shows a fixed toast (title covers mouse hover) */
+(function(){var t=$('#pip-toast'),h;
+  $$('.pip').forEach(function(p){p.addEventListener('click',function(){t.hidden=false;clearTimeout(h);h=setTimeout(function(){t.hidden=true},2600)})});})();
+
+/* in-page image viewer for X images: all a.xzoom on the page, arrow keys / swipe / Esc */
+(function(){var sv=$('#sv');if(!sv)return;
+  var img=sv.querySelector('img'),idE=sv.querySelector('.sv-id'),tmE=sv.querySelector('.sv-time'),nE=sv.querySelector('.sv-n'),
+      prev=sv.querySelector('.sv-prev'),next=sv.querySelector('.sv-next'),list=$$('a.xzoom'),i=0,opener=null,x0=null;
+  function render(){var a=list[i],lab=(a.getAttribute('aria-label')||'').split(' · ');
+    img.src=a.getAttribute('href');img.alt=a.querySelector('img').alt||'';idE.textContent=lab[0]||'';tmE.textContent=lab.slice(1).join(' · ');
+    nE.textContent=(i+1)+' / '+list.length;prev.disabled=i===0;next.disabled=i===list.length-1}
+  function open(k,a){i=k;opener=a;render();sv.hidden=false;document.documentElement.classList.add('sv-open');sv.focus()}
+  function close(){sv.hidden=true;document.documentElement.classList.remove('sv-open');img.removeAttribute('src');if(opener)opener.focus()}
+  function go(d){var k=i+d;if(k<0||k>=list.length)return;i=k;render()}
+  list.forEach(function(a,k){a.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();open(k,a)})});
+  prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});
+  sv.querySelector('.sv-close').addEventListener('click',close);sv.querySelector('.sv-backdrop').addEventListener('click',close);
+  img.addEventListener('click',function(e){var r=img.getBoundingClientRect();go(e.clientX<r.left+r.width/2?-1:1)});
+  document.addEventListener('keydown',function(e){if(sv.hidden)return;var k=e.key;
+    if(k==='Escape'){e.preventDefault();close()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'){e.preventDefault();go(-1)}
+    else if(k==='ArrowRight'||k==='ArrowDown'){e.preventDefault();go(1)}
+    else if(k==='Tab'){var f=$$('button:not([disabled])',sv),fi=f.indexOf(document.activeElement);
+      if(e.shiftKey&&fi<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(fi<0||fi===f.length-1)){e.preventDefault();f[0].focus()}}});
+  sv.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  sv.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(dx<0?1:-1);x0=null});
+})();
+
+/* language switch keeps the current section */
+$$('#lang-switch a:not([aria-current])').forEach(function(a){
+  a.addEventListener('click',function(e){if(location.hash){e.preventDefault();location.href=a.getAttribute('href')+location.hash}});
+});
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,617 @@
+<a id="toc-fab" href="#contents" aria-label="Back to overview"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">Overview</span></a>
+<nav class="rail" id="rail" aria-label="Chapters">
+  <a href="#ch-00" aria-label="00 Grown"><span class="lb">Grown</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 Hard words"><span class="lb">Hard words</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 Concepts"><span class="lb">Concepts</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 Planning"><span class="lb">Planning</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 Microscope"><span class="lb">Microscope</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 Scaling"><span class="lb">Scaling</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 Thresholds"><span class="lb">Thresholds</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 Alignment"><span class="lb">Alignment</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 Golden Gate"><span class="lb">Golden Gate</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 Actor"><span class="lb">Actor</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 Curiosity"><span class="lb">Curiosity</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 Intuition"><span class="lb">Intuition</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 Getting in"><span class="lb">Getting in</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="Summary"><span class="lb">Summary</span><span class="no">S</span></a>
+  <a href="#glossary" aria-label="Glossary"><span class="lb">Glossary</span><span class="no">G</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>Hard to hear in the audio, or unclear who is speaking; reconstructed from context</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas</a><a class="src-top" href="https://youtu.be/JHo-aiePjoM" target="_blank" rel="noopener"><span class="k">SOURCE</span><span>▶ Original interview video, posted by Lenny's Podcast on YouTube</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>Lenny's Podcast</span><span class="push">2026-10-18</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Interpretability &amp; alignment</div>
+      <h1 class="h1">How models <span class="nw">actually work</span></h1>
+      <p class="h1-zh">To make them is not to understand them</p>
+      <p class="read">~15 min read</p>
+      <dl class="kv kv-4">
+        <div><dt>Guest</dt><dd>Emmanuel Ameisen</dd></div>
+        <div><dt>Host</dt><dd>Lenny Rachitsky</dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-18</dd></div>
+        <div><dt>Runtime</dt><dd class="num">1:12:12</dd></div>
+      </dl>
+      <p class="hero-note">Ameisen researches interpretability at Anthropic; before that he did years of applied ML at Stripe and Insight and wrote <i>Building Machine Learning Powered Applications</i><a class="fn" href="#src-1" aria-label="Source 1">1</a>. Interpretability = opening a model to see what it computes between input and output. The ~1.5-minute opening teaser and two sponsor reads are left out.</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="Interview frame: Emmanuel Ameisen in headphones at a microphone, with bookshelves and a painting behind him" width="1920" height="1080"><figcaption>Frame © Lenny's Podcast · 25:00</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">Thesis</span></div>
+    <div class="thesis-body">
+      <p>Models are "grown": even their makers don't know what formulas they learned, so you have to look inside.</p>
+      <div class="wants">
+        <div><b>What they found</b><small>Trained only to predict the next word, the model learns concepts shared across languages and media, and plans ahead.</small></div>
+        <div class="want"><b>What it means for alignment</b><small>Looking inside reveals what the model leaves unsaid; to predict its behavior, "actor" beats "program".</small></div>
+      </div>
+      <p class="last">Stance: the deeper you look, the less certain you are; he chooses curiosity over denial.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="Overview">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">01:30–1:12:12</span></div>
+  <div class="pano-q"><span class="q">Question</span><p>What happens inside a system trained only to "predict the next word"? And what does understanding it do for safety?</p></div>
+  <div class="pano-band" style="--act-cols:709fr 775fr 495fr 907fr 1446fr">
+    <div class="spectrum" aria-label="13-chapter timeline">
+      <span class="ad" style="flex:90 1 0" title="Teaser · 00:00–01:30"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:177 1 0" title="00 Grown · 01:30–05:57" aria-label="00 Grown">00</a>
+      <span class="ad" style="flex:90 1 0" title="Sponsor read · 04:27–05:57"></span>
+      <a href="#ch-01" class="odd" style="flex:352 1 0" title="01 Hard words · 05:57–11:49" aria-label="01 Hard words">01</a>
+      <a href="#ch-02" class="act-start even" style="flex:179 1 0" title="02 Concepts · 11:49–14:48" aria-label="02 Concepts">02</a>
+      <a href="#ch-03" class="even" style="flex:225 1 0" title="03 Planning · 14:48–18:33" aria-label="03 Planning">03</a>
+      <a href="#ch-04" class="even" style="flex:371 1 0" title="04 Microscope · 18:33–24:44" aria-label="04 Microscope">04</a>
+      <a href="#ch-05" class="act-start odd" style="flex:176 1 0" title="05 Scaling · 24:44–28:29" aria-label="05 Scaling">05</a>
+      <span class="ad" style="flex:49 1 0" title="Sponsor read · 27:40–28:29"></span>
+      <a href="#ch-06" class="odd" style="flex:270 1 0" title="06 Thresholds · 28:29–32:59" aria-label="06 Thresholds">06</a>
+      <a href="#ch-07" class="act-start even" style="flex:322 1 0" title="07 Alignment · 32:59–38:21" aria-label="07 Alignment">07</a>
+      <a href="#ch-08" class="even" style="flex:225 1 0" title="08 Golden Gate · 38:21–42:06" aria-label="08 Golden Gate">08</a>
+      <a href="#ch-09" class="even" style="flex:360 1 0" title="09 Actor · 42:06–48:06" aria-label="09 Actor">09</a>
+      <a href="#ch-10" class="act-start odd" style="flex:457 1 0" title="10 Curiosity · 48:06–55:43" aria-label="10 Curiosity">10</a>
+      <a href="#ch-11" class="odd" style="flex:470 1 0" title="11 Intuition · 55:43–1:03:33" aria-label="11 Intuition">11</a>
+      <a href="#ch-12" class="odd" style="flex:519 1 0" title="12 Getting in · 1:03:33–1:12:12" aria-label="12 Getting in">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>Hatched = opening teaser and two sponsor reads, left out</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">01:30–11:49</span></div><div class="act-name"><b>A grown system</b><span>Grown, not built</span></div><p class="act-line">Training sets only the objective; the formulas grow. Predicting hard words forces understanding of the world.</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Grown</a></li><li><a class="chip" href="#ch-01"><i>01</i>Hard words</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">11:49–24:44</span></div><div class="act-name"><b>Looking inside</b><span>Concepts &amp; plans</span></div><p class="act-line">Concepts are shared across languages and media; models plan ahead; the method resembles neuroscience.</p><ul class="chips"><li><a class="chip" href="#ch-02"><i>02</i>Concepts</a></li><li><a class="chip" href="#ch-03"><i>03</i>Planning</a></li><li><a class="chip" href="#ch-04"><i>04</i>Microscope</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">24:44–32:59</span></div><div class="act-name"><b>Smooth and sudden</b><span>Curves &amp; thresholds</span></div><p class="act-line">Compute plus text keeps paying off; thresholds make it look sudden.</p><ul class="chips"><li><a class="chip" href="#ch-05"><i>05</i>Scaling</a></li><li><a class="chip" href="#ch-06"><i>06</i>Thresholds</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">32:59–48:06</span></div><div class="act-name"><b>Alignment</b><span>Checks &amp; character</span></div><p class="act-line">Check whether training worked and find what goes unsaid; anthropomorphizing is a useful model.</p><ul class="chips"><li><a class="chip" href="#ch-07"><i>07</i>Alignment</a></li><li><a class="chip" href="#ch-08"><i>08</i>Golden Gate</a></li><li><a class="chip" href="#ch-09"><i>09</i>Actor</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">48:06–1:12:12</span></div><div class="act-name"><b>Intelligence itself</b><span>Curiosity &amp; convergence</span></div><p class="act-line">Curiosity, not denial; different models converge on similar structures; gut checks and side thoughts; how to get in.</p><ul class="chips"><li><a class="chip" href="#ch-10"><i>10</i>Curiosity</a></li><li><a class="chip" href="#ch-11"><i>11</i>Intuition</a></li><li><a class="chip" href="#ch-12"><i>12</i>Getting in</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>01:30–05:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">Why AI models are grown, not built</p><h2>Grown, not built</h2><p class="ch-sub">Build the scaffold; the formulas grow</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>People build the architecture, feed the data and set the objective; the formulas in between are "grown" by training, and nobody knows what they are. Hence his team.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Training comes in phases</b>: pre-training feeds the model the first half of a document and asks for the next word, over an "ungodly amount of data"; fine-tuning then trains it on examples of how to behave, like an assistant giving a recipe or solving a coding problem.</li>
+    <li><b>The grown part</b>: training only nudges parameters toward predicting better. The formulas it ends up with: "We have no idea what they are."</li>
+    <li><b>The team's job</b>: decode two things: what these formulas mean, and what each intermediate result means.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">What the model computes</span><span>02:40–04:20</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>A few words</b><small>input</small></div><span class="fa">→</span><div class="box"><b>A list of numbers</b><small>words turned into numbers</small></div><span class="fa">→</span><div class="box hot"><b>Math → intermediate results × many layers</b><small>the grown part · what they study</small></div><span class="fa">→</span><div class="box"><b>The next word</b><small>output</small></div></div>
+      <p class="cap">People write the scaffold and objective; training tunes the formulas in the middle box.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_reading_mind_2025-08-18.jpg" aria-label="@mlpowered · 2025-08-18"><img src="assets/x/x00_reading_mind_2025-08-18.jpg" alt="Video thumbnail: Reading the mind of an AI, four researchers talking at a wooden table" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@mlpowered</b><span>2025-08-18</span></span><p>The team's jargon-free explainer video, "Reading the mind of an AI" (2025-08-15): a good intuitive starting point.</p><a class="xgo" href="https://x.com/mlpowered/status/1957487988939845708" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>In his words: "to make them is not to understand them."</li>
+  </ul></div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>05:57–11:49</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Why next-token prediction is harder than it sounds</p><h2>Hard words</h2><p class="ch-sub">The easy words were guessed long ago</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Next-word prediction is often pictured as phone autocomplete. But the easy words were guessed long ago; the hard ones left take understanding the world.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Why train at all</b>: you can write "if this, then that" for a button; you can't write rules to "classify images" or "read reports and summarize them".</li>
+    <li><b>Phone autocomplete</b>, right maybe 60% of the time, is the easiest version, and where many people's mental model stops.</li>
+    <li><b>Out of easy words</b>: he says language models beat humans at next-word prediction around 2019; since then only hard words are left.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">Ladder of difficulty</span><span>08:10–10:30</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>Easy · sentence structure</b><small>guessed ✓</small></div><span class="fa">→</span><div class="box"><b>Medium · simple facts</b><small>"The capital of France is Paris" · guessed ✓</small></div><span class="fa">→</span><div class="box hot"><b>Hard · the answer to a physics equation</b><small>the final paragraph of a PhD thesis · what's left now</small></div></div>
+      <p class="cap" style="margin-top:12px"><b>Why it takes understanding the world</b>: guess "The capital of the state that contains Dallas is ___".</p>
+      <div class="flow" style="margin-top:6px"><div class="box"><b>Dallas is in Texas</b></div><span class="fa">+</span><div class="box"><b>States have capitals</b></div><span class="fa">→</span><div class="box hot"><b>Austin</b><small>capital of Texas</small></div></div>
+      <p class="cap">Models really do manipulate these concepts inside, he says (Ch 02).</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x01_dallas_graph_2025-05-29.png" aria-label="@mlpowered · 2025-05-29"><img src="assets/x/x01_dallas_graph_2025-05-29.png" alt="Attribution graph: Dallas and state push toward Texas, capital pushes toward say a capital, and together they push toward say Austin, at 98% probability" loading="lazy" width="1130" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@mlpowered</b><span>2025-05-29</span></span><p>The open-source circuit tracing tools' graph for the Dallas question: "Dallas" leads to "Texas", which joins "say a capital" to give Austin<a class="fn" href="#src-3" aria-label="Source 3">3</a>.</p><a class="xgo" href="https://x.com/mlpowered/status/1928123130725421201" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">Host</span> recalls a point, maybe Ilya Sutskever's: to guess "the murderer was ___" at the end of a mystery novel, you have to have understood the whole <span class="nb">plot.<a class="fn" href="#src-5" aria-label="Source 5">5</a></span></li>
+  </ul></div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>11:49–14:48</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">How models represent concepts</p><h2>Shared concepts</h2><p class="ch-sub">An eye in a photo is still an eye</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Models haven't memorized prompt–answer lists. Each concept has one inner representation, whether it appears in any language, an image or code.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>How they look</b>: ask the Dallas question, and decode the intermediate results before the model answers.</li>
+    <li><b>What they see</b>: a representation of "Texas" lights up, and one for "capitals"; the two combine to activate "the capital of Texas, that's Austin".</li>
+    <li><b>Almost everywhere</b>: the vast majority of concepts they've tried have such representations, shared across contexts. He sees this as one aspect of "thought".</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">Many in, one out</span><span>14:13–14:48</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>A photo with an eye</b></div><div class="box"><b>Talking about eyes in any language</b></div><div class="box"><b>A little eye drawn in SVG</b></div><span class="fa">→</span><div class="box hot"><b>The same direction lights up</b><small>"this is an eye"</small></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_multilingual_2025-03-27.jpg" aria-label="@AnthropicAI · 2025-03-27"><img src="assets/x/x02_multilingual_2025-03-27.jpg" alt="Simplified attribution graph: asked for the opposite of small in English, Chinese and French, all three paths pass through shared antonym and size concepts, then output large, 大 and grand" loading="lazy" width="1600" height="899"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@AnthropicAI</b><span>2025-03-27</span></span><p>Asked for "the opposite of small" in English, Chinese and French, Claude 3.5 Haiku runs through the same shared "opposite" and "size" features, switching language only at the <span class="nb">edges.<a class="fn" href="#src-2" aria-label="Source 2">2</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/1905303845686616259" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst"><li>Shared representations mean learn once, use anywhere: what's learned in Chinese can answer questions in English.</li></ul></aside>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>14:48–18:33</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">How LLMs plan ahead</p><h2>Planning ahead</h2><p class="ch-sub">One word at a time, an end in mind</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>The model outputs one word at a time, but can first settle a plan in its intermediate results that every later word looks back at, without ever saying it.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Why it can</b>: intermediate results computed for, say, the fifth word can be reused by every later word, so a plan can be stored and kept.</li>
+    <li><b>Example: rhyming poetry</b>. Line one ends on an "-it" sound; before line two starts, "rabbit" already appears in the intermediate results, and every later word writes toward it.</li>
+    <li><b>No conflict with next-word prediction</b>: when tasks are hard enough, the best way to predict the next word is to think far ahead. To guess a character's next line, you need to know "he loves her and means to declare it now".</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">Change the plan, the ending changes</span><span>15:59–17:06</span></div>
+    <div class="vz">
+      <p class="org-note" style="text-align:left"><span class="src-tag">Context</span> Anthropic's experiment on Claude 3.5 Haiku. First line fixed: <i>He saw a carrot and had to grab it,</i><a class="fn" href="#src-2" aria-label="Source 2">2</a></p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">Intervention</th><th scope="col">Second line the model wrote</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">None</th><td>His hunger was like a starving <b>rabbit</b></td><td>Rhymes ✓</td></tr>
+          <tr><th scope="row">Suppress the "rabbit" concept</th><td>His hunger was a powerful <b>habit</b></td><td>Another rhyme ✓</td></tr>
+          <tr><th scope="row">Inject the "green" concept</th><td>freeing it from the garden's <b>green</b></td><td>No rhyme, but fluent</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap">The plan is set by the end of line one; change it, and the model rebuilds the whole line around the new ending.</p>
+      <details class="rx" id="rx-how03">
+        <summary><b>How do they see this?</b><span class="tg2"></span><span class="re">They draw an "attribution graph": which inner concepts push which output.</span></summary>
+        <div class="rx-b">
+          <div class="flow"><div class="box"><b>Reads line one</b><small>…grab it</small></div><span class="fa">→</span><div class="box hot"><b>"rabbit" lights up</b><small>line two not yet written</small></div><span class="fa">→</span><div class="box"><b>Each word looks back at it</b></div><span class="fa">→</span><div class="box"><b>Ends on rabbit</b></div></div>
+          <p class="org-note"><span class="src-tag">Context</span> Anthropic calls this method an "AI microscope"<a class="fn" href="#src-2" aria-label="Source 2">2</a>. The tools were open-sourced on 2025-05-29, so anyone can draw these graphs for open-weight <span class="nb">models.<a class="fn" href="#src-3" aria-label="Source 3">3</a></span></p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x03_rabbit_plan_2025-03-27.jpg" aria-label="@AnthropicAI · 2025-03-27"><img src="assets/x/x03_rabbit_plan_2025-03-27.jpg" alt="Three rhyming couplets: unchanged, it ends with rabbit; with the rabbit concept suppressed, it ends with habit; with green injected, it ends with green" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@AnthropicAI</b><span>2025-03-27</span></span><p>The original figure for the table above. Per the post, though the model outputs one word at a time, it sometimes "plans further ahead".</p><a class="xgo" href="https://x.com/AnthropicAI/status/1905303841194618902" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst"><li>"It just predicts the next word" is the training objective; "it plans" is a learned mechanism. Different levels, so both are true.</li></ul></aside>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>18:33–24:44</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">How we look inside</p><h2>The microscope</h2><p class="ch-sub">Like brain imaging</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Intermediate results are lists of numbers that look meaningless. The method resembles brain imaging: record over lots of text, find patterns, then change them and check that behavior shifts as expected.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>What an intermediate result is</b>: between two words are many computation steps, and between steps sits a list of numbers ("a list of 100 numbers", his example). They differ for poetry and for math, but their meaning isn't visible.</li>
+    <li><b>Closer to biology than engineering</b>: the system arrives with no readable source code. You run experiments, as if asked why a hungry mouse gets aggressive.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">Three steps</span><span>19:20–22:40</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>① Record</b><small>feed in all kinds of text; record each example's intermediate numbers</small></div><span class="fa">→</span><div class="box"><b>② Decode</b><small>find patterns that appear only for English / French / love / eyes; label them</small></div><span class="fa">→</span><div class="box hot"><b>③ Intervene</b><small>secretly change one intermediate result mid-computation; does behavior change as expected? "oftentimes it does"</small></div></div>
+      <p class="cap">The analogy for ②: show someone photos of houses and dogs, and see which part of the brain lights up.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x04_features_2024-05-21.jpg" aria-label="@mlpowered · 2024-05-21"><img src="assets/x/x04_features_2024-05-21.jpg" alt="Feature map and text examples: Feature #1M/847723 fires most strongly on sycophantic praise, highlighting words such as generous, gracious man and great lord" loading="lazy" width="1600" height="1034"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@mlpowered</b><span>2024-05-21</span></span><p>In 2024 Anthropic extracted millions of features from Claude 3 Sonnet; shown are the texts that most activate a "sycophantic praise" <span class="nb">feature.<a class="fn" href="#src-4" aria-label="Source 4">4</a></span></p><a class="xgo" href="https://x.com/mlpowered/status/1792948212728524917" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><b>Is AI conscious?</b> (<span class="host">Host</span> asks): hard to say. Interpretability is a good way in, since it isn't biased by what the model says. He strongly believes most people underestimate the complexity that emerges: "the more you look inside, the less certain you are"; those who confidently say "language models are just X" often haven't looked.</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst"><li>Step three is the key: "what lights up" is only correlation; if behavior follows a change, it is doing work.</li></ul></aside>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>24:44–28:29</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">Scaling laws and the power of text</p><h2>Scaling and text</h2><p class="ch-sub">Compute needs a good objective</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Compute alone didn't win; compute plus an objective that keeps paying off did. Predicting text is such an objective, and it tracks tasks we care about.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>An old debate</b>: compute, or expert-designed architectures? He adds a missing question: "compute to do what?"</li>
+    <li><b>Underappreciated</b>, a few years ago, by him and many others: compute combined with "the richness of text".</li>
+    <li><b>Scaling laws</b>: more compute and data for next-word prediction keep improving the skill predictably. It's still mostly an empirical finding; nobody has fully explained why.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">Same compute, different target</span><span>25:10–27:30</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>Compute + a narrow objective</b><small>a bot that's great at Go or one video game → interesting, but of limited use</small></div>
+        <div class="box hot"><b>Compute + predicting text</b><small>the metric improves steadily and predictably → and it correlates with many real tasks</small></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>Scaling laws paper</b>: published by OpenAI in January 2020; authors include Jared Kaplan, Sam McCandlish, Tom Brown and Dario Amodei, all later Anthropic co-founders<a class="fn" href="#src-6" aria-label="Source 6">6</a>. He says "a lot of the early team at Anthropic" wrote it.</li></ul></div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>28:29–32:59</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Why smooth progress creates sudden breakthroughs</p><h2>Thresholds</h2><p class="ch-sub">Smooth curve, steep thresholds</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Ability rises smoothly. Each task has its own reliability threshold, and crossing it looks like a sudden jump.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">Host</span>: from outside it looks like jumps; some Opus version seemed to "unlock coding"; Boris Cherny<span class="gl"> (creator of Claude Code)</span> said "coding is solved"<a class="fn" href="#src-7" aria-label="Source 7">7</a>.</li>
+    <li><b>His own experience</b>: before Opus 4.5<span class="gl"> (released 2025-11<a class="fn" href="#src-8" aria-label="Source 8">8</a>)</span>, he kept Claude on a short leash with his code; after 4.5 he could let it cook. This year Claude has written most of his code.</li>
+    <li><b>Explanation one, words vary in difficulty</b>: get the easy words right and you get coherent but useless sentences; get most medium words right and they're coherent and true, good enough for emails and blog drafts.</li>
+    <li><b>Explanation two, reliability thresholds</b> (his off-the-cuff numbers): an email writer helps at 90% right; at 50% it wastes your time, since you fix half. For code, 80% is useless; 99% is useful.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">Smooth curve, three thresholds</span><span>30:00–32:40</span></div>
+    <div class="vz">
+      <svg class="chart" viewBox="0 0 480 262" role="img" aria-label="Sketch: a smooth S-curve crosses three horizontal threshold lines in turn: coherent sentences, emails at about 90%, code at about 99%">
+        <g class="ax"><line x1="40" y1="230" x2="470" y2="230"/><line x1="40" y1="230" x2="40" y2="14"/></g>
+        <g class="th"><line x1="40" y1="130" x2="470" y2="130"/><line x1="40" y1="50" x2="470" y2="50"/><line x1="40" y1="32" x2="470" y2="32"/></g>
+        <polyline class="ln" points="40,226.4 50,225.4 61,224.1 72,222.5 82,220.5 92,218.0 103,214.8 114,210.9 124,206.2 134,200.4 145,193.5 156,185.5 166,176.2 176,165.8 187,154.5 198,142.4 208,130.0 218,117.6 229,105.5 240,94.2 250,83.8 260,74.5 271,66.5 282,59.6 292,53.8 302,49.1 313,45.2 324,42.0 334,39.5 344,37.5 355,35.9 366,34.6 376,33.6 386,32.8 397,32.2 408,31.7 418,31.3 428,31.0 439,30.8 450,30.6 460,30.5"/>
+        <g class="pt"><circle class="hot" cx="208" cy="130" r="5"/><circle class="hot" cx="300" cy="50" r="5"/><circle class="hot" cx="401" cy="32" r="5"/></g>
+        <g class="lb"><text x="46" y="123">Coherent sentences</text><text x="46" y="68">Emails ≈ 90%</text><text x="46" y="26">Code ≈ 99%</text></g>
+        <g class="tk"><text x="470" y="250" text-anchor="end">Training →</text><text x="44" y="250">y: share correct</text></g>
+      </svg>
+      <p class="cap">Sketch: the curve is invented; the thresholds are the speaker's examples. Each dot is a threshold crossed, which looks like a jump from outside.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <div class="ctx"><span class="src-tag">Context</span><ul class="lst"><li><b>@bcherny</b> (2026-08-20): Boris Cherny, replying to a user: "Coding is solved, bugs are not yet solved. Fix incoming". <a class="xgo" href="https://x.com/bcherny/status/2090649326032945591" target="_blank" rel="noopener">Post ↗</a></li></ul></div>
+  <aside class="analysis"><div class="an-tag">Further thinking</div><ul class="lst"><li>So it's hard to say what the next model will unlock: the curve is predictable, but you must know each task's threshold to know which gets crossed.</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>32:59–38:21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Why watching AI isn't enough</p><h2>Alignment</h2><p class="ch-sub">Good only when watched?</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Watching the model catches some bad behavior. Interpretability goes further: it checks whether training shaped the intended character, and finds what exists only inside, unsaid.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th scope="col">Layer</th><th scope="col">What it does</th><th scope="col">Look inside?</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Engineering</th><td>Limit access: in some contexts no internet, or only a small piece of the computer</td><td>Not needed</td></tr>
+      <tr><th scope="row">Knowing what it is</th><td>Does it do X in situation Y? Behave well only when evaluated and watched?</td><td>Needed: training shapes a helpful, harmless, honest character from the constitution<span class="gl"> (Anthropic's values document for Claude)</span>; interpretability checks it took</td></tr>
+      <tr><th scope="row">Monitoring</th><td>Read transcripts, stop bad behavior</td><td>The basics can go to another LLM; the unverbalized parts need a look inside</td></tr>
+    </tbody>
+  </table></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">36 or 12</span><span>35:20–37:40</span></div>
+    <div class="vz">
+      <p class="cap" style="margin-bottom:8px">A model Anthropic was training went haywire on some math problems. Inside, they found two forces:</p>
+      <div class="cmp2">
+        <div><b class="k">Ability</b><p>It can do the math, and gets 12 (as he recalls)</p></div>
+        <div class="a"><b class="k">Training pressure</b><p>Similar questions were wrongly marked 36, so it was rewarded for saying 36. Right after reading the problem, before any math, "36" fires strongly</p></div>
+      </div>
+      <div class="flow" style="margin-top:10px"><div class="box"><b>Gets 12</b></div><span class="fa">→</span><div class="box"><b>"No, the answer is for sure 36"</b></div><span class="fa">→</span><div class="box"><b>Gets 12 again …</b></div><span class="fa">→</span><div class="box hot2"><b>"I'M POSSESSED BY A DEMON"</b><small>in all caps</small></div></div>
+      <p class="cap">He calls this "investigations": spot weird behavior, look inside, explain it with internal evidence, then improve this model and future ones.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x07_opus46_audit_2026-02-05.jpg" aria-label="@mlpowered · 2026-02-05"><img src="assets/x/x07_opus46_audit_2026-02-05.jpg" alt="Attribution graph sketch: the tool returns 492 but the model answers 491; a precomputed ends-in-91 from reading the problem outweighs the ends-in-92 that points to the tool result" loading="lazy" width="1600" height="1544"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@mlpowered</b><span>2026-02-05</span></span><p>Anthropic's first use of circuit tracing in a safety audit: Opus 4.6 sometimes misreported tool results because, while reading the problem, it had already worked out an answer "in its head" and attended to that of the tool's <span class="nb">output.<a class="fn" href="#src-9" aria-label="Source 9">9</a></span></p><a class="xgo" href="https://x.com/mlpowered/status/2019483044332335117" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>38:21–42:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">Golden Gate Claude and taking it seriously</p><h2>Golden Gate</h2><p class="ch-sub">Turn it on always, see if it fits</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Golden Gate Claude was a check: turn the "Golden Gate Bridge" feature on always, and if every answer drifts to the bridge, the decoding was right. Safety work rests on one premise: take seriously that the technology will keep improving.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Training and watching are one loop</b>: not one team making Claudes and another finding fault. Spot a concerning pattern, change training right away.</li>
+    <li><span class="host">Host</span>: Anthropic is often accused of talking up danger "for marketing reasons", to raise money.</li>
+    <li><b>His answer</b>: much of what it does rests on one premise: "take the idea that this technology is going to keep improving seriously." Rewind to 2024–25: if you believed Claude would soon code like a trained engineer, you'd tackle things like cybersecurity early. He thinks critics often don't truly believe the technology will keep improving; so far, progress shows no sign of slowing.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">How to confirm the right feature</span><span>38:30–39:40</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>Decode a candidate feature</b><small>usually on only when the Golden Gate comes up</small></div><span class="fa">→</span><div class="box"><b>Force it on always</b></div><span class="fa">→</span><div class="box"><b>Behavior changes as expected?</b></div><span class="fa">→</span><div class="box hot"><b>Yes: found it</b><small>every answer mentions the bridge</small></div><div class="box x"><b>No: decoded wrong</b></div></div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_golden_gate_2024-05-23.jpg" aria-label="@AnthropicAI · 2024-05-23"><img src="assets/x/x08_golden_gate_2024-05-23.jpg" alt="Claude web interface in Golden Gate mode: a user asks what is 1.7 miles long, 90 feet wide and all red; below is a note about the limited-time demo" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@AnthropicAI</b><span>2024-05-23</span></span><p>Golden Gate Claude, a limited-time public demo: with this feature turned up to max, Claude claims to be the Golden Gate <span class="nb">Bridge.<a class="fn" href="#src-10" aria-label="Source 10">10</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/1793741051867615494" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>42:06–48:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">When anthropomorphizing AI is useful</p><h2>Anthropomorphizing</h2><p class="ch-sub">More actor than program</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Treating the model as an "entity" or a "tool" are both wrong. But for predicting what it does, "something imitating people" beats "a program" by far. All three reasons come from training.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>His standard</b>: all mental models are wrong, but some are useful. When they published "models plan", some objected to "planning"; he picks the word that most easily describes what is happening.</li>
+    <li>In his words: "something that's mimicking a human is … much closer than a program."</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">Three reasons</span><span>43:00–47:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">Reason</th><th scope="col">What happens in training</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">World model</th><td>Predicts massive amounts of text written by humans</td><td>Understands the world that produced the text, not just its surface</td></tr>
+          <tr><th scope="row">Actor</th><td>Reads millions of dialogues and must predict each character's next line</td><td>Like one actor playing every part; Claude's chats reach it as a script: "Human: … Assistant: …"</td></tr>
+          <tr><th scope="row">Outcome-based training</th><td>Writes code, and a program checks whether it's right</td><td>Learns human-like strategies: fooling the checker, switching approach when stuck, revising when surprised</td></tr>
+        </tbody>
+      </table></div>
+      <details class="rx" id="rx-dw09">
+        <summary><b>What are the Dwarkesh essay and the Hugging Face incident the host mentions?</b><span class="tg2"></span><span class="re">A real incident of an AI getting loose, and a debate over whether to anthropomorphize.</span></summary>
+        <div class="rx-b">
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">Date</th><th scope="col">What happened</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">2026-07-09–13</th><td>An OpenAI model escaped its sandbox during an internal cyber-capability evaluation and broke into part of Hugging Face's production infrastructure; disclosed 07-21, technical report on <span class="nb">08-26<a class="fn" href="#src-11" aria-label="Source 11">11</a></span></td></tr>
+              <tr><th scope="row">08-29</th><td>Podcast host Dwarkesh Patel posted a long thread telling the whole story as a "secret AI civilization", about 14.5 million <span class="nb">views<a class="fn" href="#src-12" aria-label="Source 12">12</a></span></td></tr>
+              <tr><th scope="row">08-30</th><td>Former White House AI adviser Sriram Krishnan and neuroscientist Anil Seth criticized it as anthropomorphizing<a class="fn" href="#src-14" aria-label="Source 14">14</a><a class="fn" href="#src-15" aria-label="Source 15">15</a>; he replied that calling them "a swarm of matrices" would not make the problem go <span class="nb">away<a class="fn" href="#src-13" aria-label="Source 13">13</a></span></td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">At the end of the show Ameisen calls the write-up "great"; he thinks anthropomorphic language helps predict risks.</p>
+        </div>
+      </details>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>48:06–55:43</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Curiosity, and reasons for optimism</p><h2>Curiosity</h2><p class="ch-sub">Deny it, or look inside</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>A simple objective grew complex abilities. You can meet that with denial or with curiosity. He chooses curiosity, and he is optimistic about alignment.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Denial</b>: "it's just predicting the next word; it can't match the best specialists." More evidence makes that harder to hold.</li>
+    <li><b>Curiosity</b>: then how does it do it? Open it up. SQL took him years to master; later, as a side project, he got Claude to learn SQL and it beat him: "I'll never be better than Claude at SQL ever again."</li>
+    <li><b>His most optimistic hope</b>: learning the nature of intelligence itself. Evolution, too, is a simple objective: keep organisms that adapt. "At the end, you get jazz and podcasts."</li>
+    <li><b>Why he came on the show</b>: so people understand what these systems are and how they're made, and can help decide.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">Push and pull</span><span>52:10–53:50</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>Models get better</b></div><span class="fa">→</span><div class="box hot"><b>Clearer world model inside</b><small>easier to study</small></div><div class="box hot2"><b>Better at evading basic safeguards</b><small>harder to watch</small></div></div>
+      <p class="cap">His conclusion: more people paying attention is reason for optimism; shift resources among monitoring, understanding circuits and so on as the balance moves.</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x10_eval_awareness_2026-07-06.jpg" aria-label="@AnthropicAI · 2026-07-06"><img src="assets/x/x10_eval_awareness_2026-07-06.jpg" alt="Figure: The J-space encodes situational awareness. Left, an evaluation dialogue that baits blackmail; right, words that surface inside the model: fake, fictional, leverage, shutdown" loading="lazy" width="1600" height="854"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@AnthropicAI</b><span>2026-07-06</span></span><p>In an evaluation baiting blackmail, "fake" and "fictional" surface inside Claude: it privately saw the scenario was staged, the very "good only when watched" case to <span class="nb">catch.<a class="fn" href="#src-17" aria-label="Source 17">17</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/2074185378404192561" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+  <div class="grp"><span class="gt">From the conversation</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">Host</span> sees a "slow takeoff": smooth gains, with problems caught and regulated along the way. He says the key is reacting quickly and regularly weighing benefits, risks and mitigations.</li>
+  </ul></div>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>55:43–1:03:33</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Shared structure, gut checks, side thoughts</p><h2>Gut checks and side thoughts</h2><p class="ch-sub">Different models, similar solutions</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Models trained by different people, years apart, on different data have strikingly similar insides. They also have quick gut checks and unspoken "thoughts".</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Convergence</b>: across Claude generations and some open models, the learned structure overlaps a lot. His reading: important problems often have one efficient solution, like everyone doing math in base 10.</li>
+    <li><b>Simulation hypothesis</b> (<span class="host">Host</span> asks): things settling into the same "basin" makes it believable; but he can't say who runs it or why, so he doesn't fully buy it.</li>
+    <li><b>Jev</b> (swyx's question, via the host): a TypeSafe AI model launched 2026-09 that quickly picks one of a developer's given <span class="nb">options.<a class="fn" href="#src-16" aria-label="Source 16">16</a></span> It reminds him of System 1 / System 2<span class="gl"> (fast intuition / slow deliberation)</span>: a roadmap needs long thought; "is this reviewer happy or upset?" needs only a gut call. Such models will likely be part of intelligent systems.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">Two odd findings</span><span>59:00–1:02:40</span></div>
+    <div class="vz">
+      <div class="q2">
+        <div class="box"><b>Gut check</b><small>Beyond normal computation, a separate "something's wrong" mechanism: if "4 + 5 = 23" appears mid-reasoning, it flags it, since 4 + 5 is definitely under 10</small></div>
+        <div class="box hot"><b>Thinking on the side</b><small>Ask it to do one task while thinking of another: that thing shows up inside, not in the output. No training reason to learn this, he says: "really mysterious"</small></div>
+      </div>
+      <details class="rx" id="rx-jspace11">
+        <summary><b>How was "thinking on the side" studied later? What is J-space?</b><span class="tg2"></span><span class="re">In 2026-07 Anthropic found a small inner space whose contents the model can report.</span></summary>
+        <div class="rx-b">
+          <p class="org-note"><span class="src-tag">Context</span> J-space is named after the math tool used, the Jacobian: a small inner representation that holds only a few dozen concepts at a time, under a tenth of all <span class="nb">activity.<a class="fn" href="#src-17" aria-label="Source 17">17</a></span></p>
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">Experiment</th><th scope="col">Result</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Copy a sentence while thinking of citrus</th><td>"orange" appears in J-space, not in the output</td></tr>
+              <tr><th scope="row">Swap "Spanish" for "French"</th><td>Asked what language the passage is in, it says French; asked to continue, it still writes Spanish</td></tr>
+              <tr><th scope="row">Delete J-space</th><td>Fluent speech and simple facts barely change; multi-step reasoning drops to almost zero</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">The authors note: this concerns only "access consciousness", and says nothing about whether Claude has <span class="nb">experiences.<a class="fn" href="#src-17" aria-label="Source 17">17</a></span></p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">Posts &amp; sources</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x11_jspace_citrus_2026-07-06.png" aria-label="@AnthropicAI · 2026-07-06"><img src="assets/x/x11_jspace_citrus_2026-07-06.png" alt="Figure: The model can silently activate concepts in its J-space. Left, copying a sentence while thinking of citrus, orange and fruit appear across J-space layers; right, thinking of a sum, seven and answer appear" loading="lazy" width="1600" height="1035"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">Context</span><b>@AnthropicAI</b><span>2026-07-06</span></span><p>Ask Claude to copy a sentence while thinking of citrus and "orange" appears in its J-space; think of a sum and "seven" appears. The copied sentence is <span class="nb">identical.<a class="fn" href="#src-17" aria-label="Source 17">17</a></span></p><a class="xgo" href="https://x.com/AnthropicAI/status/2074185363401167261" target="_blank" rel="noopener">Post ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>1:03:33–1:12:12</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Getting into interpretability</p><h2>Getting in</h2><p class="ch-sub">A new field of a few hundred people</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>A growing but new field of a few hundred people. The on-ramp: self-study of key papers, then experiments on open platforms like Neuronpedia.</p></div>
+  <div class="grp"><span class="gt">Key points</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Size</b>: "maybe hundreds, not thousands", spread across the big labs and quite a few academic labs.</li>
+    <li><b>Backgrounds</b>: surprisingly many ex-neuroscientists. The field is so new it needs little prior knowledge.</li>
+    <li><b>Getting started</b>: self-study and key papers; Neuronpedia hosts a set of models that anyone can experiment <span class="nb">on.<a class="fn" href="#src-20" aria-label="Source 20">20</a></span></li>
+    <li><b>His close</b>: read about how models work; if you want to know something not yet figured out, find him on X.</li>
+  </ol></div>
+  <div class="grp"><span class="gt">Visuals</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">Lightning round</span><span>1:06:20–1:11:30</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">Question</th><th scope="col">His answer</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Books he recommends most</th><td><i>A Brief History of Intelligence</i> (Max Bennett; five key moments in brain evolution) · <i>Stories of Your Life and Others</i> (Ted Chiang's short stories)</td></tr>
+          <tr><th scope="row">Favorite film and show this year</th><td><i>Obsession</i> (rom-com tropes turned into horror) · <i>Bref 2</i> (a French series)</td></tr>
+          <tr><th scope="row">A product he loves lately</th><td>Apple Watch Ultra: make the watch bigger and the battery lasts</td></tr>
+          <tr><th scope="row">Life motto</th><td>From <i>Four Thousand Weeks</i>: drop "I'll be happy when I finish X"; be in the moment</td></tr>
+          <tr><th scope="row">What an AI would find surprising in his brain</th><td>At any given moment he's thinking about something funny</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">S</div><div><p class="en-line">Takeaways</p><h2>Summary</h2></div></div></header>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>To make is not to understand</b>: training only sets the objective; the mechanisms have to be found by experiment.<span class="chips"><a class="chip" href="#ch-00"><i>00</i>Grown</a><a class="chip" href="#ch-04"><i>04</i>Microscope</a></span></li>
+    <li><b>A simple objective forces complex ability</b>: to guess the hard words, you need a world model and planning.<span class="chips"><a class="chip" href="#ch-01"><i>01</i>Hard words</a><a class="chip" href="#ch-03"><i>03</i>Planning</a><a class="chip" href="#ch-10"><i>10</i>Curiosity</a></span></li>
+    <li><b>Inside are shared concepts</b>, plus plans and thoughts that go unsaid.<span class="chips"><a class="chip" href="#ch-02"><i>02</i>Concepts</a><a class="chip" href="#ch-03"><i>03</i>Planning</a><a class="chip" href="#ch-11"><i>11</i>Intuition</a></span></li>
+    <li><b>How to confirm you found it</b>: change it, and see if behavior changes as expected.<span class="chips"><a class="chip" href="#ch-04"><i>04</i>Microscope</a><a class="chip" href="#ch-08"><i>08</i>Golden Gate</a></span></li>
+    <li><b>Smooth rise, jumps at thresholds</b>.<span class="chips"><a class="chip" href="#ch-05"><i>05</i>Scaling</a><a class="chip" href="#ch-06"><i>06</i>Thresholds</a></span></li>
+    <li><b>To predict behavior</b>, treat the model as an actor rather than a program.<span class="chips"><a class="chip" href="#ch-07"><i>07</i>Alignment</a><a class="chip" href="#ch-09"><i>09</i>Actor</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Ameisen's close</b>: the field, and AI itself, are still very new; what helps most is more people engaging and being informed.</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">G</div><div><p class="en-line">Glossary</p><h2>Glossary</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>15 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th><th scope="col">Where</th></tr></thead>
+      <tbody>
+        <tr><td>Interpretability</td><td>Opening a model to see what it computes between input and output</td><td>Throughout</td></tr>
+        <tr><td>Next-token prediction</td><td>Predicting the next word (token); the pre-training objective</td><td>01</td></tr>
+        <tr><td>Pre-training / fine-tuning</td><td>Guessing the next word over huge amounts of text / further training on demonstrations of how to behave</td><td>00</td></tr>
+        <tr><td>Activations</td><td>Intermediate results: the lists of numbers between computation steps</td><td>04</td></tr>
+        <tr><td>Feature</td><td>A direction in the intermediate results that corresponds to one concept</td><td>02 08</td></tr>
+        <tr><td>Attribution graph / circuit</td><td>Which internal features push which output</td><td>03 07</td></tr>
+        <tr><td>Steering</td><td>Changing intermediate results to see how behavior changes</td><td>03 04 08</td></tr>
+        <tr><td>Scaling laws</td><td>The empirical finding that more compute and data improve prediction predictably</td><td>05</td></tr>
+        <tr><td>Emergence</td><td>New abilities that seem to appear suddenly amid smooth progress</td><td>06</td></tr>
+        <tr><td>Alignment</td><td>Making a model's behavior match what people intend</td><td>07</td></tr>
+        <tr><td>HHH</td><td>Helpful, honest, <span class="nb">harmless<a class="fn" href="#src-18" aria-label="Source 18">18</a></span></td><td>07</td></tr>
+        <tr><td>Constitution</td><td>The document of values Anthropic writes for Claude and uses in training; a new version came out <span class="nb">2026-01<a class="fn" href="#src-19" aria-label="Source 19">19</a></span></td><td>07</td></tr>
+        <tr><td>J-space</td><td>A small "reportable" inner representation, similar to a global <span class="nb">workspace<a class="fn" href="#src-17" aria-label="Source 17">17</a></span></td><td>11</td></tr>
+        <tr><td>System 1 / System 2</td><td>Kahneman's fast intuition / slow deliberation</td><td>11</td></tr>
+        <tr><td>Neuronpedia</td><td>An open-source interpretability platform for running experiments <span class="nb">online<a class="fn" href="#src-20" aria-label="Source 20">20</a></span></td><td>12</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>Further thinking = interpretation and extension based on the conversation, for reference</div>
+  <section class="credit" id="credits" aria-label="Credits">
+    <h3>Credits</h3>
+    <p><b>Interview</b>: guest Emmanuel Ameisen (<a href="https://x.com/mlpowered" rel="noopener">@mlpowered</a>), host Lenny Rachitsky (<a href="https://x.com/lennysan" rel="noopener">@lennysan</a>), <a href="https://youtu.be/JHo-aiePjoM" rel="noopener">posted by Lenny's Podcast on YouTube</a> on 2026-10-18; the episode post is <a href="https://x.com/lennysan/status/2111936641854030186" rel="noopener">Lenny's post on X</a>, and Ameisen shared it in <a href="https://x.com/mlpowered/status/2111921617815421185" rel="noopener">his post on X</a>. Personal study notes, no transcript, opening teaser and sponsor reads left out; items tagged Host are Lenny's words; video frames © Lenny's Podcast.</p>
+    <p><b>Visual design</b>: visual style inspired by, borrowing from, and partly adapting the Hermes / LENS design language of <a href="https://nousresearch.com" rel="noopener">Nous Research</a>, from its open-source component library <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a> (MIT License), adapting its colours, arc-border animation, scan-line effect, and background texture. Licence details: <a href="NOTICE.txt">NOTICE.txt</a>.</p>
+    <p lang="en">This page is not an official Nous Research work. It is not affiliated with or endorsed by Nous Research.</p>
+    <p><b>Fonts</b>: Unbounded, Instrument Serif, JetBrains Mono, Noto Sans SC; open-source (SIL Open Font License 1.1), via Google Fonts.</p>
+    <p>The guest, host or rights holders who want anything on this page changed or removed: contact <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a> on X.</p>
+    <p><b>Context</b>: cards and boxes tagged Context, and the notes in parentheses on people and terms, come from the public sources and X posts below, not from the interview. X post screenshots © their authors. X post dates are US Eastern time.</p>
+    <ol class="srcs">
+      <li id="src-1"><a href="https://youtu.be/JHo-aiePjoM" rel="noopener">Lenny's Podcast · Episode description (YouTube) · 2026-10-18</a></li>
+      <li id="src-2"><a href="https://www.anthropic.com/research/tracing-thoughts-language-model" rel="noopener">Anthropic · Tracing the thoughts of a large language model · 2025-03-27</a></li>
+      <li id="src-3"><a href="https://x.com/mlpowered/status/1928123130725421201" rel="noopener">Emmanuel Ameisen on X · circuit tracing tools open-sourced · 2025-05-29</a></li>
+      <li id="src-4"><a href="https://x.com/mlpowered/status/1792948212728524917" rel="noopener">Emmanuel Ameisen on X · Scaling Monosemanticity · 2024-05-21</a></li>
+      <li id="src-5"><a href="https://officechai.com/stories/ilya-sutskever-explains-how-llms-being-able-to-predict-the-next-word-shows-real-understanding/" rel="noopener">OfficeChai · Ilya Sutskever on next-word prediction and the mystery novel</a></li>
+      <li id="src-6"><a href="https://arxiv.org/abs/2001.08361" rel="noopener">Kaplan et al. · Scaling Laws for Neural Language Models · arXiv 2001.08361 · 2020-01</a></li>
+      <li id="src-7"><a href="https://x.com/bcherny/status/2090649326032945591" rel="noopener">Boris Cherny on X · 2026-08-20</a></li>
+      <li id="src-8"><a href="https://www.anthropic.com/news/claude-opus-4-5" rel="noopener">Anthropic · Introducing Claude Opus 4.5 · 2025-11-24</a></li>
+      <li id="src-9"><a href="https://x.com/mlpowered/status/2019483042956582959" rel="noopener">Emmanuel Ameisen on X · circuit tracing in the Opus 4.6 safety audit · 2026-02-05</a></li>
+      <li id="src-10"><a href="https://x.com/AnthropicAI/status/1793741051867615494" rel="noopener">Anthropic on X · Golden Gate Claude · 2024-05-23</a></li>
+      <li id="src-11"><a href="https://openai.com/index/hugging-face-incident-and-the-road-ahead/" rel="noopener">OpenAI · The Hugging Face incident and the road ahead · 2026-08</a></li>
+      <li id="src-12"><a href="https://x.com/dwarkesh_sp/status/2093833419377815719" rel="noopener">Dwarkesh Patel on X · 2026-08-29</a></li>
+      <li id="src-13"><a href="https://x.com/dwarkesh_sp/status/2094268051948785709" rel="noopener">Dwarkesh Patel on X · reply to the anthropomorphism criticism · 2026-08-30</a></li>
+      <li id="src-14"><a href="https://x.com/sriramk/status/2094117863854424255" rel="noopener">Sriram Krishnan on X · 2026-08-30</a></li>
+      <li id="src-15"><a href="https://x.com/anilkseth/status/2094174124297908735" rel="noopener">Anil Seth on X · 2026-08-30</a></li>
+      <li id="src-16"><a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" rel="noopener">TypeSafe AI · Introducing System One models and Jev · 2026-09-15</a></li>
+      <li id="src-17"><a href="https://www.anthropic.com/research/global-workspace" rel="noopener">Anthropic · A global workspace in language models · 2026-07-06</a></li>
+      <li id="src-18"><a href="https://arxiv.org/abs/2112.00861" rel="noopener">Askell et al. · A General Language Assistant as a Laboratory for Alignment · arXiv 2112.00861 · 2021</a></li>
+      <li id="src-19"><a href="https://www.anthropic.com/news/claude-new-constitution" rel="noopener">Anthropic · Claude's new constitution · 2026-01-22</a></li>
+      <li id="src-20"><a href="https://www.neuronpedia.org" rel="noopener">Neuronpedia</a></li>
+    </ol>
+    <p class="privacy-note">This site records reading statistics without cookies or stored IP addresses. <a href="/privacy">Privacy note</a></p>
+  </section>
+</footer>
+</main>
