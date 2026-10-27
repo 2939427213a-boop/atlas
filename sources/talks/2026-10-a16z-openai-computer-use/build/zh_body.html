@@ -1,0 +1,637 @@
+<a id="toc-fab" href="#contents" aria-label="回到全景"><span class="fab-k" aria-hidden="true">↑</span><span class="fab-zh">全景</span></a>
+<nav class="rail" id="rail" aria-label="章节目录">
+  <a href="#ch-00" aria-label="00 Astra"><span class="lb">Astra</span><span class="no">00</span></a>
+  <a href="#ch-01" aria-label="01 两条线"><span class="lb">两条线</span><span class="no">01</span></a>
+  <a href="#ch-02" aria-label="02 dots"><span class="lb">dots</span><span class="no">02</span></a>
+  <a href="#ch-03" aria-label="03 超人"><span class="lb">超人</span><span class="no">03</span></a>
+  <a href="#ch-04" aria-label="04 放手"><span class="lb">放手</span><span class="no">04</span></a>
+  <a href="#ch-05" aria-label="05 广告"><span class="lb">广告</span><span class="no">05</span></a>
+  <a href="#ch-06" aria-label="06 通用接口"><span class="lb">通用接口</span><span class="no">06</span></a>
+  <a href="#ch-07" aria-label="07 信任"><span class="lb">信任</span><span class="no">07</span></a>
+  <a href="#ch-08" aria-label="08 无聊"><span class="lb">无聊</span><span class="no">08</span></a>
+  <a href="#ch-09" aria-label="09 界面"><span class="lb">界面</span><span class="no">09</span></a>
+  <a href="#ch-10" aria-label="10 创业"><span class="lb">创业</span><span class="no">10</span></a>
+  <a href="#ch-11" aria-label="11 一致"><span class="lb">一致</span><span class="no">11</span></a>
+  <a href="#ch-12" aria-label="12 拐点"><span class="lb">拐点</span><span class="no">12</span></a>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#summary" aria-label="总结"><span class="lb">总结</span><span class="no">总</span></a>
+  <a href="#glossary" aria-label="术语"><span class="lb">术语</span><span class="no">术</span></a>
+</nav>
+<div class="toast" id="pip-toast" role="status" hidden>口播此处没听清或说话人不确定，已按上下文尽量还原</div>
+
+<main class="wrap">
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <nav class="top-row" aria-label="Site"><a class="home-link" href="/">← Atlas 首页</a><a class="src-top" href="https://x.com/a16z/status/2114726804665798823" target="_blank" rel="noopener"><span class="k">来源</span><span>▶ a16z 发布本期节目的 X 原帖</span><span class="go">↗</span></a></nav>
+  <div class="panel arc-host">
+    <span class="arc-border"></span>
+    <div class="bar"><span>◆ conversation.log</span><span>a16z Podcast</span><span class="push">2026-10-26</span></div>
+    <div class="hero-body">
+      <div class="eyebrow">Interview · Computer-using agents</div>
+      <h1 class="h1">Superhuman <span class="nw">computer use</span></h1>
+      <p class="h1-zh">像人一样用电脑，然后比人快</p>
+      <p class="read">阅读约 18 分钟</p>
+      <dl class="kv kv-4">
+        <div><dt>Guests</dt><dd>Ari Weinstein · James Sun<small>OpenAI</small></dd></div>
+        <div><dt>Hosts</dt><dd>Seema Amble · Fabrizio Serafini<small>a16z</small></dd></div>
+        <div><dt>Posted</dt><dd class="num">2026-10-26</dd></div>
+        <div><dt>Runtime</dt><dd class="num">44:14</dd></div>
+      </dl>
+      <p class="hero-note">Ari 在 OpenAI 做消费端的 computer use 产品，James 做企业端，两人此前都创过业。{{fn:ep}}Ari 联合创办过 Workflow（后成了 Apple 的“快捷指令”）和 Mac AI 助手 Sky 的公司，后者 2025-10 被 OpenAI 收购。{{fn:ari}}Seema、Fabrizio 是 a16z 合伙人，Fabrizio 远程连线。{{fn:seema}}{{fn:fabrizio}}computer use = 让模型看屏幕、动鼠标、打字，像人一样操作软件。开头约 50 秒预告略去。</p>
+    </div>
+    <figure class="hero-fig"><img src="assets/cover.jpg" alt="访谈画面：左边 Seema Amble、Ari Weinstein、James Sun 围坐圆桌，右边 Fabrizio Serafini 远程连线" width="1920" height="1080"><figcaption>画面 © a16z · 05:44</figcaption></figure>
+  </div>
+  <div class="panel arc-host on" style="margin-top:20px">
+    <span class="arc-border"></span>
+    <div class="bar"><span class="k">一句话主旨</span></div>
+    <div class="thesis-body">
+      <p>computer use 让 agent 能用任何有界面的软件。OpenAI 正把它做得比专家更快、更便宜、可管控，它正进入规模化阶段。</p>
+      <div class="wants w3">
+        <div><b>模型</b><small>有了 GPT‑6 Astra，agent 能做人在电脑上做的几乎所有事；已比普通人快，正接近专家。</small></div>
+        <div><b>落地</b><small>企业要确定性的管控；眼下要的是 ERP、对账、采购这些“无聊”的繁琐流程。</small></div>
+        <div><b>产品</b><small>界面不会消失；下一步是主动、各处一致，再靠云端电脑走向只用手机的人。</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PANORAMA ================= -->
+<section id="contents" class="panel pano" aria-label="全景">
+  <div class="bar"><span>◎ panorama</span><span>5 acts · 13 ch</span><span class="push">00:50–44:14</span></div>
+  <div class="pano-q"><span class="q">问题</span><p>AI 能像人一样用电脑之后，它够快、够可靠、够可控了吗？会先改变哪些工作和软件？</p></div>
+  <div class="pano-band" style="--act-cols:436fr 345fr 706fr 714fr 403fr">
+    <div class="spectrum" aria-label="13 章时间轴">
+      <span class="ad" style="flex:50 1 0" title="预告 · 00:00–00:50"></span>
+      <a href="#ch-00" class="act-start odd" style="flex:153 1 0" title="00 Astra · 00:50–03:23" aria-label="00 Astra">00</a>
+      <a href="#ch-01" class="odd" style="flex:140 1 0" title="01 两条线 · 03:23–05:43" aria-label="01 两条线">01</a>
+      <a href="#ch-02" class="odd" style="flex:143 1 0" title="02 dots · 05:43–08:06" aria-label="02 dots">02</a>
+      <a href="#ch-03" class="act-start even" style="flex:115 1 0" title="03 超人 · 08:06–10:01" aria-label="03 超人">03</a>
+      <a href="#ch-04" class="even" style="flex:95 1 0" title="04 放手 · 10:01–11:36" aria-label="04 放手">04</a>
+      <a href="#ch-05" class="even" style="flex:135 1 0" title="05 广告 · 11:36–13:51" aria-label="05 广告">05</a>
+      <a href="#ch-06" class="act-start odd" style="flex:210 1 0" title="06 通用接口 · 13:51–17:21" aria-label="06 通用接口">06</a>
+      <a href="#ch-07" class="odd" style="flex:181 1 0" title="07 信任 · 17:21–20:22" aria-label="07 信任">07</a>
+      <a href="#ch-08" class="odd" style="flex:315 1 0" title="08 无聊 · 20:22–25:37" aria-label="08 无聊">08</a>
+      <a href="#ch-09" class="act-start even" style="flex:421 1 0" title="09 界面 · 25:37–32:38" aria-label="09 界面">09</a>
+      <a href="#ch-10" class="even" style="flex:293 1 0" title="10 创业 · 32:38–37:31" aria-label="10 创业">10</a>
+      <a href="#ch-11" class="act-start odd" style="flex:206 1 0" title="11 一致 · 37:31–40:57" aria-label="11 一致">11</a>
+      <a href="#ch-12" class="odd" style="flex:197 1 0" title="12 拐点 · 40:57–44:14" aria-label="12 拐点">12</a>
+    </div>
+    <p class="band-legend"><i aria-hidden="true"></i>斜纹 = 开头约 50 秒预告剪辑，本页略去</p>
+    <ol class="acts">
+      <li class="act"><div class="act-top"><span class="act-no">I</span><span class="act-time">00:50–08:06</span></div><div class="act-name"><b>新模型</b><span>What Astra changed</span></div><p class="act-line">Astra 的进步在边角上：更快、更可靠、更对齐。消费端探新用法，企业端补课；dots 主动替人做事。</p><ul class="chips"><li><a class="chip" href="#ch-00"><i>00</i>Astra</a></li><li><a class="chip" href="#ch-01"><i>01</i>两条线</a></li><li><a class="chip" href="#ch-02"><i>02</i>dots</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">II</span><span class="act-time">08:06–13:51</span></div><div class="act-name"><b>比人快之后</b><span>Faster than people</span></div><p class="act-line">快过专家后，能交的事都会交给 agent；人盯不过来，就要可调的审批；开放网络还有广告难题。</p><ul class="chips"><li><a class="chip" href="#ch-03"><i>03</i>超人</a></li><li><a class="chip" href="#ch-04"><i>04</i>放手</a></li><li><a class="chip" href="#ch-05"><i>05</i>广告</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">III</span><span class="act-time">13:51–25:37</span></div><div class="act-name"><b>通用接口</b><span>The universal API</span></div><p class="act-line">不用谁先适配，任何软件都能用；企业靠确定性管控建立信任；眼下的用例很“无聊”。</p><ul class="chips"><li><a class="chip" href="#ch-06"><i>06</i>通用接口</a></li><li><a class="chip" href="#ch-07"><i>07</i>信任</a></li><li><a class="chip" href="#ch-08"><i>08</i>无聊</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">IV</span><span class="act-time">25:37–37:31</span></div><div class="act-name"><b>软件与创业</b><span>Software &amp; startups</span></div><p class="act-line">界面不会消失，会更个性化；创业公司的机会在深懂行业的复杂流程。</p><ul class="chips"><li><a class="chip" href="#ch-09"><i>09</i>界面</a></li><li><a class="chip" href="#ch-10"><i>10</i>创业</a></li></ul></li>
+      <li class="act"><div class="act-top"><span class="act-no">V</span><span class="act-time">37:31–44:14</span></div><div class="act-name"><b>下一步</b><span>What's next</span></div><p class="act-line">把分散的浏览器和电脑统一成一套体验；云端电脑把它带给只用手机的人。</p><ul class="chips"><li><a class="chip" href="#ch-11"><i>11</i>一致</a></li><li><a class="chip" href="#ch-12"><i>12</i>拐点</a></li></ul></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 00 ================= -->
+<section id="ch-00" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 00</span><span>00:50–03:23</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">00</div><div><p class="en-line">What Astra changed for computer use</p><h2>Astra</h2><p class="ch-sub">进步在边角上</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Astra 之前，Sol 已经很会用电脑。Astra 的进步在边角上：更快、更可靠、更对齐。Ari 说他“更信任它一点”，James 说企业用起来会“安全得多”。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Ari：稍快一点</b>。做同一个任务，它用的思考 token<span class="gl">（thinking tokens）</span>更少，所以平均快一点。</li>
+    <li><b>Ari：更会做创意活</b>。发布视频里，你一边说，它一边在 Microsoft Paint 里画。</li>
+    <li><b>Ari：更可靠</b>。99% 和 97% 的可靠度，差别很难察觉，但很重要；他“更信任它一点”。</li>
+    <li><b>James：更对齐</b>。按 system card，它更能抵抗 prompt injection<span class="gl">（藏在网页、文件里劫持 agent 的指令）</span>，也更少做意料之外的操作。采购、对接供应商和客户这类敏感工作最需要这一点。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v00">
+    <div class="bar"><span class="k">四项改进</span><span>01:20–02:55</span></div>
+    <div class="vz">
+      <div class="nums">
+        <div class="box"><b>更快</b><small>同一任务，思考 token 更少</small></div>
+        <div class="box"><b>更会创意</b><small>边听你说，边在 Paint 里画</small></div>
+        <div class="box"><b>更可靠</b><small>Ari 的比方：97% 和 99% 差别难察觉，但很重要</small></div>
+        <div class="box"><b>更对齐</b><small>更抗 prompt injection，更少意外操作</small></div>
+      </div>
+      <p class="cap">前三项是 Ari 的个人体感；97% 和 99% 是他举的例子，不是实测数字。第四项 James 引自 system card。</p>
+      <details class="rx" id="rx-models00">
+        <summary><b>Sol、Astra、Terra 是什么？</b><span class="tg2"></span><span class="re">OpenAI 的模型和档位名。Ari 说的 Sol、James 说的 5.6，应指 Astra 之前的旗舰 GPT‑5.6 Sol。</span></summary>
+        <div class="rx-b">
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">模型</th><th scope="col">发布</th><th scope="col">定位</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">GPT‑5.6 Sol</th><td>2026-06</td><td>Astra 之前的旗舰。GPT‑5.6 分三档：Sol 旗舰、Terra 均衡、Luna 快而省{{fn:sol56}}</td></tr>
+              <tr><th scope="row">GPT‑6 Astra</th><td>2026-09-03</td><td>现在的旗舰{{fn:astra}}</td></tr>
+              <tr><th scope="row">GPT‑6.1 Sol</th><td>2026-09-29</td><td>GPT‑6 Sol 的升级版：能力接近 Astra，更便宜{{fn:sol61}}</td></tr>
+              <tr><th scope="row">GPT‑6.1 Terra</th><td>2026-10-26</td><td>本期上线同一天：更低价格的快速 computer use{{fn:terra}}</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </details>
+      <details class="rx" id="rx-nums00">
+        <summary><b>这些改进有公开数字吗？</b><span class="tg2"></span><span class="re">有，对比的都是 GPT‑5.6 Sol。</span></summary>
+        <div class="rx-b">
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">测试</th><th scope="col">Astra</th><th scope="col">GPT‑5.6 Sol</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">间接 prompt injection：估计攻击成功率（每个场景攻 15 次；Astra 为开启防护的版本）</th><td>8.5%</td><td>27.0%</td></tr>
+              <tr><th scope="row">模拟办公环境：越权后果（如未授权交易、泄露数据）的比例</th><td>3.4%</td><td>18.8%</td></tr>
+              <tr><th scope="row">OSWorld 2.0 离线子集：得分 / 每任务用时</th><td>72.6% / 约 40 分钟</td><td>65.7% / 约 75 分钟</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">前两行出自 Astra system card，第二行是不带确认策略时的数字{{fn:astra-card}}；第三行是 OpenAI 的延迟模拟，转引自 The Batch{{fn:batch}}。</p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>James：内部让 Astra 和 GPT‑5.6 对打电子游戏，Astra 每局都赢。网上有人让 Astra 约 30 小时打通 Fallout<span class="gl">（背景：查到两条公开记录：Astra 约 59 小时打通 Fallout 3；有人直播 Astra 玩 Fallout 2，没查到用时）</span>。{{fn:fallout}}{{fn:fallout2}}</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>推断：把可靠度看成每一步的成功率。20 步的任务，每步 97% 时全程约 54% 成功，99% 时约 82%。失败从近一半降到不到五分之一。</li></ul></aside>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="ch-01" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 01</span><span>03:23–05:43</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">01</div><div><p class="en-line">Consumer vs. enterprise computer use</p><h2>两条线</h2><p class="ch-sub">消费端探路，企业端补课</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>James：企业端的用例相当明显，模型能力可能早到了一阵，企业在追赶，关键是安全。消费端负责推前沿，找今天的软件做不到的新用法。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>分工</b>：Ari 偏消费端，James 偏企业端。</li>
+    <li><b>企业（James）</b>：大量用了 15–20 年的老软件，没有 MCP 工具<span class="gl">（MCP：给 agent 接工具和数据的开放协议）</span>{{fn:mcp}}，界面停在上一个十年。已有公司给模型写 skills，教它用好这些软件。</li>
+    <li><b>消费（James）</b>：Astra 快得多，所以能做出新体验。</li>
+    <li><b>消费（Ari）</b>：把日常烦人的事交给 agent，省下时间。例子是 dots：每个 dot 有自己的云端电脑和完整浏览器，能买东西、约理发。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v01">
+    <div class="bar"><span class="k">两条线</span><span>03:23–05:40</span></div>
+    <div class="vz">
+      <div class="cmp2">
+        <div><b class="k">企业 · 补课</b><p>能力先到一步，企业在追赶</p><p>难点：安全、管控</p><p>例子：用了 15–20 年的老软件，没有 MCP</p></div>
+        <div class="a"><b class="k">消费 · 探路</b><p>推前沿，找新用法</p><p>关键：速度</p><p>例子：dots 买东西、约理发</p></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="ch-02" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 02</span><span>05:43–08:06</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">02</div><div><p class="en-line">How James runs his workday with dots</p><h2>dots</h2><p class="ch-sub">主动找事做的 agent</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>James：dots 的价值在“主动”。它自己发现漏掉的事，也接得住每次形状都不一样的长期任务，并在云端和本地两台电脑之间做完。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>主动补漏</b>：公司邮箱收到的外部会议邀请不会进日历，他因此错过好几个会。现在 dots 会问：“收件箱有个邀请，日历上没有，要我在 Gmail 里接受吗？”</li>
+    <li><b>给目标，不给步骤</b>：以前他用 automations 和 Codex 写定时任务，每 30–60 分钟扫一遍 Slack。现在只说：“汇报线上的人说了什么就告诉我；有人给产品提尖锐反馈，你自己判断。”</li>
+    <li><b>两台电脑</b>：dots 既能控制他的本地电脑，也有自己的云端电脑。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v02">
+    <div class="bar"><span class="k">一条尖锐反馈</span><span>06:50–08:00</span></div>
+    <div class="vz">
+      <div class="vs" role="table" aria-label="以前自己处理反馈与现在交给 dots 的对照">
+        <div class="vs-head" role="row"><span role="columnheader"></span><span class="vs-w" role="columnheader">以前<small>他自己做</small></span><span aria-hidden="true"></span><span class="vs-a" role="columnheader">现在<small>交给一个 dot</small></span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">筛选</span><span class="vs-w" role="cell">自己判断哪条反馈重要</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">一个目标：尖锐反馈，你自己判断</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">查证</span><span class="vs-w" role="cell">看反馈 → 打开 Sentry → 下载日志</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">dots 驱动浏览器，登录 Sentry 拉日志</span></div>
+        <div class="vs-row" role="row"><span class="vs-k" role="rowheader">分析</span><span class="vs-w" role="cell">把日志喂给 Codex，问它怎么看</span><span class="vs-arr" aria-hidden="true">→</span><span class="vs-a" role="cell">dots 自己分析，直接给他结论</span></div>
+      </div>
+      <p class="cap">Sentry = 程序报错监控服务；用户报 bug 时常附上 Sentry 日志。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x02_dots_2026-10-01.jpg" aria-label="@OpenAIDevs · 2026-10-01"><img src="assets/x/x02_dots_2026-10-01.jpg" alt="dots 演示视频封面：一位女士坐在笔记本电脑前，画面右上角写着 Introducing dots" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAIDevs</b><span>2026-10-01</span></span><p>OpenAI 2026-09-29 发布 dots：GPT‑6 Astra 驱动的常驻<span class="gl">（always-on）</span>agent。{{fn:dots}}每个 dot 住在云端，有自己的电脑和浏览器；面向 Pro、Business Premium 和 Enterprise 用户。{{fn:dots-docs}}这是两天后放出的演示视频。</p><a class="xgo" href="https://x.com/OpenAIDevs/status/2105708732323909827" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="ch-03" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 03</span><span>08:06–10:01</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">03</div><div><p class="en-line">When computer use becomes superhuman</p><h2>超人</h2><p class="ch-sub">比专家快的那一天</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>Ari：要盯着看或等结果时，速度决定用 agent 是否比自己动手划算。它已经比普通人快，正接近比专家快；到那时，手动能做的事默认都会交给 agent。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>他的说法</b>：OpenAI 有“最快、最便宜、最可靠”的 computer use 产品，而且还能走得更远。</li>
+    <li><b>为什么在乎速度</b>：后台任务慢点没关系。但你要盯着它确认，或后面的事要等它时，慢会让人觉得“不如自己做”。</li>
+    <li><b>现状</b>：已比普通人用电脑快；正接近 superhuman，即比专家（“比如这张桌上的我们”）还快。他称之为“巨变”<span class="gl">（sea change）</span>。</li>
+    <li><b>多模型、多价位</b>：便宜的模型，computer use 也在快速变好。以后不同任务会用不同模型，选择更分散。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v03">
+    <div class="bar"><span class="k">速度标尺</span><span>08:40–09:40</span></div>
+    <div class="vz">
+      <div class="tline t3">
+        <div class="tl-n hot"><i>已超过</i><b>普通人</b><span>用电脑比一般人快</span></div>
+        <div class="tl-n"><i>接近中</i><b>专家</b><span>比如这张桌上的人</span></div>
+        <div class="tl-n"><i>下一步</i><b>superhuman</b><span>比专家还快</span></div>
+      </div>
+      <p class="cap">到那时，除非你想自己做，手动能做的事都交给 agent。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x03_cost_case_2026-10-26.jpg" aria-label="@a16z · 2026-10-26"><img src="assets/x/x03_cost_case_2026-10-26.jpg" alt="a16z 图表 The Cost Case for Computer-Use Agents：每小时成本。computer-use agent 只算推理费用，典型 6–8 美元（范围 3–15）；印度外包约 10 美元、美国后台人工 30–45 美元，人工两项含全部成本" loading="lazy" width="1600" height="1302"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a16z</b><span>2026-10-26</span></span><p>a16z 把 Ari 这句话配上 8 月文章的成本图。每小时后台工作：computer-use agent 典型 6–8 美元（只算推理费用，2026-05 的数据），印度外包约 10 美元，美国人工 30–45 美元（人工两项含福利和管理费用）。</p><a class="xgo" href="https://x.com/a16z/status/2114836977472467320" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x00_osworld_cost_2026-09-29.png" aria-label="@OpenAI · 2026-09-29"><img src="assets/x/x00_osworld_cost_2026-09-29.png" alt="OSWorld 2.0 离线集上得分与每任务成本的曲线：GPT‑6 Astra 最高约 73%，每任务约 9 美元；GPT‑6.1 Sol 最高约 71%，约 1.3 美元；旧版 GPT‑6 Sol 最高约 64%" loading="lazy" width="1600" height="1363"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@OpenAI</b><span>2026-09-29</span></span><p>“便宜的模型也在快速变好”的例子。OSWorld 2.0 离线集上，GPT‑6.1 Sol 最高约 71%，每任务约 1.3 美元；Astra 最高约 73%，约 9 美元（图中读数）。</p><a class="xgo" href="https://x.com/OpenAI/status/2104986133004505373" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>快过专家后，问题从“它能不能做”变成“我还要不要盯着看”。这就是下一章。</li><li>8 月那篇 a16z 文章还写着：人两三分钟做完的任务，agent 要八到十分钟。{{fn:a16zpiece}}“比普通人快”目前是 Ari 的说法，没找到公开的人机速度对比。</li></ul></aside>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="ch-04" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 04</span><span>10:01–11:36</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">04</div><div><p class="en-line">How much autonomy to give agents</p><h2>放手</h2><p class="ch-sub">盯不过来之后，怎么管</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>James：agent 快到人盯不过来时，要能调“人在环中”的多少，还要能事后审计。他说随 Astra 推出了一套企业管控，还提到一个审核 agent 动作的模型 Guardian。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>慢的悖论</b>：慢的时候你能看着它，但只能交给它“值得坐着看”的事，反而低效。</li>
+    <li><b>快了之后</b>：人看不过来。企业需要两样东西：控制人在环中<span class="gl">（human-in-the-loop）</span>的程度，和事后可查<span class="gl">（auditability）</span>。</li>
+    <li><b>企业管控</b>：随 Astra 推出。企业可以全部自动批准，也可以要求人批准。</li>
+    <li><b>Guardian</b>（他说 app 里叫 auto-approve）：一个很聪明的模型，看 agent 的每一步，判断是否安全、是否符合最初的意图。</li>
+    <li><b>因人而异</b>：消费者可能只想“全做了，别问我”；企业自己定。agent 越超人，控制越重要。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v04">
+    <div class="bar"><span class="k">审批旋钮</span><span>10:30–11:30</span></div>
+    <div class="vz">
+      <div class="dial">
+        <div class="box"><b>每步人批准</b><small>最慢，最放心</small></div>
+        <div class="box lit"><b>Guardian 审核</b><small>James：模型看每一步，安全吗？符合原意吗？</small></div>
+        <div class="box hot"><b>全部自动</b><small>最快</small></div>
+      </div>
+      <div class="dial-ax"><span>企业：按任务自己定档位</span><span>消费者：可能想要“别问我”</span></div>
+      <p class="cap">agent 越快，越需要这个旋钮和事后审计。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst">
+    <li><b>Auto-review</b>：OpenAI 文档里的正式名字。它用一个单独的审核 agent，代替人批准或拒绝越过沙箱边界的请求；沙箱内的常规动作不审，Computer Use 的应用授权仍直接问用户。桌面 app 里叫“Approve for me”，企业可以换掉它的审核规则（配置项 guardian_policy_config）。{{fn:autoreview}}它 2026-04 先在 Codex 上线。OpenAI 当时披露：在内部 Codex 的越界请求上，它批准了 99.1%，会话停下来等人的次数少了约 200 倍。{{fn:autoreview-blog}}</li>
+  </ul></div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="ch-05" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 05</span><span>11:36–13:51</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">05</div><div><p class="en-line">What agents mean for ad-supported sites</p><h2>广告</h2><p class="ch-sub">agent 看广告，不算钱</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>James：公司批准并在用的软件，自动化简单直接；难题在开放网络。靠广告的网站收不到 agent 带来的“曝光”收入；愿意拥抱 agent 的网站，在采用 WebMCP 这类标准。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>公司批准的软件</b>：“100% 欢迎”自动化。</li>
+    <li><b>开放网络 · 有冲突</b>：广告主和靠广告的出版商。agent 产生的广告曝光，多半算不上真实收入。OpenAI 一直在研究这个问题，也在和自己的 partnerships 团队商量。</li>
+    <li><b>开放网络 · 欢迎 agent</b>：采用让人和 agent 一起用网站的标准，例如 WebMCP。OpenAI 已在 app 内浏览器里支持它。</li>
+    <li><b>他的设想</b>：agent 做繁琐的部分，把“逛”留给人。他自己仍喜欢逛购物网站、挑酒店和机票；挑好了，再交回 agent 填卡付款。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v05">
+    <div class="bar"><span class="k">一次购物，人和 agent 分工</span><span>13:05–13:50</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>agent</b><small>先做繁琐的部分</small></div><span class="fa">→</span><div class="box hot"><b>人</b><small>逛、挑：酒店、机票、商品</small></div><span class="fa">→</span><div class="box"><b>agent</b><small>填卡、付款</small></div></div>
+      <p class="cap">James：用 WebMCP 时，你面对的仍是网站本身，而不是一个 API。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x05_webmcp_2026-10-26.png" aria-label="@ChromiumDev · 2026-10-26"><img src="assets/x/x05_webmcp_2026-10-26.png" alt="Chrome for Developers 对照表：MCP 是把 agent 接到后端系统的协议，工具在服务器上，用自己的凭证；WebMCP 是让网页向 agent 提供工具的 JavaScript API，只在页面打开时可用，用用户当前的登录状态，界面仍是你的网站" loading="lazy" width="1600" height="900"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@ChromiumDev</b><span>2026-10-26</span></span><p>MCP 把 agent 接到你的后端服务；WebMCP 让打开着的网页自己向 agent 提供工具，用的是用户当前的登录状态，界面仍是你的网站。</p><a class="xgo" href="https://x.com/ChromiumDev/status/2114776553481445523" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst">
+    <li><b>WebMCP</b>：W3C 一个社区组的规范草案，编辑来自 Microsoft 和 Google，还不是 W3C 标准。{{fn:webmcp-spec}}2026-08-25，OpenAI 在 ChatGPT 桌面 app 的内置浏览器里支持了它，也就是 James 说的“app 内浏览器”。{{fn:webmcp-openai}}</li>
+  </ul></div>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>WebMCP 让网站保住自己的页面和用户关系，agent 来了也不必被“绕过去”。</li></ul></aside>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="ch-06" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 06</span><span>13:51–17:21</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">06</div><div><p class="en-line">Computer use as the universal API</p><h2>通用接口</h2><p class="ch-sub">先问“能不能交给 agent”</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>computer use 不需要谁先做适配，它像人一样操作任何应用。James 称它是模型“为了把事做成”的通用 API：任务越复杂，越可能用到它。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>James 的习惯</b>：有任务先想“能不能让 agent 做”。例外是发给别人的消息，他想让它像出自自己。</li>
+    <li><b>需求模糊也行</b>：James 说 Astra 带来了“flexible input”（没查到同名官方功能）。它先问你细节；你没及时回答，它就自己找上下文继续做。重复的工作流，就像写产品 spec 一样写清要求。</li>
+    <li><b>Ari：普适</b>。不用谁先写 connector 或 MCP server；它像人一样用应用，agent 就拥有你的全部能力。他在刻意培养“先交给 agent”的习惯。</li>
+    <li><b>James：不再区分</b>“是不是 computer use 任务”。只有点两下就完的事他才自己做；等它更快，这些也可以用语音交给它。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v06">
+    <div class="bar"><span class="k">三种接入方式</span><span>14:20–17:00</span></div>
+    <div class="vz">
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th scope="col">方式</th><th scope="col">谁要先做事</th><th scope="col">能用的软件</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">API</th><td>软件方开放接口</td><td>有 API 的</td></tr>
+          <tr><th scope="row">MCP</th><td>有人写好 MCP server</td><td>有 server 的</td></tr>
+          <tr><th scope="row">computer use</th><td>不用</td><td>任何有界面的</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </article>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>通用的代价是慢和贵：API 一次调用的事，computer use 要看屏幕、点很多步。所以第 03 章的速度和成本才是关键。</li></ul></aside>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="ch-07" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 07</span><span>17:21–20:22</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">07</div><div><p class="en-line">Getting enterprises to trust agents</p><h2>信任</h2><p class="ch-sub">确定性护栏，看得见的光标</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>James：让企业放心靠两层：管理员能设的确定性管控，和摆出来的对齐评测。Ari：产品设计也在建立信任。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>Seema 的疑问：让人自己点，可能做得更差；但人受过训练，可以问责。</li>
+    <li><b>第一层：确定性管控</b>。就算模型最对齐、比多数人更会防 prompt injection，管理员也要能说“这类任务、这类数据太敏感”，企业才有安全感。</li>
+    <li><b>第二层：证据</b>。把内部和第三方的对齐评测给管理员看。</li>
+    <li><b>Ari：设计建立信任</b>。想看时总能看到光标，动画有趣，“看着不无聊”。普通用户第一次用某个应用或网站前，它会先征求许可（视模式而定）。先有一个建立信任的时刻，之后越来越放心。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v07">
+    <div class="bar"><span class="k">两层信任</span><span>17:30–19:40</span></div>
+    <div class="vz">
+      <div class="lyr">
+        <div class="box hot"><b>第一层 · 确定性管控</b><small>管理员来设</small></div>
+        <div class="box"><b>沙箱</b><small>agent 能用哪些应用、哪些网站</small></div>
+        <div class="box"><b>人在环中</b><small>上传、下载、去新网站，要人批准</small></div>
+        <div class="box lit"><b>第二层 · 证据</b><small>摆给管理员看</small></div>
+        <div class="box span2"><b>对齐评测</b><small>内部的，加第三方的</small></div>
+      </div>
+      <p class="cap">James：这些都是旋钮，由企业自己调。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst">
+    <li><b>管理员配置</b>：OpenAI 的企业配置里，能按网站、按应用放行或阻止，并单独管上传和下载。{{fn:controls}}</li>
+    <li><b>Codex 的光标</b>：2026-04 起，Codex 能在 Mac 后台操作多个应用，各用一个虚拟光标，不把应用切到前台。MacStories 说这项功能直接基于 Sky（Ari 联合创办、后被 OpenAI 收购的应用）；虚拟光标则是 Codex 团队新设计的：思考时会晃动，颜色取自桌面壁纸。{{fn:macstories}}</li>
+  </ul></div>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li><span class="host">主持人</span>Fabrizio：Codex 的光标“太可爱了”。小细节，但看着它操作，会让人有信心。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="ch-08" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 08</span><span>20:22–25:37</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">08</div><div><p class="en-line">Why the best use cases are the boring ones</p><h2>无聊</h2><p class="ch-sub">Boring is opportunity</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>James 把企业用例分两类：一类是“无聊”的繁琐流程，比如在 ERP、CRM 这些记录系统里采购、对账；另一类是电路、建筑、游戏设计这类更有野心的工作，企业现在想得少，会是下一步。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts">
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th scope="col">类别</th><th scope="col">例子</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">企业的繁琐流程（James）</th><td>采购；月底多本账对账，很多财务软件没有 API；找潜在客户、录入外联软件；市场调研</td></tr>
+        <tr><th scope="row">更有野心的工作（James）</th><td>视觉设计、电路设计、建筑、硬件工程、游戏设计；企业现在想得少</td></tr>
+        <tr><th scope="row">消费端的杂事（Ari）</th><td>填 DMV 表、退订邮件</td></tr>
+        <tr><th scope="row">以前没空做的事（Ari）</th><td>他用小众的 Apple Numbers 维护财务和备餐表格；当私教的朋友给每个客户做定制内容</td></tr>
+        <tr><th scope="row">Ari 最期待的</th><td>用语音和整台电脑交互；软件的形态会因此改变</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v08">
+    <div class="bar"><span class="k">一次采购</span><span>21:20–22:10</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>各团队填表</b><small>每年订实验室设备，上千行</small></div><span class="fa">→</span><div class="box"><b>运营录入</b><small>进采购软件</small></div><span class="fa">→</span><div class="box"><b>生成订单</b></div><span class="fa">→</span><div class="box"><b>采购团队</b><small>联系供应商</small></div></div>
+      <p class="cap">James：这一整条，computer use 都能自动做。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x08_astra_pcb_2026-09-03.jpg" aria-label="@ChatGPT · 2026-09-03"><img src="assets/x/x08_astra_pcb_2026-09-03.jpg" alt="Astra 发布帖里的演示画面：左边是一块电路板的布线图，右边是同一块板的 3D 渲染" loading="lazy" width="1600" height="800"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@ChatGPT</b><span>2026-09-03</span></span><p>Astra 发布帖里的演示：一块电路板的布线图和 3D 渲染。James 说，电路设计这类工作是下一批用例。</p><a class="xgo" href="https://x.com/ChatGPT/status/2095597504226267333" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <div class="ctx"><span class="src-tag">背景</span><ul class="lst">
+    <li><b>@seema_amble</b>（2026-10-26）：主持人 Seema 节目上线后发帖说，她最喜欢的一点是：最大的机会看起来很无聊，比如处理订单、对账、跨系统更新记录；实验室做了这么多，深懂具体复杂流程和分发的创业者仍有机会。<a class="xgo" href="https://x.com/seema_amble/status/2114905723104850187" target="_blank" rel="noopener">原帖 ↗</a></li>
+  </ul></div>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>James 的市场调研：他业余做羽毛球视频标注软件，让 agent 去匹克球、壁球、网球的同类软件注册、试用、截图、给反馈，再改进自己的 app。</li>
+    <li><span class="host">主持人</span>说“boring is opportunity”，James 接话：所有记录系统<span class="gl">（system of record）</span>都是。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="ch-09" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 09</span><span>25:37–32:38</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">09</div><div><p class="en-line">Why UI isn't going away</p><h2>界面</h2><p class="ch-sub">软件便宜了，就得更好</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>老软件会长期存在，computer use 正好能操作它们。做软件变便宜，会逼软件更好用、更个性化；人又偏爱亲手操作，所以界面不会消失。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><span class="host">主持人</span>Seema 的问题：企业会留着 30 年前的笨重 ERP，让 agent 在上面操作？还是 AI 原生的新软件取而代之？</li>
+    <li><b>Ari：两者都会长期存在</b>。生产环境里很多软件是 10–40 年前写的，不会一夜消失。computer use 可能会逼软件更适配 agent，WebMCP 就是例子。</li>
+    <li><b>James：不想要“没人用界面”的互联网</b>。他给妻子做了一个五子棋<span class="gl">（Omok）</span>战术训练器，按她喜欢的学法定制。复盘总结可以交给 agent，但下棋本身要人练。</li>
+    <li><b>Ari：人天生偏爱直接操作</b><span class="gl">（direct manipulation）</span>。过去软件为几百万到几十亿人设计；以后可以只为 100 个人、甚至 1 个人设计。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v09">
+    <div class="bar"><span class="k">新软件与老软件并存</span><span>26:30–30:30</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>人</b></div><span class="fa">→</span><div class="box hot"><b>新界面</b><small>为 1 人或 100 人设计</small></div><span class="fa">→</span><div class="box"><b>agent</b></div><span class="fa">→</span><div class="box lit"><b>computer use</b></div><span class="fa">→</span><div class="box"><b>老软件</b><small>10–40 年前写的 ERP 等</small></div></div>
+      <p class="cap">Ari 期待的新软件：界面照旧，底下是 agent；有的 agent 再用 computer use 操作老软件。</p>
+      <p class="cap" style="margin:14px 0 8px"><span class="host">主持人</span>Fabrizio 分出两个桶，两边都还需要界面：</p>
+      <div class="cmp2">
+        <div><b class="k">消费</b><p>看重乐趣和学习，人要自己用</p></div>
+        <div class="a"><b class="k">B2B</b><p>agent 执行；人设目标、看审计日志：“这笔款为什么付了？”</p></div>
+      </div>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">访谈补充</span></div>
+  <div class="panel notes"><ul class="lst">
+    <li>James：他们内部叫“共享智能层”。如果每个网站都有自己的 agent，又不和你的 agent 对话，世界会很碎。接下来几个月要看它们怎么接上。</li>
+  </ul></div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="ch-10" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 10</span><span>32:38–37:31</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">10</div><div><p class="en-line">Advice for founders building on agents</p><h2>创业</h2><p class="ch-sub">深懂一个行业的复杂流程</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>实验室做不完所有事。James：创业公司的机会在深懂某个行业的复杂流程，用 computer use 串起分散的软件，再包装成客户用着舒服的产品。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Ari：先想清形态</b>。小团队想更高效地用现成软件，就坐到 ChatGPT 前协作；产品本身要操作现有软件，就在云端机器上用 API 跑 computer use。后者要设计人何时介入：出错时告诉你？成功时？还是汇总，免得你被一堆会被忽略的通知淹没。</li>
+    <li><b>James：还有机会</b>。OpenAI 有几千人，仍然人手紧张。深懂一个行业（监管、go-to-market、怎么服务客户）就还有绿地；说到底，今天的护城河是速度<sup class="pip" tabindex="0" title="口播此处没听清或说话人不确定，已按上下文尽量还原" aria-label="口播此处没听清或说话人不确定，已按上下文尽量还原">◐</sup>。</li>
+    <li><b>扩散慢的行业</b>：餐饮集团就是例子，见下图。</li>
+    <li><b>旧金山之外</b>：普通企业要过四道坎，见下图。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v10">
+    <div class="bar"><span class="k">一家初创公司给餐饮集团做的事</span><span>35:50–37:30</span></div>
+    <div class="vz">
+      <div class="flow"><div class="box"><b>拍后仓照片</b></div><span class="fa">→</span><div class="box"><b>视觉模型</b><small>按明天的客流，估缺什么</small></div><span class="fa">→</span><div class="box hot"><b>computer use</b><small>去电商网站或采购软件，订明天的食材</small></div><span class="fa">→</span><div class="box"><b>进 ERP 排班</b><small>按去年同期的客流</small></div></div>
+      <p class="cap" style="margin:14px 0 8px">James：在旧金山，人们会想“为什么不直接装 Codex 让它做？”但普通企业要过四道坎：</p>
+      <div class="flow"><div class="box"><b>1 知道能做什么</b></div><span class="fa">→</span><div class="box"><b>2 把工具连对</b></div><span class="fa">→</span><div class="box"><b>3 部署</b></div><span class="fa">→</span><div class="box"><b>4 持续服务</b></div></div>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="ch-11" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 11</span><span>37:31–40:57</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">11</div><div><p class="en-line">Making computer use feel coherent</p><h2>一致</h2><p class="ch-sub">四个浏览器，互不相通</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>下一步是更快、更会实时协作、更主动；还要把散在各处的浏览器和电脑，统一成普通人能理解的一套体验。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Ari：下一步</b>。更快，做到 superhuman，把不同界面、多模态的输入输出揉在一起。现在的产品偏后台（交代任务，你去忙别的），以后会有更多实时协作。</li>
+    <li><b>James：四处分散</b>。见下图。普通用户会问：为什么我有四个互不相通的浏览器？</li>
+    <li><b>James：一个悖论</b>。computer use 本是最好懂的 AI 产品（AI 在用你的电脑），但状态和位置太多，实现细节漏给了用户。他最期待下个季度做到 consumer grade：更好懂、更连贯。</li>
+    <li><b>Ari：主动性</b>。现在你得记得用它、想好怎么用、说服自己改习惯。他希望 agent 适应你，而不是你适应它；目标仍由人设定。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v11">
+    <div class="bar"><span class="k">四个浏览器</span><span>38:35–39:40</span></div>
+    <div class="vz">
+      <div class="quad">
+        <div class="box"><b>Chrome 扩展</b><small>用你 Chrome 里的密码管理器</small></div>
+        <div class="box"><b>桌面 app 内置浏览器</b><small>另一套 cookie 和密码</small></div>
+        <div class="box"><b>dots 的云端电脑</b><small>又一套</small></div>
+        <div class="box"><b>ChatGPT Work 云端浏览器</b><small>再一套</small></div>
+      </div>
+      <div class="join"><span class="fa" aria-hidden="true">↓</span><div class="box hot"><b>目标：一套连贯的体验</b><small>consumer grade</small></div></div>
+      <p class="cap">虚线框 = 彼此不通：在一处登录，别处用不上。OpenAI 文档也写明：内置浏览器的配置和你平时的浏览器分开；ChatGPT Work 的云端电脑有自己的 cookie 和登录状态。{{fn:browser-docs}}</p>
+      <details class="rx" id="rx-browsers11">
+        <summary><b>这四个浏览器从哪来？</b><span class="tg2"></span><span class="re">三个出自 2026-07-09 的同一次更新，James 当天宣布停用 Atlas；第四个随 dots 而来。</span></summary>
+        <div class="rx-b">
+          <div class="tbl-wrap"><table class="tbl">
+            <thead><tr><th scope="col">浏览器</th><th scope="col">2026-07-09</th><th scope="col">之后</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Chrome 扩展</th><td>推出侧边聊天，把 ChatGPT 和 Codex 带进 Chrome：能看浏览器上下文、控制标签页</td><td>10-15 起向所有 Chrome 用户开放：Chat 只读标签页，Work 能控制{{fn:chrome}}{{fn:james-reply}}</td></tr>
+              <tr><th scope="row">桌面 app 内置浏览器</th><td>随新桌面 app 升级：多标签页、密码管理器、passkey 和企业 SSO 登录</td><td>08-25 支持 WebMCP{{fn:webmcp-openai}}</td></tr>
+              <tr><th scope="row">ChatGPT Work 云端浏览器</th><td>推出：用网站前先征求同意，可随时接管</td><td>08-25 起能在云端浏览器里登录网站：你在安全表单里输入账号密码，ChatGPT 看不到{{fn:work-signin}}</td></tr>
+              <tr><th scope="row">dots 的云端电脑</th><td>—</td><td>09-29 随 dots 推出，每个 dot 一台{{fn:dots-docs}}</td></tr>
+            </tbody>
+          </table></div>
+          <p class="org-note">2026-07-09 一列出自 James 当天的帖子串。他在串尾宣布停用 Atlas，并说这些能力都建立在 Atlas 用户的经验上。{{fn:atlas-thread}}Atlas 2026-08-09 停止服务。{{fn:wiki-atlas}}</p>
+        </div>
+      </details>
+    </div>
+  </article>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>推断：“四个浏览器”其实是四套登录状态。agent 在哪儿有你的身份，就只能在哪儿干活。要做到 James 说的“连贯”，先要让身份在几处之间通用。</li></ul></aside>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="ch-12" class="ch">
+  <header class="panel">
+    <div class="bar"><span>CH 12</span><span>40:57–44:14</span></div>
+    <div class="ch-head-body"><div class="ch-no" aria-hidden="true">12</div><div><p class="en-line">Computer use's scaling moment</p><h2>拐点</h2><p class="ch-sub">从桌面到每个人的手机</p></div></div>
+  </header>
+  <div class="panel oneliner"><span class="lbl" aria-hidden="true">one-liner</span><p>模型今年才变得好用，产品最近两个月快速增长。下一个拐点是云端电脑：把 computer use 带给只用手机的普通人。</p></div>
+  <div class="grp"><span class="gt">要点</span></div>
+  <div class="panel pts"><ol class="lst">
+    <li><b>Ari：曲线</b>。6–9 个月前做这些产品时几乎没人用；今年早些时候，模型突然擅长这类任务；最近两个月产品“疯长”。但只有一部分用户在用，还很早。</li>
+    <li><b>James：Atlas 的教训</b>。他 1 月加入 OpenAI 做 Atlas 浏览器，“RIP Atlas”。在 Atlas 里，agent 功能不是卖点，多数人把它当普通浏览器。后来浏览器和 browser use 被放进人们本来就用 agent 的产品，周增长像 YC 公司。</li>
+    <li><b>James：下一个拐点在云端</b>。桌面仍是 power user 的东西，多数人用手机。要给每个人一台不用懂怎么用的强大电脑。</li>
+    <li><b>Ari 收尾</b>：computer use 正处在规模化时刻，消费端和企业端同时。</li>
+  </ol></div>
+  <div class="grp"><span class="gt">可视化</span></div>
+  <article class="panel viz" id="v12">
+    <div class="bar"><span class="k">OpenAI 的 computer use 时间线</span><span>背景</span></div>
+    <div class="vz">
+      <div class="tlv">
+        <div><i>2025-01-23</i><p>Operator 研究预览 <span>OpenAI 第一个 computer use 产品{{fn:operator}}</span></p></div>
+        <div class="hot"><i>2025-10-21</i><p>ChatGPT Atlas 浏览器发布 <span>只有 macOS 版{{fn:wiki-atlas}}</span></p></div>
+        <div class="hot"><i>2026-01</i><p>James 加入 OpenAI，做 Atlas <span>访谈里说 1 月加入，年份按上下文推断</span></p></div>
+        <div class="hot"><i>2026-04</i><p>Codex 在 Mac 后台操作应用 <span>基于 Ari 联合创办的 Sky{{fn:macstories}}</span></p></div>
+        <div class="hot"><i>2026-07-09</i><p>ChatGPT Work 和新桌面 app 发布；James 宣布停用 Atlas <span>同日推出三项浏览器更新：内置浏览器、Work 云端浏览器、Chrome 侧边聊天{{fn:atlas-thread}}</span></p></div>
+        <div class="hot"><i>2026-08-09</i><p>Atlas 停止服务{{fn:wiki-atlas}}</p></div>
+        <div class="hot"><i>2026-09-03</i><p>GPT‑6 Astra{{fn:astra}} <span>James 说企业管控随它推出</span></p></div>
+        <div class="hot"><i>2026-09-29</i><p>dots{{fn:dots}}、GPT‑6.1 Sol{{fn:sol61}}</p></div>
+        <div class="hot"><i>2026-10-15</i><p>ChatGPT 用 Chrome 标签页的能力向所有 Chrome 用户开放 <span>Chat 只读，Work 能控制{{fn:chrome}}</span></p></div>
+        <div><i>2026-10-26</i><p>本期上线；同日发布 GPT‑6.1 Terra{{fn:terra}}</p></div>
+      </div>
+      <p class="cap">实心点 = 本期提到的产品或事件。</p>
+    </div>
+  </article>
+  <div class="grp"><span class="gt">原帖与资料</span></div>
+  <figure class="panel xpost">
+    <a class="xzoom" href="assets/x/x12_osworld_2026-08-10.jpg" aria-label="@a16z · 2026-08-10"><img src="assets/x/x12_osworld_2026-08-10.jpg" alt="a16z 柱状图 Computer-Use Performance Over the Past Year：OSWorld-Verified 最佳成绩约一年内从约 42% 升到 85%，虚线标出人类基线约 72%，数据来自 2026 年 6 月的排行榜" loading="lazy" width="1486" height="1600"></a>
+    <figcaption><span class="xmeta"><span class="src-tag">背景</span><b>@a16z</b><span>2026-08-10</span></span><p>Seema 开场提到的 8 月文章{{fn:a16zpiece}}。OSWorld‑Verified<span class="gl">（测 agent 操作真实桌面的基准）</span>的最佳成绩，一年内从约 42% 升到 85%；人类测试者约 72%。数据截至 2026-06，早于 Astra。</p><a class="xgo" href="https://x.com/a16z/status/2086832770895290624" target="_blank" rel="noopener">原帖 ↗</a></figcaption>
+  </figure>
+  <aside class="analysis"><div class="an-tag">延伸思考</div><ul class="lst"><li>推断：Atlas 说明，用户为“浏览器”装浏览器，不为 agent 装。agent 能力要放进人们已经在用的入口；7 月把侧边聊天放进 Chrome、10 月向所有 Chrome 用户开放，走的都是这条路。</li></ul></aside>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section id="summary" class="ch">
+  <header class="panel"><div class="bar"><span>SUMMARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">总</div><div><p class="en-line">Takeaways</p><h2>总结</h2></div></div></header>
+  <div class="panel pts"><ol class="lst sum-lst">
+    <li><b>computer use 是通用接口</b>：不用谁先适配，任务越复杂越会用到它。<span class="chips"><a class="chip" href="#ch-01"><i>01</i>两条线</a><a class="chip" href="#ch-06"><i>06</i>通用接口</a></span></li>
+    <li><b>速度是关键</b>：快过专家后，能交的事默认交给 agent。<span class="chips"><a class="chip" href="#ch-03"><i>03</i>超人</a></span></li>
+    <li><b>放手靠确定性管控和审计</b>，不只靠模型对齐。<span class="chips"><a class="chip" href="#ch-04"><i>04</i>放手</a><a class="chip" href="#ch-07"><i>07</i>信任</a></span></li>
+    <li><b>眼下的用例很“无聊”</b>：在记录系统里采购、对账、下单；设计类工作是下一步。<span class="chips"><a class="chip" href="#ch-08"><i>08</i>无聊</a><a class="chip" href="#ch-10"><i>10</i>创业</a></span></li>
+    <li><b>界面不会消失</b>：软件更便宜、更个性化；人设目标、看审计。<span class="chips"><a class="chip" href="#ch-09"><i>09</i>界面</a></span></li>
+    <li><b>下一步</b>：主动、实时协作、各处一致，靠云端电脑走向手机用户。<span class="chips"><a class="chip" href="#ch-02"><i>02</i>dots</a><a class="chip" href="#ch-11"><i>11</i>一致</a><a class="chip" href="#ch-12"><i>12</i>拐点</a></span></li>
+  </ol></div>
+  <div class="panel oneliner arc-host on"><span class="arc-border"></span><span class="lbl" aria-hidden="true">closing</span><p><b>Ari 的收尾</b>：我们正处在 computer use 的规模化时刻，消费端和企业端同时。</p></div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section id="glossary" class="ch">
+  <header class="panel"><div class="bar"><span>GLOSSARY</span></div>
+    <div class="ch-head-body"><div class="ch-no zh" aria-hidden="true">术</div><div><p class="en-line">Glossary</p><h2>术语</h2></div></div></header>
+  <details class="panel transcript gloss" id="glossary-table">
+    <summary><span class="k">glossary</span><span>18 terms</span><span class="tg2"></span></summary>
+    <div class="tbl-wrap" style="border:0"><table class="tbl">
+      <thead><tr><th scope="col">术语</th><th scope="col">中文解释</th><th scope="col">出现</th></tr></thead>
+      <tbody>
+        <tr><td>computer use</td><td>让模型看屏幕、动鼠标、打字，像人一样操作软件</td><td>全篇</td></tr>
+        <tr><td>computer-using agent</td><td>会用电脑的 agent</td><td>00</td></tr>
+        <tr><td>GPT‑5.6 / GPT‑6 各型号</td><td>GPT‑5.6 分三档：Sol 旗舰、Terra 均衡、Luna 快而省。GPT‑6 这一代 Astra（2026-09）是旗舰；GPT‑6.1 Sol 接近 Astra、更便宜；GPT‑6.1 Terra 主打低价快速的 computer use</td><td>00 03</td></tr>
+        <tr><td>thinking tokens</td><td>模型作答前“思考”用的 token，越少越快越省</td><td>00</td></tr>
+        <tr><td>prompt injection</td><td>藏在网页、文件里，想劫持 agent 的指令</td><td>00 07</td></tr>
+        <tr><td>system card</td><td>模型发布时附的安全评测报告</td><td>00</td></tr>
+        <tr><td>MCP</td><td>Model Context Protocol：给 agent 接工具和数据的开放协议</td><td>01 06</td></tr>
+        <tr><td>skills</td><td>教 agent 用某个软件、做某类任务的说明包</td><td>01</td></tr>
+        <tr><td>dots</td><td>OpenAI 2026-09 发布的常驻 agent，各有一台云端电脑</td><td>02 11</td></tr>
+        <tr><td>human-in-the-loop</td><td>人在环中：关键动作要人批准</td><td>04 07</td></tr>
+        <tr><td>Auto-review（Guardian）</td><td>用一个单独的审核 agent 代替人，批准或拒绝越过沙箱边界的请求；James 叫它 Guardian，说它看每一步；桌面 app 里叫 Approve for me</td><td>04</td></tr>
+        <tr><td>WebMCP</td><td>让网页向 agent 提供工具的规范草案（W3C 社区组）</td><td>05 09</td></tr>
+        <tr><td>flexible input</td><td>James 的说法：遇到模糊处先问你，你不答就自己找上下文；没查到同名官方功能</td><td>06</td></tr>
+        <tr><td>ERP / CRM / system of record</td><td>企业资源计划 / 客户关系管理 / 记录系统（公司数据的权威来源）</td><td>08</td></tr>
+        <tr><td>direct manipulation</td><td>直接操作：用手直接拖、点界面上的对象</td><td>09</td></tr>
+        <tr><td>OSWorld 2.0</td><td>OSWorld 的长流程版本（2026-06 发布，108 个任务）；没有公布人类成功率，不能和 OSWorld‑Verified 的人类约 72% 直接比</td><td>00 03</td></tr>
+        <tr><td>OSWorld‑Verified</td><td>测 agent 操作真实桌面的基准；人类约 72%</td><td>12</td></tr>
+        <tr><td>Atlas</td><td>OpenAI 2025-10 发布的 AI 浏览器，2026-08-09 停止服务</td><td>11 12</td></tr>
+      </tbody></table></div>
+  </details>
+</section>
+
+<footer class="foot">
+  <div class="legend"><span class="pipx" aria-hidden="true">↳</span>延伸思考 = 基于访谈内容的解读与引申，供参考</div>
+  <section class="credit" id="credits" aria-label="来源与致谢">
+    <h3>来源与致谢 · Credits</h3>
+    <p><b>访谈</b>：受访者 Ari Weinstein（<a href="https://x.com/AriX" rel="noopener">@AriX</a>）、James Sun（<a href="https://x.com/JamesZmSun" rel="noopener">@JamesZmSun</a>），主持人 Seema Amble（<a href="https://x.com/seema_amble" rel="noopener">@seema_amble</a>）、Fabrizio Serafini（<a href="https://x.com/fabserafini" rel="noopener">@fabserafini</a>），2026-10-26 由 a16z <a href="https://youtu.be/9v42ZOdiBJY" rel="noopener">发布于 YouTube</a>；节目帖和章节见 <a href="https://x.com/a16z/status/2114726804665798823" rel="noopener">a16z 的 X 原帖</a>。本页为个人学习笔记，不含逐字稿，已略去开头约 50 秒预告；“主持人”标签的内容是 Seema 或 Fabrizio 的话。视频画面版权归 a16z 所有。</p>
+    <p><b>视觉设计</b>：本页的视觉风格参考、借鉴并部分改编自 <a href="https://nousresearch.com" rel="noopener">Nous Research</a> 的 Hermes / LENS 设计语言，出自其开源组件库 <a href="https://www.npmjs.com/package/@nous-research/ui" rel="noopener">@nous-research/ui</a>（MIT 许可）。借鉴的部分包括配色、流光描边、扫描线效果和背景纹理。本页不是 Nous Research 的官方作品，与 Nous Research 没有任何关联，也未获其认可。授权说明见 <a href="NOTICE.txt">NOTICE.txt</a>。</p>
+    <p lang="en">Design credit: visual style inspired by and adapted from Nous Research’s Hermes / LENS design language (@nous-research/ui, MIT License). Not affiliated with or endorsed by Nous Research.</p>
+    <p><b>字体</b>：Unbounded、Instrument Serif、JetBrains Mono、Noto Sans SC，均为 SIL Open Font License 1.1 开源字体，经 Google Fonts 加载。</p>
+    <p>受访者、主持人或版权方如需修改或撤下本页任何内容，请在 X 上联系 <a href="https://x.com/steamedbun1111" rel="noopener">@steamedbun1111</a>。</p>
+    <p><b>背景资料</b>：标“背景”的卡片、方框，以及括号里的人物和名词介绍，来自下列公开资料和 X 帖子，不是访谈内容。X 帖子截图版权归原作者。X 帖日期按美东时间。</p>
+    <ol class="srcs">
+{{srcs}}
+    </ol>
+    <p class="privacy-note">本站记录阅读统计，不用 cookie，不保存原始 IP。<a href="/privacy#zh">隐私说明</a></p>
+  </section>
+</footer>
+</main>

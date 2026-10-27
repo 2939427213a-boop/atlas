@@ -1,0 +1,35 @@
+/* ===== a16z-openai-computer-use page additions ===== */
+.act-top{flex-direction:column;align-items:flex-start;gap:8px}
+/* 03 · speed scale: three nodes on the timeline rail */
+.tline.t3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@container (max-width:640px){.tline.t3{grid-template-columns:minmax(0,1fr)}}
+/* 04 · approval dial */
+.dial{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dial .box b{display:block}
+.dial-ax{display:flex;justify-content:space-between;gap:12px;margin-top:6px;padding-top:6px;border-top:1px solid var(--line-2);font-size:12.5px;color:var(--mg-65)}
+@container (max-width:560px){.dial{grid-template-columns:minmax(0,1fr)}.dial-ax{flex-direction:column;gap:2px}}
+/* 07 · two layers of trust */
+.lyr{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1fr);gap:8px}
+.lyr .box b{display:block}
+.lyr .span2{grid-column:span 2}
+@container (max-width:560px){.lyr{grid-template-columns:minmax(0,1fr)}.lyr .span2{grid-column:auto}}
+/* 11 · four browsers */
+.quad{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.quad .box b{display:block}
+.quad .box{border-style:dashed}
+.join{display:grid;justify-items:center;gap:4px;margin-top:8px}
+.join .fa{font-family:var(--font-mono);font-size:13px;color:var(--mg-45)}
+.join .box{min-width:min(20em,100%);text-align:center}
+@container (max-width:620px){.quad{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+/* 12 · vertical timeline */
+.tlv{display:grid;border-left:2px solid var(--line-2);margin-left:6px}
+.tlv>div{position:relative;display:grid;grid-template-columns:7.4em minmax(0,1fr);gap:2px 12px;padding:0 0 10px 16px}
+.tlv>div::before{content:'';position:absolute;top:5px;left:-7px;width:12px;height:12px;border-radius:50%;background:var(--background-base);border:2px solid var(--midground)}
+.tlv>div.hot::before{background:var(--midground)}
+.tlv i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--mg-45);padding-top:3px}
+.tlv p{margin:0;font-size:14px;line-height:1.55}
+.tlv p>span:not(.nb){color:var(--mg-65);font-size:12.5px}
+@container (max-width:480px){.tlv>div{grid-template-columns:minmax(0,1fr)}}
+/* hero · three aspects */
+.wants.w3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:760px){.wants.w3{grid-template-columns:minmax(0,1fr)}}
