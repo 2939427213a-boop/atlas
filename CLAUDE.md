@@ -22,7 +22,7 @@
 - 提交直接进 `main`（单人项目）。远端 `origin` 是公开仓库 `github.com/2939427213a-boop/atlas`：只推 `main`（`git push origin main`），不推标签。本地标签 `archive/pre-public` 是带逐字稿的旧历史，永远不推。提交邮箱用仓库级的 GitHub noreply 地址。
 - 部署前检查：`bun run check`（所有讲座页的 `check_page.py`、首页是否链到每一篇、类型检查、测试；无副作用）。
 - 部署：先提交，再问用户（用 `git log --oneline live..HEAD` 说明这次会带上哪些提交），同意后 `bun run ship`：工作区不干净就拒绝 → check → `wrangler deploy` → git 标签 `live` 移到当前提交 → 线上冒烟检查（边缘缓存约半分钟才更新，所以带 60 秒重试）。冒烟全是 `ok` 后同步 GitHub：确认 `git ls-files | grep -E 'transcript|aligned\.md|content_full|/asr/|/backup/'` 没有输出，再 `git push origin main`（部署时的同意已包含这一步）。只复查线上：`bash scripts/ship.sh smoke`。回滚 `./node_modules/.bin/wrangler rollback`。表结构变了才另跑 `wrangler d1 migrations apply atlas --remote`，同样先问。
-- 改已上线的页面：两种语言一起改，再用 `python3 -I scripts/add_atlas_hooks.py <page> talks/<slug> <当天日期>` 把 `data-v` 更新为当天（`<slug>` 不变），后台就能分开新旧版本。改首页同样要更新：`add_atlas_hooks.py public/index.html home <当天日期>`。小改只动 HTML；`sources/` 里的 `content.md` 是底稿，大改版才从它重来。
+- 改已上线的页面：两种语言一起改，再用 `python3 -I scripts/add_atlas_hooks.py <page> talks/<slug> <当天日期>` 把 `data-v` 更新为当天（`<slug>` 不变），后台就能分开新旧版本。改首页同样要更新：`add_atlas_hooks.py public/index.html home <当天日期>`。小改只动 HTML；有 `build/` 的讲座把同样的改动写进 `build/` 的正文，否则下次重新构建会丢掉。`content.md` 只是写作骨架（主旨、5 幕、每章一句话和证据时间戳），不是正文来源；`2026-10-a16z-openai-computer-use` 及更早讲座的 `content.md` 是全文底稿，可能已过时。
 
 ## 隐私不变量（改统计代码前先读）
 - 不存原始 IP。访客去重用 `sha256(当天随机盐 | IP | UA)` 前 16 位，盐次日删除。

@@ -1,0 +1,24 @@
+{
+  "slug": "2026-10-a16z-openai-computer-use",
+  "data_v": "2026-10-27",
+  "ref": "2026-10-latent-space-alex-zhang",
+  "cover": {
+    "src": "assets/cover.jpg",
+    "width": 1920,
+    "height": 1080
+  },
+  "zh": {
+    "comment": "Superhuman computer use · a16z Podcast with OpenAI's Ari Weinstein and James Sun · 2026-10-26 — Chinese study notes.",
+    "title": "Superhuman computer use：OpenAI 的 Ari Weinstein 和 James Sun · a16z Podcast",
+    "desc": "a16z Podcast 访谈 OpenAI 的 Ari Weinstein 和 James Sun 的学习笔记：GPT‑6 Astra 给 computer use 带来了什么，企业怎样才敢放手，为什么最好的用例很无聊，界面为什么不会消失，以及用户为什么会有四个互不相通的浏览器。",
+    "og_title": "Superhuman computer use：像人一样用电脑，然后比人快 · 学习笔记",
+    "alt": "访谈画面：左边 Seema Amble、Ari Weinstein、James Sun 围坐圆桌，右边 Fabrizio Serafini 远程连线"
+  },
+  "en": {
+    "comment": "Superhuman computer use · a16z Podcast with OpenAI's Ari Weinstein and James Sun · 2026-10-26 — study notes.",
+    "title": "Superhuman computer use: OpenAI's Ari Weinstein and James Sun · a16z Podcast",
+    "desc": "Study notes on the a16z Podcast with OpenAI's Ari Weinstein and James Sun: what GPT‑6 Astra changed for computer use, what it takes for enterprises to let agents act, why the best use cases are the boring ones, why UI isn't going away, and why users end up with four browsers that don't talk to each other.",
+    "og_title": "Superhuman computer use: use a computer like a person, then faster · Study notes",
+    "alt": "Interview still: Seema Amble, Ari Weinstein and James Sun at a round table; Fabrizio Serafini joins remotely on the right"
+  }
+}
